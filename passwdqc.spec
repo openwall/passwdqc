@@ -1,3 +1,5 @@
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.5 2000/12/04 18:44:12 solar Exp $
+
 Summary: Pluggable password "quality check"
 Name: pam_passwdqc
 Version: 0.3
