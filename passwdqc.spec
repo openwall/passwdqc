@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.19 2002/09/18 19:49:03 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.20 2002/10/04 12:38:17 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.7.1
+Version: 0.7.2
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -36,6 +36,9 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
+* Fri Oct 04 2002 Solar Designer <solar@owl.openwall.com>
+- Solaris 9 notes in PLATFORMS.
+
 * Wed Sep 18 2002 Solar Designer <solar@owl.openwall.com>
 - Build with Sun's C compiler cleanly, from Kevin Steves.
 - Use install -c as that actually makes a difference on at least HP-UX
