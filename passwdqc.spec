@@ -1,12 +1,13 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.21 2002/10/31 16:17:53 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.22 2003/06/02 03:36:13 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.7.3
+Version: 0.7.3.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
-Source: pam_passwdqc-%version.tar.gz
+URL: http://www.openwall.com/passwdqc/
+Source: ftp://ftp.openwall.com/pub/projects/pam/modules/%name/%name-%version.tar.gz
 BuildRoot: /override/%name-%version
 
 %description
@@ -36,7 +37,10 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
-* Thu Oct 31 2002 Solar Designer <solar@owl.openwall.com>
+* Mon Jun 02 2003 Solar Designer <solar@owl.openwall.com> 0.7.3.1-owl1
+- Added URL.
+
+* Thu Oct 31 2002 Solar Designer <solar@owl.openwall.com> 0.7.3-owl1
 - When compiling with gcc, also link with gcc.
 - Use $(MAKE) to invoke sub-makes.
 
