@@ -189,6 +189,37 @@ static int check_max(params_t *params, pam_handle_t *pamh, const char *newpass)
 	return 0;
 }
 
+static int check_pass(struct passwd *pw, const char *pass)
+{
+#ifdef HAVE_SHADOW
+	struct spwd *spw;
+	const char *hash;
+	int retval;
+
+	if (!strcmp(pw->pw_passwd, "x")
+#ifdef __hpux
+	    || !strcmp(pw->pw_passwd, "*")
+#endif
+	    ) {
+		spw = getspnam(pw->pw_name);
+		endspent();
+		if (!spw)
+			return -1;
+#ifdef __hpux
+		if (iscomsec())
+			hash = bigcrypt(pass, spw->sp_pwdp);
+		else
+#endif
+			hash = crypt(pass, spw->sp_pwdp);
+		retval = strcmp(hash, spw->sp_pwdp) ? -1 : 0;
+		memset(spw->sp_pwdp, 0, strlen(spw->sp_pwdp));
+		return retval;
+	}
+#endif
+
+	return strcmp(crypt(pass, pw->pw_passwd), pw->pw_passwd) ? -1 : 0;
+}
+
 static int parse(params_t *params, pam_handle_t *pamh,
     int argc, const char **argv)
 {
@@ -309,9 +340,6 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	params_t params;
 	struct pam_response *resp;
 	struct passwd *pw, fake_pw;
-#ifdef HAVE_SHADOW
-	struct spwd *spw;
-#endif
 	char *user, *oldpass, *newpass, *randompass;
 	const char *reason;
 	int ask_oldauthtok;
@@ -371,32 +399,9 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		endpwent();
 		if (!pw)
 			return PAM_USER_UNKNOWN;
-		if ((params.flags & F_CHECK_OLDAUTHTOK) && getuid() != 0) {
-			if (!oldpass)
-				status = PAM_AUTH_ERR;
-			else
-#ifdef HAVE_SHADOW
-			if (!strcmp(pw->pw_passwd, "x")
-#ifdef __hpux
-			    || !strcmp(pw->pw_passwd, "*")
-#endif
-			    ) {
-				spw = getspnam(user);
-				endspent();
-				if (spw) {
-					if (strcmp(crypt(oldpass, spw->sp_pwdp),
-					    spw->sp_pwdp))
-						status = PAM_AUTH_ERR;
-					memset(spw->sp_pwdp, 0,
-					    strlen(spw->sp_pwdp));
-				} else
-					status = PAM_AUTH_ERR;
-			} else
-#endif
-			if (strcmp(crypt(oldpass, pw->pw_passwd),
-			    pw->pw_passwd))
-				status = PAM_AUTH_ERR;
-		}
+		if ((params.flags & F_CHECK_OLDAUTHTOK) && getuid() != 0 &&
+		    (!oldpass || check_pass(pw, oldpass)))
+			status = PAM_AUTH_ERR;
 		memset(pw->pw_passwd, 0, strlen(pw->pw_passwd));
 		if (status != PAM_SUCCESS)
 			return status;

@@ -10,11 +10,11 @@ INSTALL = install
 CFLAGS = -c -Wall -fPIC -O2
 LDFLAGS = -s --shared -lpam -lcrypt
 LDFLAGS_SUN = -s -G -lpam -lcrypt
-LDFLAGS_HP = -s -b -lpam -lcrypt
+LDFLAGS_HP = -s -b -lpam
 
 # Uncomment these to use HP's ANSI C compiler instead of gcc.
 #CC = cc
-#CFLAGS = -c -Aa -D_HPUX_SOURCE +z +O2
+#CFLAGS = -c -Ae +w1 +W 474,486,542 +z +O2
 
 # Comment these out when building on non-tsconvert'ed HP-UX.
 CFLAGS += -DHAVE_SHADOW
