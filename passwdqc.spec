@@ -1,9 +1,9 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.5 2000/12/04 18:44:12 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.6 2000/12/19 11:01:02 solar Exp $
 
 Summary: Pluggable password "quality check"
 Name: pam_passwdqc
 Version: 0.3
-Release: 1owl
+Release: 2owl
 Copyright: relaxed BSD and (L)GPL-compatible
 Group: System Environment/Base
 Source: pam_passwdqc-%{version}.tar.gz
@@ -20,7 +20,7 @@ and can be (re-)configured without rebuilding.
 %setup -q
 
 %build
-make CFLAGS="-c $RPM_OPT_FLAGS"
+make CFLAGS="-c -Wall -fPIC $RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -35,6 +35,9 @@ rm -rf $RPM_BUILD_ROOT
 /lib/security/pam_passwdqc.so
 
 %changelog
+* Tue Dec 19 2000 Solar Designer <solar@owl.openwall.com>
+- Added "-Wall -fPIC" to the CFLAGS.
+
 * Mon Oct 30 2000 Solar Designer <solar@owl.openwall.com>
 - 0.3: portability fixes (this might build on non-Linux-PAM now).
 
