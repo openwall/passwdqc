@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.22 2003/06/02 03:36:13 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.23 2003/06/21 03:30:55 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.7.3.1
+Version: 0.7.4
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -37,6 +37,13 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
+* Sat Jun 21 2003 Solar Designer <solar@owl.openwall.com> 0.7.4-owl1
+- Documented that "enforce=users" may not always work for services other
+than the passwd command.
+- Applied a patch to PLATFORMS from Mike Gerdts of GE Medical Systems
+to reflect how Solaris 8 patch 108993-18 (or 108994-18 on x86) changes
+Solaris 8's PAM implementation to look like Solaris 9.
+
 * Mon Jun 02 2003 Solar Designer <solar@owl.openwall.com> 0.7.3.1-owl1
 - Added URL.
 
