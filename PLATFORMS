@@ -21,14 +21,15 @@ and didn't use PAM for password changing.
 
 	Solaris, HP-UX 11.
 
-On Solaris 2.6, 7, and 8 and on HP-UX 11, pam_passwdqc has to ask for
-the old password during the update phase.  Use "ask_oldauthtok=update
-check_oldauthtok" with pam_passwdqc and "use_first_pass" with
-pam_unix.
+On Solaris 2.6, 7, and 8 (without patch 108993-18/108994-18 or later)
+and on HP-UX 11, pam_passwdqc has to ask for the old password during
+the update phase.  Use "ask_oldauthtok=update check_oldauthtok" with
+pam_passwdqc and "use_first_pass" with pam_unix.
 
-On Solaris 9, use pam_passwdqc instead of both pam_authtok_get and
-pam_authtok_check, and set "retry=1" with pam_passwdqc as the passwd
-command has its own handling for that.
+On Solaris 8 (with patch 108993-18/108994-18 or later) and Solaris 9,
+use pam_passwdqc instead of both pam_authtok_get and pam_authtok_check,
+and set "retry=1" with pam_passwdqc as the passwd command has its own
+handling for that.
 
 You will likely also need to set "max=8" in order to actually enforce
 not-so-weak passwords with the obsolete traditional DES-based hashes
@@ -36,4 +37,4 @@ that most Solaris systems use and the flawed approach HP-UX uses to
 process characters past 8.  Of course this way you only get about one
 third of the functionality of pam_passwdqc.
 
-$Id: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.7 2002/10/04 12:38:17 solar Exp $
+$Id: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.8 2003/06/21 03:25:24 solar Exp $
