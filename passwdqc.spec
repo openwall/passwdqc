@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.26 2004/11/23 22:40:48 mci Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.27 2005/01/25 22:00:49 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.7.5
+Version: 0.7.6
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -14,8 +14,8 @@ BuildRoot: /override/%name-%version
 pam_passwdqc is a simple password strength checking module for
 PAM-aware password changing programs, such as passwd(1).  In addition
 to checking regular passwords, it offers support for passphrases and
-can provide randomly generated passwords.  All features are optional
-and can be (re-)configured without rebuilding.
+can provide randomly generated ones.  All features are optional and
+can be (re-)configured without rebuilding.
 
 %prep
 %setup -q
@@ -34,6 +34,11 @@ make install DESTDIR=%buildroot MANDIR=%_mandir
 %_mandir/man*/*
 
 %changelog
+* Wed Jan 26 2005 Solar Designer <solar@owl.openwall.com> 0.7.6-owl1
+- Disallow unreasonable random= settings.
+- Clarified the allowable bit sizes for randomly-generated passphrases and
+the lack of relationship between passphrase= and random= options.
+
 * Fri Oct 31 2003 Solar Designer <solar@owl.openwall.com> 0.7.5-owl1
 - Assume invocation by root only if both the UID is 0 and the PAM service
 name is "passwd"; this should solve changing expired passwords on Solaris
