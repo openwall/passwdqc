@@ -1,6 +1,6 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.12 2002/07/21 17:50:32 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.13 2002/07/23 09:22:45 solar Exp $
 
-Summary: Pluggable password "quality check".
+Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
 Version: 0.5.1
 Release: owl1
@@ -36,6 +36,10 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
+* Tue Jul 23 2002 Solar Designer <solar@owl.openwall.com>
+- Applied minor corrections to the man page and at the same time eliminated
+unneeded/unimportant differences between it and the README.
+
 * Sun Jul 21 2002 Solar Designer <solar@owl.openwall.com>
 - 0.5.1: imported the pam_passwdqc(8) manual page back from FreeBSD.
 
