@@ -12,9 +12,11 @@ module prompts for the old password, things should work either way.
 	FreeBSD.
 
 As of this writing (July 2002), FreeBSD-current has moved to OpenPAM
-which pam_passwdqc already includes support for.  You should be able
-to use pam_passwdqc with FreeBSD-current.  Older versions of FreeBSD
-used a subset of Linux-PAM and didn't use PAM for password changing.
+which pam_passwdqc already includes support for and it also includes
+pam_passwdqc in the base system.  You should be able to use either the
+included or the distributed separately version of pam_passwdqc with
+FreeBSD-current.  Older versions of FreeBSD used a subset of Linux-PAM
+and didn't use PAM for password changing.
 
 
 	Solaris, HP-UX 11.
@@ -29,4 +31,4 @@ that most Solaris systems use and the flawed approach HP-UX uses to
 process characters past 8.  Of course this way you only get about one
 third of the functionality of pam_passwdqc.
 
-$Id: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.5 2002/07/27 21:14:51 solar Exp $
+$Id: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.6 2002/07/28 00:02:05 solar Exp $
