@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000,2001 by Solar Designer. See LICENSE.
+# Copyright (c) 2000-2002 by Solar Designer. See LICENSE.
 #
 
 CC = gcc
@@ -14,7 +14,10 @@ LDFLAGS_SUN = -s -lpam -lcrypt -G
 TITLE = pam_passwdqc
 LIBSHARED = $(TITLE).so
 SHLIBMODE = 755
+MAN8 = $(TITLE).8
+MANMODE = 644
 SECUREDIR = /lib/security
+MANDIR = /usr/share/man
 FAKEROOT =
 
 PROJ = $(LIBSHARED)
@@ -40,9 +43,12 @@ passwdqc_random.o: passwdqc.h
 install:
 	$(MKDIR) $(FAKEROOT)$(SECUREDIR)
 	$(INSTALL) -m $(SHLIBMODE) $(LIBSHARED) $(FAKEROOT)$(SECUREDIR)
+	$(MKDIR) $(FAKEROOT)$(MANDIR)/man8
+	$(INSTALL) -m $(MANMODE) $(MAN8) $(FAKEROOT)$(MANDIR)/man8/
 
 remove:
-	$(RM) $(FAKEROOT)$(SECUREDIR)/$(TITLE).so
+	$(RM) $(FAKEROOT)$(SECUREDIR)/$(LIBSHARED)
+	$(RM) $(FAKEROOT)$(MANDIR)/man8/$(MAN8)
 
 clean:
 	$(RM) $(PROJ) *.o

@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.11 2002/04/16 16:56:52 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.12 2002/07/21 17:50:32 solar Exp $
 
 Summary: Pluggable password "quality check".
 Name: pam_passwdqc
-Version: 0.5
+Version: 0.5.1
 Release: owl1
 License: relaxed BSD and (L)GPL-compatible
 Group: System Environment/Base
@@ -24,7 +24,7 @@ make CFLAGS="-c -Wall -fPIC -DHAVE_SHADOW -DLINUX_PAM $RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install FAKEROOT=$RPM_BUILD_ROOT
+make install FAKEROOT=$RPM_BUILD_ROOT MANDIR=%_mandir
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -33,8 +33,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc LICENSE README
 /lib/security/pam_passwdqc.so
+%_mandir/man*/*
 
 %changelog
+* Sun Jul 21 2002 Solar Designer <solar@owl.openwall.com>
+- 0.5.1: imported the pam_passwdqc(8) manual page back from FreeBSD.
+
 * Tue Apr 16 2002 Solar Designer <solar@owl.openwall.com>
 - 0.5: preliminary OpenPAM (FreeBSD-current) support in the code and related
 code cleanups (thanks to Dag-Erling Smorgrav).
