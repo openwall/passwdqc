@@ -1,4 +1,4 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.23 2003/06/21 03:30:55 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.24 2003/10/30 08:45:15 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
@@ -26,9 +26,6 @@ make CFLAGS="-c -Wall -fPIC -DHAVE_SHADOW -DLINUX_PAM $RPM_OPT_FLAGS"
 %install
 rm -rf $RPM_BUILD_ROOT
 make install FAKEROOT=$RPM_BUILD_ROOT MANDIR=%_mandir
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
