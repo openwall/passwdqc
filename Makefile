@@ -14,7 +14,7 @@ LDFLAGS_HP = -s -b -lpam -lcrypt
 
 # Uncomment these to use HP's ANSI C compiler instead of gcc.
 #CC = cc
-#CFLAGS = -c -Aa +z +O2
+#CFLAGS = -c -Aa -D_HPUX_SOURCE +z +O2
 
 # Comment these out when building on non-tsconvert'ed HP-UX.
 CFLAGS += -DHAVE_SHADOW
