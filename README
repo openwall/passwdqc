@@ -1,8 +1,8 @@
 pam_passwdqc is a simple password strength checking module for
 PAM-aware password changing programs, such as passwd(1).  In addition
 to checking regular passwords, it offers support for passphrases and
-can provide randomly generated passwords.  All features are optional
-and can be (re-)configured without rebuilding.
+can provide randomly generated ones.  All features are optional and
+can be (re-)configured without rebuilding.
 
 This module should be stacked before your usual password changing
 module (such as pam_unix or pam_pwdb) in the password management group
@@ -32,7 +32,7 @@ class for non-ASCII characters which could not be classified, but are
 assumed to be non-digits.
 
 N1 is used for passwords consisting of characters from two character
-classes, which do not meet the requirements for a passphrase.
+classes which do not meet the requirements for a passphrase.
 
 N2 is used for passphrases.  A passphrase must consist of sufficient
 words (see the "passphrase" option below).
@@ -66,7 +66,7 @@ hashes, or some weak passwords will pass the checks.
 	passphrase=N			[passphrase=3]
 
 The number of words required for a passphrase, or 0 to disable the
-support for passphrases.
+support for user-chosen passphrases.
 
 	match=N				[match=4]
 
@@ -89,9 +89,10 @@ would be weak.
 
 	random=N[,only]			[random=42]
 
-The size of randomly-generated passwords in bits, or 0 to disable this
-feature.  Passwords that contain the offered randomly-generated string
-will be allowed regardless of other possible restrictions.
+The size of randomly-generated passphrases in bits (24 to 72), or 0 to
+disable this feature.  Any passphrase that contains the offered
+randomly-generated string will be allowed regardless of other possible
+restrictions.
 
 The "only" modifier can be used to disallow user-chosen passwords.
 
@@ -143,4 +144,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Id: Owl/packages/passwdqc/passwdqc/README,v 1.5 2003/10/31 23:02:31 solar Exp $
+$Id: Owl/packages/passwdqc/passwdqc/README,v 1.6 2005/01/25 21:59:35 solar Exp $

@@ -1,4 +1,4 @@
-.\" Copyright (c) 2000-2003 Solar Designer.
+.\" Copyright (c) 2000-2003,2005 Solar Designer.
 .\" All rights reserved.
 .\" Copyright (c) 2001 Networks Associates Technology, Inc.
 .\" All rights reserved.
@@ -33,7 +33,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Id: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.4 2005/01/20 04:13:50 solar Exp $
+.\" $Id: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.5 2005/01/25 21:59:35 solar Exp $
 .\"
 .Dd November 1, 2003
 .Dt PAM_PASSWDQC 8
@@ -53,7 +53,7 @@ The
 module is a simple password strength checking module for
 PAM.
 In addition to checking regular passwords, it offers support for
-passphrases and can provide randomly generated passwords.
+passphrases and can provide randomly generated ones.
 .Pp
 The
 .Nm
@@ -103,7 +103,7 @@ be classified, but are assumed to be non-digits.
 .Pp
 .Ar N1
 is used for passwords consisting of characters from two character
-classes, which do not meet the requirements for a passphrase.
+classes which do not meet the requirements for a passphrase.
 .Pp
 .Ar N2
 is used for passphrases.
@@ -145,7 +145,7 @@ hashes, or some weak passwords will pass the checks.
 .It Cm passphrase Ns = Ns Ar N
 .Pq Cm passphrase Ns = Ns 3
 The number of words required for a passphrase, or 0 to disable the
-support for passphrases.
+support for user-chosen passphrases.
 .It Cm match Ns = Ns Ar N
 .Pq Cm match Ns = Ns 4
 The length of common substring required to conclude that a password is
@@ -173,9 +173,9 @@ would be weak.
 .Sm on
 .Xc
 .Pq Cm random Ns = Ns 42
-The size of randomly-generated passwords in bits, or 0 to disable this
-feature.
-Passwords that contain the offered randomly-generated string will be
+The size of randomly-generated passphrases in bits (24 to 72),
+or 0 to disable this feature.
+Any passphrase that contains the offered randomly-generated string will be
 allowed regardless of other possible restrictions.
 .Pp
 The
