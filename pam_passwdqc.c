@@ -196,21 +196,20 @@ static int check_pass(struct passwd *pw, const char *pass)
 	const char *hash;
 	int retval;
 
-	if (!strcmp(pw->pw_passwd, "x")
 #ifdef __hpux
-	    || !strcmp(pw->pw_passwd, "*")
+	if (iscomsec()) {
+#else
+	if (!strcmp(pw->pw_passwd, "x")) {
 #endif
-	    ) {
 		spw = getspnam(pw->pw_name);
 		endspent();
 		if (!spw)
 			return -1;
 #ifdef __hpux
-		if (iscomsec())
-			hash = bigcrypt(pass, spw->sp_pwdp);
-		else
+		hash = bigcrypt(pass, spw->sp_pwdp);
+#else
+		hash = crypt(pass, spw->sp_pwdp);
 #endif
-			hash = crypt(pass, spw->sp_pwdp);
 		retval = strcmp(hash, spw->sp_pwdp) ? -1 : 0;
 		memset(spw->sp_pwdp, 0, strlen(spw->sp_pwdp));
 		return retval;

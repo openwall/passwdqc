@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.17 2002/09/06 02:59:41 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.18 2002/09/13 17:10:56 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.6.1
+Version: 0.7
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -36,6 +36,10 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
+* Fri Sep 13 2002 Solar Designer <solar@owl.openwall.com>
+- Have the same pam_passwdqc binary work for both trusted and non-trusted
+HP-UX, from Kevin Steves.
+
 * Fri Sep 06 2002 Solar Designer <solar@owl.openwall.com>
 - Use bigcrypt() on HP-UX whenever necessary, from Kevin Steves of Atomic
 Gears LLC.
