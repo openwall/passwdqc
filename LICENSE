@@ -1,3 +1,10 @@
+pam_passwdqc.8 is under the 3-clause BSD-style license as specified
+within the file itself.
+
+wordset_4k.c is in the public domain.
+
+The rest of the files in this package fall under the following terms:
+
 You're allowed to do whatever you like with this software (including
 re-distribution in source and/or binary form, with or without
 modification), provided that credit is given where it is due and any
@@ -7,3 +14,5 @@ Note that you don't have to re-distribute this software under these
 same relaxed terms.  In particular, you're free to place modified
 versions under (L)GPL, thus disallowing further re-distribution in
 binary-only form.
+
+$Id: Owl/packages/passwdqc/passwdqc/LICENSE,v 1.2 2002/07/27 19:02:34 solar Exp $
