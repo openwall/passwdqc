@@ -33,8 +33,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
+.\" $Id: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.2 2002/07/23 09:18:49 solar Exp $
 .\"
-.Dd April 15, 2002
+.Dd July 21, 2002
 .Dt PAM_PASSWDQC 8
 .Os
 .Sh NAME
@@ -56,7 +57,7 @@ passphrases and can provide randomly generated passwords.
 .Pp
 The
 .Nm
-module provides functionality for only one PAM category:
+module provides functionality for only one PAM management group:
 password changing.
 In terms of the
 .Ar module-type
@@ -66,12 +67,12 @@ feature.
 .Pp
 The
 .Fn pam_chauthtok
-service function will ask the user for a new password, and verify that
+service function may ask the user for a new password, and verify that
 it meets certain minimum standards.
 If the chosen password is unsatisfactory, the service function returns
 .Dv PAM_AUTHTOK_ERR .
 .Pp
-The following options may be passed to the authentication module:
+The following options may be passed to the module:
 .Bl -tag -width indent
 .It Xo
 .Sm off
@@ -134,7 +135,7 @@ The value 8 is treated specially: if
 is set to 8, passwords longer than 8 characters will not be rejected,
 but will be truncated to 8 characters for the strength checks and the
 user will be warned.
-This is for compatibility with the traditional DES password hashes,
+This is to be used with the traditional DES-based password hashes,
 which truncate the password at 8 characters.
 .Pp
 It is important that you do set
@@ -143,8 +144,8 @@ if you are using the traditional
 hashes, or some weak passwords will pass the checks.
 .It Cm passphrase Ns = Ns Ar N
 .Pq Cm passphrase Ns = Ns 3
-The number of words required for a passphrase, or 0 to disable
-passphrase support.
+The number of words required for a passphrase, or 0 to disable the
+support for passphrases.
 .It Cm match Ns = Ns Ar N
 .Pq Cm match Ns = Ns 4
 The length of common substring required to conclude that a password is
@@ -232,7 +233,7 @@ Normally, this task is left for subsequent modules.
 .Pp
 The primary use for this option is when
 .Cm ask_oldauthtok Ns = Ns Cm update
-is also specified, in which case no other modules gets a chance to ask
+is also specified, in which case no other module gets a chance to ask
 for and validate the password.
 Of course, this will only work with
 .Ux
@@ -256,7 +257,7 @@ is that the former is incompatible with
 .Sh AUTHORS
 The
 .Nm
-module was written by
+module was written for Openwall GNU/*/Linux by
 .An Solar Designer Aq solar@openwall.com .
 This manual page, derived from the author's documentation, was written
 for the
