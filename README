@@ -99,11 +99,7 @@ The "only" modifier can be used to disallow user-chosen passwords.
 
 The module can be configured to warn of weak passwords only, but not
 actually enforce strong passwords.  The "users" setting will enforce
-strong passwords for non-root users only.
-
-Please note that "enforce=users" may not actually enforce strong
-passwords with services other than the passwd command, that depends on
-what UID the services run as when they invoke PAM.
+strong passwords for invocations by non-root users only.
 
 	non-unix			[]
 
@@ -147,4 +143,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Id: Owl/packages/passwdqc/passwdqc/README,v 1.4 2003/06/21 03:20:41 solar Exp $
+$Id: Owl/packages/passwdqc/passwdqc/README,v 1.5 2003/10/31 23:02:31 solar Exp $

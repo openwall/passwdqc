@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.24 2003/10/30 08:45:15 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.25 2003/10/31 23:02:31 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.7.4
+Version: 0.7.5
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -21,11 +21,11 @@ and can be (re-)configured without rebuilding.
 %setup -q
 
 %build
-make CFLAGS="-c -Wall -fPIC -DHAVE_SHADOW -DLINUX_PAM $RPM_OPT_FLAGS"
+make CFLAGS="-Wall -fPIC -DHAVE_SHADOW -DLINUX_PAM $RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install FAKEROOT=$RPM_BUILD_ROOT MANDIR=%_mandir
+make install DESTDIR=$RPM_BUILD_ROOT MANDIR=%_mandir
 
 %files
 %defattr(-,root,root)
@@ -34,6 +34,13 @@ make install FAKEROOT=$RPM_BUILD_ROOT MANDIR=%_mandir
 %_mandir/man*/*
 
 %changelog
+* Fri Oct 31 2003 Solar Designer <solar@owl.openwall.com> 0.7.5-owl1
+- Assume invocation by root only if both the UID is 0 and the PAM service
+name is "passwd"; this should solve changing expired passwords on Solaris
+and HP-UX and make "enforce=users" safe.
+- Produce proper English explanations for a wider variety of settings.
+- Moved the "-c" out of CFLAGS, renamed FAKEROOT to DESTDIR.
+
 * Sat Jun 21 2003 Solar Designer <solar@owl.openwall.com> 0.7.4-owl1
 - Documented that "enforce=users" may not always work for services other
 than the passwd command.

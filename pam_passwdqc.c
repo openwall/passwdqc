@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer. See LICENSE.
+ * Copyright (c) 2000-2003 by Solar Designer. See LICENSE.
  */
 
 #define _XOPEN_SOURCE 500
@@ -89,18 +89,30 @@ static params_t defaults = {
 	"\nYou can now choose the new password.\n"
 #define MESSAGE_INTRO_BOTH \
 	"\nYou can now choose the new password or passphrase.\n"
-#define MESSAGE_EXPLAIN_PASSWORD_1 \
+#define MESSAGE_EXPLAIN_PASSWORD_1CLASS \
+	"A good password should be a mix of upper and lower case letters,\n" \
+	"digits, and other characters.  You can use a%s %d character long\n" \
+	"password.\n"
+#define MESSAGE_EXPLAIN_PASSWORD_CLASSES \
 	"A valid password should be a mix of upper and lower case letters,\n" \
-	"digits and other characters.  You can use a%s %d character long\n" \
-	"password with characters from at least 3 of these 4 classes.\n" \
-	"Characters that form a common pattern are discarded by the check.\n"
-#define MESSAGE_EXPLAIN_PASSWORD_2 \
+	"digits, and other characters.  You can use a%s %d character long\n" \
+	"password with characters from at least %d of these 4 classes.\n" \
+	"An upper case letter that begins the password and a digit that\n" \
+	"ends it do not count towards the number of character classes used.\n"
+#define MESSAGE_EXPLAIN_PASSWORD_ALL_CLASSES \
 	"A valid password should be a mix of upper and lower case letters,\n" \
-	"digits and other characters.  You can use a%s %d character long\n" \
+	"digits, and other characters.  You can use a%s %d character long\n" \
+	"password with characters from all of these classes.  An upper\n" \
+	"case letter that begins the password and a digit that ends it do\n" \
+	"not count towards the number of character classes used.\n"
+#define MESSAGE_EXPLAIN_PASSWORD_ALT \
+	"A valid password should be a mix of upper and lower case letters,\n" \
+	"digits, and other characters.  You can use a%s %d character long\n" \
 	"password with characters from at least 3 of these 4 classes, or\n" \
 	"a%s %d character long password containing characters from all the\n" \
-	"classes.  Characters that form a common pattern are discarded by\n" \
-	"the check.\n"
+	"classes.  An upper case letter that begins the password and a\n" \
+	"digit that ends it do not count towards the number of character\n" \
+	"classes used.\n"
 #define MESSAGE_EXPLAIN_PASSPHRASE \
 	"A passphrase should be of at least %d words, %d to %d characters\n" \
 	"long and contain enough different characters.\n"
@@ -219,6 +231,20 @@ static int check_pass(struct passwd *pw, const char *pass)
 	return strcmp(crypt(pass, pw->pw_passwd), pw->pw_passwd) ? -1 : 0;
 }
 
+static int am_root(pam_handle_t *pamh)
+{
+	char *service;
+
+	if (getuid() != 0)
+		return 0;
+
+	if (pam_get_item(pamh, PAM_SERVICE, (pam_item_t *)&service) !=
+	    PAM_SUCCESS)
+		return 0;
+
+	return !strcmp(service, "passwd");
+}
+
 static int parse(params_t *params, pam_handle_t *pamh,
     int argc, const char **argv)
 {
@@ -325,8 +351,8 @@ static int parse(params_t *params, pam_handle_t *pamh,
 	}
 
 	if (argc) {
-		say(pamh, PAM_ERROR_MSG, getuid() != 0 ?
-		    MESSAGE_MISCONFIGURED : MESSAGE_INVALID_OPTION, *argv);
+		say(pamh, PAM_ERROR_MSG, am_root(pamh) ?
+		    MESSAGE_INVALID_OPTION : MESSAGE_MISCONFIGURED, *argv);
 		return PAM_ABORT;
 	}
 
@@ -361,7 +387,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	} else
 		return PAM_SERVICE_ERR;
 
-	if (ask_oldauthtok && getuid() != 0) {
+	if (ask_oldauthtok && !am_root(pamh)) {
 		status = converse(pamh, PAM_PROMPT_ECHO_OFF,
 		    PROMPT_OLDPASS, &resp);
 
@@ -398,7 +424,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		endpwent();
 		if (!pw)
 			return PAM_USER_UNKNOWN;
-		if ((params.flags & F_CHECK_OLDAUTHTOK) && getuid() != 0 &&
+		if ((params.flags & F_CHECK_OLDAUTHTOK) && !am_root(pamh) &&
 		    (!oldpass || check_pass(pw, oldpass)))
 			status = PAM_AUTH_ERR;
 		memset(pw->pw_passwd, 0, strlen(pw->pw_passwd));
@@ -408,10 +434,10 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 
 	randomonly = params.qc.min[4] > params.qc.max;
 
-	if (getuid() != 0)
-		enforce = params.flags & F_ENFORCE_USERS;
-	else
+	if (am_root(pamh))
 		enforce = params.flags & F_ENFORCE_ROOT;
+	else
+		enforce = params.flags & F_ENFORCE_USERS;
 
 	if (params.flags & F_USE_AUTHTOK) {
 		status = pam_get_item(pamh, PAM_AUTHTOK,
@@ -442,13 +468,28 @@ retry:
 	if (status != PAM_SUCCESS)
 		return status;
 
-	if (!randomonly && params.qc.min[3] <= params.qc.min[4])
-		status = say(pamh, PAM_TEXT_INFO, MESSAGE_EXPLAIN_PASSWORD_1,
-		    params.qc.min[3] == 8 || params.qc.min[3] == 11 ? "n" : "",
-		    params.qc.min[3]);
+	if (!randomonly && params.qc.min[0] == params.qc.min[4])
+		status = say(pamh, PAM_TEXT_INFO,
+		    MESSAGE_EXPLAIN_PASSWORD_1CLASS,
+		    params.qc.min[4] == 8 || params.qc.min[4] == 11 ? "n" : "",
+		    params.qc.min[4]);
+	else
+	if (!randomonly && params.qc.min[3] == params.qc.min[4])
+		status = say(pamh, PAM_TEXT_INFO,
+		    MESSAGE_EXPLAIN_PASSWORD_CLASSES,
+		    params.qc.min[4] == 8 || params.qc.min[4] == 11 ? "n" : "",
+		    params.qc.min[4],
+		    params.qc.min[1] != params.qc.min[3] ? 3 : 2);
+	else
+	if (!randomonly && params.qc.min[3] == INT_MAX)
+		status = say(pamh, PAM_TEXT_INFO,
+		    MESSAGE_EXPLAIN_PASSWORD_ALL_CLASSES,
+		    params.qc.min[4] == 8 || params.qc.min[4] == 11 ? "n" : "",
+		    params.qc.min[4]);
 	else
 	if (!randomonly)
-		status = say(pamh, PAM_TEXT_INFO, MESSAGE_EXPLAIN_PASSWORD_2,
+		status = say(pamh, PAM_TEXT_INFO,
+		    MESSAGE_EXPLAIN_PASSWORD_ALT,
 		    params.qc.min[3] == 8 || params.qc.min[3] == 11 ? "n" : "",
 		    params.qc.min[3],
 		    params.qc.min[4] == 8 || params.qc.min[4] == 11 ? "n" : "",
@@ -476,8 +517,8 @@ retry:
 		}
 	} else
 	if (randomonly) {
-		say(pamh, PAM_ERROR_MSG, getuid() != 0 ?
-		    MESSAGE_MISCONFIGURED : MESSAGE_RANDOMFAILED);
+		say(pamh, PAM_ERROR_MSG, am_root(pamh) ?
+		    MESSAGE_RANDOMFAILED : MESSAGE_MISCONFIGURED);
 		return PAM_AUTHTOK_ERR;
 	}
 
