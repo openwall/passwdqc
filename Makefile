@@ -6,14 +6,17 @@ CC = gcc
 LD = ld
 RM = rm -f
 MKDIR = mkdir -p
-INSTALL = install
+INSTALL = install -c
 CFLAGS = -c -Wall -fPIC -O2
 LDFLAGS = -s --shared -lpam -lcrypt
 LDFLAGS_SUN = -s -G -lpam -lcrypt
 LDFLAGS_HP = -s -b -lpam -lsec
 
-# Uncomment these to use HP's ANSI C compiler instead of gcc.
+# Uncomment this to use cc instead of gcc
 #CC = cc
+# Uncomment this to use Sun's C compiler flags
+#CFLAGS = -c -KPIC -xO2
+# Uncomment this to use HP's ANSI C compiler flags
 #CFLAGS = -c -Ae +w1 +W 474,486,542 +z +O2
 
 # Comment this out on FreeBSD.

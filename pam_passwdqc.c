@@ -32,7 +32,7 @@
 #define PAM_AUTHTOK_RECOVERY_ERR	PAM_AUTHTOK_RECOVER_ERR
 #endif
 
-#if (defined(__sun__) || defined(__hpux)) && \
+#if (defined(__sun) || defined(__hpux)) && \
     !defined(LINUX_PAM) && !defined(_OPENPAM)
 /* Sun's PAM doesn't use const here */
 #define lo_const
