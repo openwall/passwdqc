@@ -3,7 +3,7 @@
 #
 
 CC = gcc
-LD = ld
+LD = $(CC)
 RM = rm -f
 MKDIR = mkdir -p
 INSTALL = install -c
@@ -36,11 +36,11 @@ OBJS = pam_passwdqc.o passwdqc_check.o passwdqc_random.o wordset_4k.o
 
 all:
 	if [ "`uname -s`" = "SunOS" ]; then \
-		make LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
+		$(MAKE) LD=ld LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
 	elif [ "`uname -s`" = "HP-UX" ]; then \
-		make LDFLAGS="$(LDFLAGS_HP)" $(PROJ); \
+		$(MAKE) LD=ld LDFLAGS="$(LDFLAGS_HP)" $(PROJ); \
 	else \
-		make $(PROJ); \
+		$(MAKE) $(PROJ); \
 	fi
 
 $(LIBSHARED): $(OBJS)

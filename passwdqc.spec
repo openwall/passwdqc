@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.20 2002/10/04 12:38:17 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.21 2002/10/31 16:17:53 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.7.2
+Version: 0.7.3
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -36,6 +36,10 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
+* Thu Oct 31 2002 Solar Designer <solar@owl.openwall.com>
+- When compiling with gcc, also link with gcc.
+- Use $(MAKE) to invoke sub-makes.
+
 * Fri Oct 04 2002 Solar Designer <solar@owl.openwall.com>
 - Solaris 9 notes in PLATFORMS.
 
