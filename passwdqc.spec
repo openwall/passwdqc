@@ -1,8 +1,6 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.2 2000/08/17 23:03:57 solar Exp $
-
 Summary: Pluggable password "quality check"
 Name: pam_passwdqc
-Version: 0.1
+Version: 0.2
 Release: 1owl
 Copyright: relaxed BSD and (L)GPL-compatible
 Group: System Environment/Base
@@ -31,10 +29,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc LICENSE
+%doc LICENSE README
 /lib/security/pam_passwdqc.so
 
 %changelog
+* Fri Sep 22 2000 Solar Designer <solar@owl.openwall.com>
+- 0.2: added "use_authtok", added README.
+
 * Fri Aug 18 2000 Solar Designer <solar@owl.openwall.com>
 - 0.1, "retry_wanted" bugfix.
 
