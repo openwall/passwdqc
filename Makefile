@@ -19,7 +19,7 @@ LDFLAGS_HP = -s -b -lpam -lsec
 # Uncomment this to use HP's ANSI C compiler flags
 #CFLAGS = -c -Ae +w1 +W 474,486,542 +z +O2
 
-# Comment this out on FreeBSD.
+# Comment this out on FreeBSD
 CFLAGS += -DHAVE_SHADOW
 
 TITLE = pam_passwdqc
