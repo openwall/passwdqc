@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.15 2002/07/27 21:20:04 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.16 2002/07/31 03:05:50 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 0.5.1
+Version: 0.6
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -36,6 +36,9 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man*/*
 
 %changelog
+* Wed Jul 31 2002 Solar Designer <solar@owl.openwall.com>
+- Call it 0.6.
+
 * Sat Jul 27 2002 Solar Designer <solar@owl.openwall.com>
 - Documented that the man page is under the 3-clause BSD-style license.
 - HP-UX 11 support.
