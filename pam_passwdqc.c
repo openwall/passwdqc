@@ -145,13 +145,15 @@ static params_t defaults = {
 static int converse(pam_handle_t *pamh, int style, lo_const char *text,
     struct pam_response **resp)
 {
-	struct pam_conv *conv;
+	pam_item_t item;
+	const struct pam_conv *conv;
 	struct pam_message msg, *pmsg;
 	int status;
 
-	status = pam_get_item(pamh, PAM_CONV, (pam_item_t *)&conv);
+	status = pam_get_item(pamh, PAM_CONV, &item);
 	if (status != PAM_SUCCESS)
 		return status;
+	conv = item;
 
 	pmsg = &msg;
 	msg.msg_style = style;
@@ -233,14 +235,15 @@ static int check_pass(struct passwd *pw, const char *pass)
 
 static int am_root(pam_handle_t *pamh)
 {
-	char *service;
+	pam_item_t item;
+	const char *service;
 
 	if (getuid() != 0)
 		return 0;
 
-	if (pam_get_item(pamh, PAM_SERVICE, (pam_item_t *)&service) !=
-	    PAM_SUCCESS)
+	if (pam_get_item(pamh, PAM_SERVICE, &item) != PAM_SUCCESS)
 		return 0;
+	service = item;
 
 	return !strcmp(service, "passwd");
 }
@@ -365,7 +368,9 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	params_t params;
 	struct pam_response *resp;
 	struct passwd *pw, fake_pw;
-	char *user, *oldpass, *newpass, *randompass;
+	pam_item_t item;
+	const char *user, *oldpass, *newpass;
+	char *trypass, *randompass;
 	const char *reason;
 	int ask_oldauthtok;
 	int randomonly, enforce, retries_left, retry_wanted;
@@ -407,17 +412,19 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	if (flags & PAM_PRELIM_CHECK)
 		return status;
 
-	status = pam_get_item(pamh, PAM_USER, (pam_item_t *)&user);
+	status = pam_get_item(pamh, PAM_USER, &item);
 	if (status != PAM_SUCCESS)
 		return status;
+	user = item;
 
-	status = pam_get_item(pamh, PAM_OLDAUTHTOK, (pam_item_t *)&oldpass);
+	status = pam_get_item(pamh, PAM_OLDAUTHTOK, &item);
 	if (status != PAM_SUCCESS)
 		return status;
+	oldpass = item;
 
 	if (params.flags & F_NON_UNIX) {
 		pw = &fake_pw;
-		pw->pw_name = user;
+		pw->pw_name = (char *)user;
 		pw->pw_gecos = "";
 	} else {
 		pw = getpwnam(user);
@@ -440,10 +447,10 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		enforce = params.flags & F_ENFORCE_USERS;
 
 	if (params.flags & F_USE_AUTHTOK) {
-		status = pam_get_item(pamh, PAM_AUTHTOK,
-		    (pam_item_t *)&newpass);
+		status = pam_get_item(pamh, PAM_AUTHTOK, &item);
 		if (status != PAM_SUCCESS)
 			return status;
+		newpass = item;
 		if (!newpass || (check_max(&params, pamh, newpass) && enforce))
 			return PAM_AUTHTOK_ERR;
 		reason = _passwdqc_check(&params.qc, newpass, oldpass, pw);
@@ -531,25 +538,25 @@ retry:
 		return status;
 	}
 
-	newpass = strdup(resp->resp);
+	trypass = strdup(resp->resp);
 
 	_pam_drop_reply(resp, 1);
 
-	if (!newpass) {
+	if (!trypass) {
 		if (randompass) _pam_overwrite(randompass);
 		return PAM_AUTHTOK_ERR;
 	}
 
-	if (check_max(&params, pamh, newpass) && enforce) {
+	if (check_max(&params, pamh, trypass) && enforce) {
 		status = PAM_AUTHTOK_ERR;
 		retry_wanted = 1;
 	}
 
 	reason = NULL;
 	if (status == PAM_SUCCESS &&
-	    (!randompass || !strstr(newpass, randompass)) &&
+	    (!randompass || !strstr(trypass, randompass)) &&
 	    (randomonly ||
-	    (reason = _passwdqc_check(&params.qc, newpass, oldpass, pw)))) {
+	    (reason = _passwdqc_check(&params.qc, trypass, oldpass, pw)))) {
 		if (randomonly)
 			say(pamh, PAM_ERROR_MSG, MESSAGE_NOTRANDOM);
 		else
@@ -565,7 +572,7 @@ retry:
 		    PROMPT_NEWPASS2, &resp);
 	if (status == PAM_SUCCESS) {
 		if (resp && resp->resp) {
-			if (strcmp(newpass, resp->resp)) {
+			if (strcmp(trypass, resp->resp)) {
 				status = say(pamh,
 				    PAM_ERROR_MSG, MESSAGE_MISTYPED);
 				if (status == PAM_SUCCESS) {
@@ -579,11 +586,11 @@ retry:
 	}
 
 	if (status == PAM_SUCCESS)
-		status = pam_set_item(pamh, PAM_AUTHTOK, newpass);
+		status = pam_set_item(pamh, PAM_AUTHTOK, trypass);
 
 	if (randompass) _pam_overwrite(randompass);
-	_pam_overwrite(newpass);
-	free(newpass);
+	_pam_overwrite(trypass);
+	free(trypass);
 
 	if (retry_wanted && --retries_left > 0) {
 		status = say(pamh, PAM_TEXT_INFO, MESSAGE_RETRY);
