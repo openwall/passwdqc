@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer. See LICENSE.
+ * Copyright (c) 2000-2002,2005 by Solar Designer. See LICENSE.
  */
 
 #include <stdio.h>
@@ -43,7 +43,7 @@ char *_passwdqc_random(passwdqc_params_t *params)
 	int fd;
 	unsigned char bytes[2];
 
-	if (!(bits = params->random_bits))
+	if (!(bits = params->random_bits) || bits < 24)
 		return NULL;
 
 	count = 1 + ((bits - 12) + 14) / 15;

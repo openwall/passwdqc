@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2003 by Solar Designer. See LICENSE.
+ * Copyright (c) 2000-2003,2005 by Solar Designer. See LICENSE.
  */
 
 #define _XOPEN_SOURCE 500
@@ -301,7 +301,7 @@ static int parse(params_t *params, pam_handle_t *pamh,
 				e += 5;
 				params->qc.min[4] = INT_MAX;
 			}
-			if (*e || v > INT_MAX) break;
+			if (*e || (v && v < 24) || v > 72) break;
 			params->qc.random_bits = v;
 		} else
 		if (!strncmp(*argv, "enforce=", 8)) {
