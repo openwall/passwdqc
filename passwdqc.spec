@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.28 2005/03/25 21:48:28 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.29 2005/03/27 17:46:25 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 1.0
+Version: 1.0.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -34,6 +34,9 @@ make install DESTDIR=%buildroot MANDIR=%_mandir
 %_mandir/man*/*
 
 %changelog
+* Sun Mar 27 2005 Solar Designer <solar@owl.openwall.com> 1.0.1-owl1
+- Further compiler warning fixes on LP64 platforms.
+
 * Fri Mar 25 2005 Solar Designer <solar@owl.openwall.com> 1.0-owl1
 - Corrected the source code to not break C strict aliasing rules.
 

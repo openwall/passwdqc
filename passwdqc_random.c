@@ -38,15 +38,16 @@ char *_passwdqc_random(passwdqc_params_t *params)
 	static char output[0x100];
 	int bits;
 	int use_separators, count, i;
-	unsigned int length;
+	unsigned int length, extra;
 	char *start, *end;
 	int fd;
 	unsigned char bytes[2];
 
-	if (!(bits = params->random_bits) || bits < 24)
+	bits = params->random_bits;
+	if (bits < 24 || bits > 128)
 		return NULL;
 
-	count = 1 + ((bits - 12) + 14) / 15;
+	count = 1 + (bits + (14 - 12)) / 15;
 	use_separators = ((bits + 11) / 12 != count);
 
 	length = count * 7 - 1;
@@ -66,12 +67,13 @@ char *_passwdqc_random(passwdqc_params_t *params)
 		start = _passwdqc_wordset_4k[i];
 		end = memchr(start, '\0', 6);
 		if (!end) end = start + 6;
-		if (length + (end - start) >= sizeof(output) - 1) {
+		extra = end - start;
+		if (length + extra >= sizeof(output) - 1) {
 			close(fd);
 			return NULL;
 		}
-		memcpy(&output[length], start, end - start);
-		length += end - start;
+		memcpy(&output[length], start, extra);
+		length += extra;
 		bits -= 12;
 
 		if (use_separators && bits > 3) {
