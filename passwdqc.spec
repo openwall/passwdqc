@@ -1,13 +1,13 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.7 2001/02/13 00:36:01 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.8 2001/11/04 00:56:58 solar Exp $
 
 Summary: Pluggable password "quality check"
 Name: pam_passwdqc
-Version: 0.3
-Release: 3owl
-Copyright: relaxed BSD and (L)GPL-compatible
+Version: 0.4
+Release: 1owl
+License: relaxed BSD and (L)GPL-compatible
 Group: System Environment/Base
-Source: pam_passwdqc-%{version}.tar.gz
-Buildroot: /var/rpm-buildroot/%{name}-%{version}
+Source: pam_passwdqc-%version.tar.gz
+BuildRoot: /override/%name-%version
 
 %description
 pam_passwdqc is a simple password strength checking module for
@@ -20,12 +20,11 @@ and can be (re-)configured without rebuilding.
 %setup -q
 
 %build
-make CFLAGS="-c -Wall -fPIC $RPM_OPT_FLAGS"
+make CFLAGS="-c -Wall -fPIC -DHAVE_SHADOW -DLINUX_PAM $RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install FAKEROOT=$RPM_BUILD_ROOT
-chmod 755 $RPM_BUILD_ROOT/lib/security/pam_passwdqc.so
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -36,6 +35,12 @@ rm -rf $RPM_BUILD_ROOT
 /lib/security/pam_passwdqc.so
 
 %changelog
+* Sun Nov 04 2001 Solar Designer <solar@owl.openwall.com>
+- Updated to 0.4:
+- Added "ask_oldauthtok" and "check_oldauthtok" as needed for stacking with
+the Solaris pam_unix;
+- Permit for stacking of more than one instance of this module (no statics).
+
 * Tue Feb 13 2001 Solar Designer <solar@owl.openwall.com>
 - Install the module as mode 755.
 
