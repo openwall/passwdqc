@@ -7,9 +7,18 @@ LD = ld
 RM = rm -f
 MKDIR = mkdir -p
 INSTALL = install
-CFLAGS = -c -Wall -fPIC -DHAVE_SHADOW -O2
-LDFLAGS = -s -lpam -lcrypt --shared
-LDFLAGS_SUN = -s -lpam -lcrypt -G
+CFLAGS = -c -Wall -fPIC -O2
+LDFLAGS = -s --shared -lpam -lcrypt
+LDFLAGS_SUN = -s -G -lpam -lcrypt
+LDFLAGS_HP = -s -b -lpam -lcrypt
+
+# Uncomment these to use HP's ANSI C compiler instead of gcc.
+#CC = cc
+#CFLAGS = -c -Aa +z +O2
+
+# Comment these out when building on non-tsconvert'ed HP-UX.
+CFLAGS += -DHAVE_SHADOW
+LDFLAGS_HP += -lsec
 
 TITLE = pam_passwdqc
 LIBSHARED = $(TITLE).so
@@ -26,6 +35,8 @@ OBJS = pam_passwdqc.o passwdqc_check.o passwdqc_random.o wordset_4k.o
 all:
 	if [ "`uname -s`" = "SunOS" ]; then \
 		make LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
+	elif [ "`uname -s`" = "HP-UX" ]; then \
+		make LDFLAGS="$(LDFLAGS_HP)" $(PROJ); \
 	else \
 		make $(PROJ); \
 	fi

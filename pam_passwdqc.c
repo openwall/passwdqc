@@ -32,7 +32,8 @@
 #define PAM_AUTHTOK_RECOVERY_ERR	PAM_AUTHTOK_RECOVER_ERR
 #endif
 
-#if defined(__sun__) && !defined(LINUX_PAM) && !defined(_OPENPAM)
+#if (defined(__sun__) || defined(__hpux)) && \
+    !defined(LINUX_PAM) && !defined(_OPENPAM)
 /* Sun's PAM doesn't use const here */
 #define lo_const
 #else
@@ -375,7 +376,11 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 				status = PAM_AUTH_ERR;
 			else
 #ifdef HAVE_SHADOW
-			if (!strcmp(pw->pw_passwd, "x")) {
+			if (!strcmp(pw->pw_passwd, "x")
+#ifdef __hpux
+			    || !strcmp(pw->pw_passwd, "*")
+#endif
+			    ) {
 				spw = getspnam(user);
 				endspent();
 				if (spw) {

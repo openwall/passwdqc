@@ -12,7 +12,7 @@
 
 #define SEPARATORS			"_,.;:-!&"
 
-static int read_loop(int fd, char *buffer, int count)
+static int read_loop(int fd, unsigned char *buffer, int count)
 {
 	int offset, block;
 
