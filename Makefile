@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000-2003 by Solar Designer. See LICENSE.
+# Copyright (c) 2000-2003,2005 by Solar Designer. See LICENSE.
 #
 
 CC = gcc
@@ -19,9 +19,6 @@ LDFLAGS_HP = -s -b -lpam -lsec
 # Uncomment this to use HP's ANSI C compiler flags
 #CFLAGS = -Ae +w1 +W 474,486,542 +z +O2
 
-# Comment this out on FreeBSD
-CFLAGS += -DHAVE_SHADOW
-
 TITLE = pam_passwdqc
 LIBSHARED = $(TITLE).so
 SHLIBMODE = 755
@@ -35,10 +32,14 @@ PROJ = $(LIBSHARED)
 OBJS = pam_passwdqc.o passwdqc_check.o passwdqc_random.o wordset_4k.o
 
 all:
-	if [ "`uname -s`" = "SunOS" ]; then \
-		$(MAKE) LD=ld LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
+	if [ "`uname -s`" = "Linux" ]; then \
+		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" $(PROJ); \
+	elif [ "`uname -s`" = "SunOS" ]; then \
+		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+			LD=ld LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
 	elif [ "`uname -s`" = "HP-UX" ]; then \
-		$(MAKE) LD=ld LDFLAGS="$(LDFLAGS_HP)" $(PROJ); \
+		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+			LD=ld LDFLAGS="$(LDFLAGS_HP)" $(PROJ); \
 	else \
 		$(MAKE) $(PROJ); \
 	fi
