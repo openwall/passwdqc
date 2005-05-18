@@ -2,9 +2,9 @@
  * Copyright (c) 2000-2003,2005 by Solar Designer. See LICENSE.
  */
 
-#define _XOPEN_SOURCE 500
+#define _XOPEN_SOURCE 600
 #define _XOPEN_SOURCE_EXTENDED
-#define _XOPEN_VERSION 500
+#define _XOPEN_VERSION 600
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -34,10 +34,16 @@
 
 #if (defined(__sun) || defined(__hpux)) && \
     !defined(LINUX_PAM) && !defined(_OPENPAM)
-/* Sun's PAM doesn't use const here */
+/* Sun's PAM doesn't use const here, while Linux-PAM and OpenPAM do */
 #define lo_const
 #else
 #define lo_const			const
+#endif
+#ifdef _OPENPAM
+/* OpenPAM doesn't use const here, while Linux-PAM does */
+#define l_const
+#else
+#define l_const				lo_const
 #endif
 typedef lo_const void *pam_item_t;
 
@@ -142,7 +148,7 @@ static params_t defaults = {
 #define MESSAGE_RETRY \
 	"Try again."
 
-static int converse(pam_handle_t *pamh, int style, lo_const char *text,
+static int converse(pam_handle_t *pamh, int style, l_const char *text,
     struct pam_response **resp)
 {
 	pam_item_t item;
