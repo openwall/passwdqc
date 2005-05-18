@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.29 2005/03/27 17:46:25 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.30 2005/05/18 18:29:35 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 1.0.1
+Version: 1.0.2
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -34,6 +34,11 @@ make install DESTDIR=%buildroot MANDIR=%_mandir
 %_mandir/man*/*
 
 %changelog
+* Wed May 18 2005 Solar Designer <solar@owl.openwall.com> 1.0.2-owl1
+- Fixed compiler warnings seen on FreeBSD 5.3.
+- Updated the Makefile to not require editing on FreeBSD.
+- Updated the FreeBSD-specific notes in PLATFORMS.
+
 * Sun Mar 27 2005 Solar Designer <solar@owl.openwall.com> 1.0.1-owl1
 - Further compiler warning fixes on LP64 platforms.
 
