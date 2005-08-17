@@ -161,6 +161,7 @@ static int converse(pam_handle_t *pamh, int style, l_const char *text,
 	struct pam_message msg, *pmsg;
 	int status;
 
+	*resp = NULL;
 	status = pam_get_item(pamh, PAM_CONV, &item);
 	if (status != PAM_SUCCESS)
 		return status;
@@ -170,7 +171,6 @@ static int converse(pam_handle_t *pamh, int style, l_const char *text,
 	msg.msg_style = style;
 	msg.msg = text;
 
-	*resp = NULL;
 	return conv->conv(1, (lo_const struct pam_message **)&pmsg, resp,
 	    conv->appdata_ptr);
 }
@@ -193,6 +193,7 @@ static int say(pam_handle_t *pamh, int style, const char *format, ...)
 	if ((unsigned int)needed < sizeof(buffer)) {
 		status = converse(pamh, style, buffer, &resp);
 		_pam_overwrite(buffer);
+		_pam_drop_reply(resp, 1);
 	} else {
 		status = PAM_ABORT;
 		memset(buffer, 0, sizeof(buffer));
