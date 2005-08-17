@@ -1,4 +1,4 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.32 2005/08/17 00:50:50 ldv Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.33 2005/08/17 00:57:41 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
@@ -21,11 +21,11 @@ can be (re-)configured without rebuilding.
 %setup -q
 
 %build
-make CFLAGS="-Wall -fPIC -DLINUX_PAM $RPM_OPT_FLAGS"
+%__make CFLAGS="-Wall -fPIC -DLINUX_PAM %optflags"
 
 %install
 rm -rf %buildroot
-make install DESTDIR=%buildroot MANDIR=%_mandir
+%__make install DESTDIR=%buildroot MANDIR=%_mandir
 
 %files
 %defattr(-,root,root)
@@ -36,7 +36,7 @@ make install DESTDIR=%buildroot MANDIR=%_mandir
 %changelog
 * Wed Aug 17 2005 Dmitry V. Levin <ldv@owl.openwall.com> 1.0.3-owl1
 - Fixed potential memory leak in conversation wrapper.
-- Restricted list of global symbols exported by the pam module
+- Restricted list of global symbols exported by the PAM module
 to standard set of six pam_sm_* functions.
 
 * Wed May 18 2005 Solar Designer <solar@owl.openwall.com> 1.0.2-owl1
