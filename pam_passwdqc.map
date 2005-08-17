@@ -1,0 +1,14 @@
+# $Id: Owl/packages/passwdqc/passwdqc/pam_passwdqc.map,v 1.1 2005/08/17 00:43:55 ldv Exp $
+
+{
+  global:
+    pam_sm_acct_mgmt;
+    pam_sm_authenticate;
+    pam_sm_chauthtok;
+    pam_sm_close_session;
+    pam_sm_open_session;
+    pam_sm_setcred;
+
+  local:
+    *;
+};

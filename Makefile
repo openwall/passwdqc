@@ -9,6 +9,7 @@ MKDIR = mkdir -p
 INSTALL = install -c
 CFLAGS = -Wall -fPIC -O2
 LDFLAGS = -s --shared -lpam -lcrypt
+LDFLAGS_LINUX = -s --shared -Wl,--version-script=$(MAP) -lpam -lcrypt
 LDFLAGS_SUN = -s -G -lpam -lcrypt
 LDFLAGS_HP = -s -b -lpam -lsec
 
@@ -30,10 +31,12 @@ DESTDIR =
 
 PROJ = $(LIBSHARED)
 OBJS = pam_passwdqc.o passwdqc_check.o passwdqc_random.o wordset_4k.o
+MAP = pam_passwdqc.map
 
 all:
 	if [ "`uname -s`" = "Linux" ]; then \
-		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" $(PROJ); \
+		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+			LDFLAGS="$(LDFLAGS_LINUX)" $(PROJ); \
 	elif [ "`uname -s`" = "SunOS" ]; then \
 		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
 			LD=ld LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
@@ -44,7 +47,7 @@ all:
 		$(MAKE) $(PROJ); \
 	fi
 
-$(LIBSHARED): $(OBJS)
+$(LIBSHARED): $(OBJS) $(MAP)
 	$(LD) $(LDFLAGS) $(OBJS) -o $(LIBSHARED)
 
 .c.o:
