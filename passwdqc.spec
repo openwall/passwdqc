@@ -1,8 +1,8 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.30 2005/05/18 18:29:35 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.31 2005/08/17 00:46:01 ldv Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 1.0.2
+Version: 1.0.3
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -34,6 +34,11 @@ make install DESTDIR=%buildroot MANDIR=%_mandir
 %_mandir/man*/*
 
 %changelog
+* Wed Aug 17 2005 Dmitry V. Levin <ldv@owl.openwall.com> 1.0.3-owl1
+- Fixed potential memory leak in conversation wrapper.
+- Restricted list of global symbols exported by the pam module
+to standard set of six pam_sm_* functions.
+
 * Wed May 18 2005 Solar Designer <solar@owl.openwall.com> 1.0.2-owl1
 - Fixed compiler warnings seen on FreeBSD 5.3.
 - Updated the Makefile to not require editing on FreeBSD.
