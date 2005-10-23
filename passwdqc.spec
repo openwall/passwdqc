@@ -1,4 +1,4 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.33 2005/08/17 00:57:41 solar Exp $
+# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.34 2005/10/23 20:20:13 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
@@ -8,6 +8,7 @@ License: BSD-compatible
 Group: System Environment/Base
 URL: http://www.openwall.com/passwdqc/
 Source: ftp://ftp.openwall.com/pub/projects/pam/modules/%name/%name-%version.tar.gz
+BuildRequires: pam-devel
 BuildRoot: /override/%name-%version
 
 %description
