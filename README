@@ -144,4 +144,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Id: Owl/packages/passwdqc/passwdqc/README,v 1.6 2005/01/25 21:59:35 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.7 2005/11/16 13:28:57 solar Exp $

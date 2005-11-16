@@ -1,4 +1,4 @@
-# $Id: Owl/packages/passwdqc/passwdqc/pam_passwdqc.map,v 1.1 2005/08/17 00:43:55 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.map,v 1.2 2005/11/16 13:28:58 solar Exp $
 
 {
   global:

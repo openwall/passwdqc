@@ -1,4 +1,4 @@
-# $Id: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.35 2005/10/24 03:06:28 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.36 2005/11/16 13:28:58 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc

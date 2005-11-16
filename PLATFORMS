@@ -37,4 +37,4 @@ that most Solaris systems use and the flawed approach HP-UX uses to
 process characters past 8.  Of course this way you only get about one
 third of the functionality of pam_passwdqc.
 
-$Id: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.9 2005/05/18 18:06:14 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.10 2005/11/16 13:28:57 solar Exp $
