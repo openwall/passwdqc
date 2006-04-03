@@ -8,10 +8,14 @@ RM = rm -f
 MKDIR = mkdir -p
 INSTALL = install -c
 CFLAGS = -Wall -fPIC -O2
-LDFLAGS = -s --shared -lpam -lcrypt
-LDFLAGS_LINUX = -s --shared -Wl,--version-script=$(MAP) -lpam -lcrypt
-LDFLAGS_SUN = -s -G -lpam -lcrypt
-LDFLAGS_HP = -s -b -lpam -lsec
+LDFLAGS = -s --shared
+LDFLAGS_LINUX = -s --shared -Wl,--version-script,$(MAP)
+LDFLAGS_SUN = -s -G
+LDFLAGS_HP = -s -b
+LDLIBS = -lpam -lcrypt
+LDLIBS_LINUX = -lpam -lcrypt
+LDLIBS_SUN = -lpam -lcrypt
+LDLIBS_HP = -lpam -lsec
 
 # Uncomment this to use cc instead of gcc
 #CC = cc
@@ -21,7 +25,8 @@ LDFLAGS_HP = -s -b -lpam -lsec
 #CFLAGS = -Ae +w1 +W 474,486,542 +z +O2
 
 TITLE = pam_passwdqc
-LIBSHARED = $(TITLE).so
+PAM_SO_SUFFIX =
+LIBSHARED = $(TITLE).so$(PAM_SO_SUFFIX)
 SHLIBMODE = 755
 MAN8 = $(TITLE).8
 MANMODE = 644
@@ -36,19 +41,22 @@ MAP = pam_passwdqc.map
 all:
 	if [ "`uname -s`" = "Linux" ]; then \
 		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
-			LDFLAGS="$(LDFLAGS_LINUX)" $(PROJ); \
+			LDFLAGS="$(LDFLAGS_LINUX)" LDLIBS="$(LDLIBS_LINUX)" \
+			$(PROJ); \
 	elif [ "`uname -s`" = "SunOS" ]; then \
 		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
-			LD=ld LDFLAGS="$(LDFLAGS_SUN)" $(PROJ); \
+			LD=ld LDFLAGS="$(LDFLAGS_SUN)" LDLIBS="$(LDLIBS_SUN)" \
+			$(PROJ); \
 	elif [ "`uname -s`" = "HP-UX" ]; then \
 		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
-			LD=ld LDFLAGS="$(LDFLAGS_HP)" $(PROJ); \
+			LD=ld LDFLAGS="$(LDFLAGS_HP)" LDLIBS="$(LDLIBS_HP)" \
+			$(PROJ); \
 	else \
 		$(MAKE) $(PROJ); \
 	fi
 
 $(LIBSHARED): $(OBJS) $(MAP)
-	$(LD) $(LDFLAGS) $(OBJS) -o $(LIBSHARED)
+	$(LD) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $(LIBSHARED)
 
 .c.o:
 	$(CC) $(CFLAGS) -c $*.c
