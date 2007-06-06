@@ -39,21 +39,18 @@ OBJS = pam_passwdqc.o passwdqc_check.o passwdqc_random.o wordset_4k.o
 MAP = pam_passwdqc.map
 
 all:
-	if [ "`uname -s`" = "Linux" ]; then \
-		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+	case "`uname -s`" in \
+	Linux)	$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
 			LDFLAGS="$(LDFLAGS_LINUX)" LDLIBS="$(LDLIBS_LINUX)" \
-			$(PROJ); \
-	elif [ "`uname -s`" = "SunOS" ]; then \
-		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+			$(PROJ);; \
+	SunOS)	$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
 			LD=ld LDFLAGS="$(LDFLAGS_SUN)" LDLIBS="$(LDLIBS_SUN)" \
-			$(PROJ); \
-	elif [ "`uname -s`" = "HP-UX" ]; then \
-		$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+			$(PROJ);; \
+	HP-UX)	$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
 			LD=ld LDFLAGS="$(LDFLAGS_HP)" LDLIBS="$(LDLIBS_HP)" \
-			$(PROJ); \
-	else \
-		$(MAKE) $(PROJ); \
-	fi
+			$(PROJ);; \
+	*)	$(MAKE) $(PROJ);; \
+	esac
 
 $(LIBSHARED): $(OBJS) $(MAP)
 	$(LD) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $(LIBSHARED)
