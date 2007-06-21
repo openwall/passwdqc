@@ -4,25 +4,37 @@
  * domain.
  */
 
-#if !defined(_PAM_MACROS_H) && !defined(_pam_overwrite)
-#define _PAM_MACROS_H
+#ifndef PAM_PASSWDQC_MACROS_H__
+#define PAM_PASSWDQC_MACROS_H__
 
 #include <string.h>
 #include <stdlib.h>
 
-#define _pam_overwrite(x) \
-	memset((x), 0, strlen((x)))
-
-#define _pam_drop_reply(/* struct pam_response * */ reply, /* int */ replies) \
+#define pwqc_overwrite_string(x) \
 do { \
-	int i; \
-\
-	for (i = 0; i < (replies); i++) \
-	if ((reply)[i].resp) { \
-		_pam_overwrite((reply)[i].resp); \
-		free((reply)[i].resp); \
-	} \
-	if ((reply)) free((reply)); \
+	if (x) \
+		memset((x), 0, strlen(x)); \
 } while (0)
 
-#endif
+#define pwqc_drop_mem(x) \
+do { \
+	if (x) { \
+		free(x); \
+		(x) = NULL; \
+	} \
+} while (0)
+
+#define pwqc_drop_pam_reply(/* struct pam_response* */ reply, /* int */ replies) \
+do { \
+	if (reply) { \
+		int reply_i; \
+\
+		for (reply_i = 0; reply_i < (replies); ++reply_i) { \
+			pwqc_overwrite_string((reply)[reply_i].resp); \
+			pwqc_drop_mem((reply)[reply_i].resp); \
+		} \
+		pwqc_drop_mem(reply); \
+	} \
+} while (0)
+
+#endif /* PAM_PASSWDQC_MACROS_H__ */

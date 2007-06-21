@@ -192,8 +192,8 @@ static int say(pam_handle_t *pamh, int style, const char *format, ...)
 
 	if ((unsigned int)needed < sizeof(buffer)) {
 		status = converse(pamh, style, buffer, &resp);
-		_pam_overwrite(buffer);
-		_pam_drop_reply(resp, 1);
+		pwqc_overwrite_string(buffer);
+		pwqc_drop_pam_reply(resp, 1);
 	} else {
 		status = PAM_ABORT;
 		memset(buffer, 0, sizeof(buffer));
@@ -412,7 +412,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 			if (resp && resp->resp) {
 				status = pam_set_item(pamh,
 				    PAM_OLDAUTHTOK, resp->resp);
-				_pam_drop_reply(resp, 1);
+				pwqc_drop_pam_reply(resp, 1);
 			} else
 				status = PAM_AUTHTOK_RECOVERY_ERR;
 		}
@@ -531,7 +531,7 @@ retry:
 		status = say(pamh, PAM_TEXT_INFO, randomonly ?
 		    MESSAGE_RANDOMONLY : MESSAGE_RANDOM, randompass);
 		if (status != PAM_SUCCESS) {
-			_pam_overwrite(randompass);
+			pwqc_overwrite_string(randompass);
 			randompass = NULL;
 		}
 	} else
@@ -546,16 +546,16 @@ retry:
 		status = PAM_AUTHTOK_ERR;
 
 	if (status != PAM_SUCCESS) {
-		if (randompass) _pam_overwrite(randompass);
+		pwqc_overwrite_string(randompass);
 		return status;
 	}
 
 	trypass = strdup(resp->resp);
 
-	_pam_drop_reply(resp, 1);
+	pwqc_drop_pam_reply(resp, 1);
 
 	if (!trypass) {
-		if (randompass) _pam_overwrite(randompass);
+		pwqc_overwrite_string(randompass);
 		return PAM_AUTHTOK_ERR;
 	}
 
@@ -592,7 +592,7 @@ retry:
 					retry_wanted = 1;
 				}
 			}
-			_pam_drop_reply(resp, 1);
+			pwqc_drop_pam_reply(resp, 1);
 		} else
 			status = PAM_AUTHTOK_ERR;
 	}
@@ -600,9 +600,9 @@ retry:
 	if (status == PAM_SUCCESS)
 		status = pam_set_item(pamh, PAM_AUTHTOK, trypass);
 
-	if (randompass) _pam_overwrite(randompass);
-	_pam_overwrite(trypass);
-	free(trypass);
+	pwqc_overwrite_string(randompass);
+	pwqc_overwrite_string(trypass);
+	pwqc_drop_mem(trypass);
 
 	if (retry_wanted && --retries_left > 0) {
 		status = say(pamh, PAM_TEXT_INFO, MESSAGE_RETRY);
