@@ -32,7 +32,7 @@ class for non-ASCII characters which could not be classified, but are
 assumed to be non-digits.
 
 N1 is used for passwords consisting of characters from two character
-classes which do not meet the requirements for a passphrase.
+classes that do not meet the requirements for a passphrase.
 
 N2 is used for passphrases.  A passphrase must consist of sufficient
 words (see the "passphrase" option below).
@@ -51,7 +51,7 @@ the minimum length they have been checked against.
 	max=N				[max=40]
 
 The maximum allowed password length.  This can be used to prevent
-users from setting passwords which may be too long for some system
+users from setting passwords that may be too long for some system
 services.
 
 The value 8 is treated specially: with max=8, passwords longer than 8
@@ -144,4 +144,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.7 2005/11/16 13:28:57 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.8 2008/02/09 19:28:44 solar Exp $

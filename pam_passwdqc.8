@@ -1,4 +1,4 @@
-.\" Copyright (c) 2000-2003,2005 Solar Designer.
+.\" Copyright (c) 2000-2003,2005,2008 Solar Designer.
 .\" All rights reserved.
 .\" Copyright (c) 2001 Networks Associates Technology, Inc.
 .\" All rights reserved.
@@ -33,7 +33,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.7 2005/11/16 13:28:57 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.8 2008/02/09 19:28:44 solar Exp $
 .\"
 .Dd January 26, 2005
 .Dt PAM_PASSWDQC 8
@@ -98,12 +98,11 @@ The character classes are: digits, lower-case letters, upper-case
 letters, and other characters.
 There is also a special class for
 .No non- Ns Tn ASCII
-characters which could not
-be classified, but are assumed to be non-digits.
+characters, which could not be classified, but are assumed to be non-digits.
 .Pp
 .Ar N1
 is used for passwords consisting of characters from two character
-classes which do not meet the requirements for a passphrase.
+classes that do not meet the requirements for a passphrase.
 .Pp
 .Ar N2
 is used for passphrases.
@@ -128,7 +127,7 @@ the minimum length they have been checked against.
 .It Cm max Ns = Ns Ar N
 .Pq Cm max Ns = Ns 40
 The maximum allowed password length.
-This can be used to prevent users from setting passwords which may be
+This can be used to prevent users from setting passwords that may be
 too long for some system services.
 The value 8 is treated specially: if
 .Cm max
