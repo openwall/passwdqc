@@ -28,7 +28,7 @@ number is required to be no larger than the preceding one.
 N0 is used for passwords consisting of characters from one character
 class only.  The character classes are: digits, lower-case letters,
 upper-case letters, and other characters.  There is also a special
-class for non-ASCII characters which could not be classified, but are
+class for non-ASCII characters, which could not be classified, but are
 assumed to be non-digits.
 
 N1 is used for passwords consisting of characters from two character
@@ -144,4 +144,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.8 2008/02/09 19:28:44 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.9 2008/02/09 19:36:08 solar Exp $
