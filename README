@@ -34,7 +34,8 @@ assumed to be non-digits.
 N1 is used for passwords consisting of characters from two character
 classes that do not meet the requirements for a passphrase.
 
-N2 is used for passphrases.  A passphrase must consist of sufficient
+N2 is used for passphrases.  Note that besides meeting this length
+requirement, a passphrase must also consist of a sufficient number of
 words (see the "passphrase" option below).
 
 N3 and N4 are used for passwords consisting of characters from three
@@ -144,4 +145,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.9 2008/02/09 19:36:08 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.10 2008/02/09 19:47:27 solar Exp $

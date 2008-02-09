@@ -33,9 +33,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.8 2008/02/09 19:28:44 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.9 2008/02/09 19:47:27 solar Exp $
 .\"
-.Dd January 26, 2005
+.Dd February 9, 2008
 .Dt PAM_PASSWDQC 8
 .Os
 .Sh NAME
@@ -106,7 +106,8 @@ classes that do not meet the requirements for a passphrase.
 .Pp
 .Ar N2
 is used for passphrases.
-A passphrase must consist of sufficient words (see the
+Note that besides meeting this length requirement,
+a passphrase must also consist of a sufficient number of words (see the
 .Cm passphrase
 option below).
 .Pp
