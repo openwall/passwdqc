@@ -96,7 +96,7 @@ static int is_simple(passwdqc_params_t *params, const char *newpass)
 	if (digits && isascii(c) && isdigit(c)) digits--;
 
 /* Count the number of different character classes we've seen. We assume
- * that there're no non-ASCII characters for digits. */
+ * that there are no non-ASCII characters for digits. */
 	classes = 0;
 	if (digits) classes++;
 	if (lowers) classes++;
