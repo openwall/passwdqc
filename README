@@ -18,7 +18,7 @@ option to use with the password changing module is "use_first_pass".
 There's a number of supported options which can be used to modify the
 behavior of pam_passwdqc (defaults are given in square brackets):
 
-	min=N0,N1,N2,N3,N4		[min=disabled,24,12,8,7]
+	min=N0,N1,N2,N3,N4		[min=disabled,24,11,8,7]
 
 The minimum allowed password lengths for different kinds of passwords
 and passphrases.  The keyword "disabled" can be used to disallow
@@ -145,4 +145,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.10 2008/02/09 19:47:27 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.11 2008/02/12 19:43:33 solar Exp $

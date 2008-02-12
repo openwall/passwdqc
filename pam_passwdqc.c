@@ -74,7 +74,7 @@ typedef struct {
 
 static params_t defaults = {
 	{
-		{INT_MAX, 24, 12, 8, 7},	/* min */
+		{INT_MAX, 24, 11, 8, 7},	/* min */
 		40,				/* max */
 		3,				/* passphrase_words */
 		4,				/* match_length */
