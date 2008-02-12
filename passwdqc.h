@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer. See LICENSE.
+ * Copyright (c) 2000-2002 by Solar Designer.  See LICENSE.
  */
 
 #ifndef _PASSWDQC_H

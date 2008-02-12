@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer. See LICENSE.
+ * Copyright (c) 2000-2002 by Solar Designer.  See LICENSE.
  */
 
 #include <stdlib.h>
@@ -39,7 +39,7 @@ typedef unsigned long fixed;
 
 /*
  * Calculates the expected number of different characters for a random
- * password of a given length. The result is rounded down. We use this
+ * password of a given length.  The result is rounded down.  We use this
  * with the _requested_ minimum length (so longer passwords don't have
  * to meet this strict requirement for their length).
  */
@@ -95,7 +95,7 @@ static int is_simple(passwdqc_params_t *params, const char *newpass)
 	c = (unsigned char)newpass[length - 1];
 	if (digits && isascii(c) && isdigit(c)) digits--;
 
-/* Count the number of different character classes we've seen. We assume
+/* Count the number of different character classes we've seen.  We assume
  * that there are no non-ASCII characters for digits. */
 	classes = 0;
 	if (digits) classes++;
@@ -242,13 +242,13 @@ static int is_based(passwdqc_params_t *params,
 /*
  * This wordlist check is now the least important given the checks above
  * and the support for passphrases (which are based on dictionary words,
- * and checked by other means). It is still useful to trap simple short
+ * and checked by other means).  It is still useful to trap simple short
  * passwords (if short passwords are allowed) that are word-based, but
  * passed the other checks due to uncommon capitalization, digits, and
- * special characters. We (mis)use the same set of words that are used
- * to generate random passwords. This list is much smaller than those
+ * special characters.  We (mis)use the same set of words that are used
+ * to generate random passwords.  This list is much smaller than those
  * used for password crackers, and it doesn't contain common passwords
- * that aren't short English words. Perhaps support for large wordlists
+ * that aren't short English words.  Perhaps support for large wordlists
  * should still be added, even though this is now of little importance.
  */
 static int is_word_based(passwdqc_params_t *params,
