@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2005 by Solar Designer. See LICENSE.
+ * Copyright (c) 2000-2002,2005,2008 by Solar Designer.  See LICENSE.
  */
 
 #include <stdio.h>
@@ -10,7 +10,17 @@
 
 #include "passwdqc.h"
 
-#define SEPARATORS			"_,.;:-!&"
+/*
+ * We separate words in the generated "passphrases" with random special
+ * characters out of a set of 8 (so we encode 3 bits per separator
+ * character).  To enable the use of our "passphrases" within FTP URLs
+ * (and similar), we pick characters that are defined by RFC 3986 as
+ * being safe within "userinfo" part of URLs without encoding and
+ * without having a special meaning.  Out of those, we avoid characters
+ * that are visually ambiguous or difficult over the phone.  This
+ * happens to leave us with exactly 8 characters.
+ */
+#define SEPARATORS			"-_!$&*+="
 
 static int read_loop(int fd, unsigned char *buffer, int count)
 {
