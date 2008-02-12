@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.37 2006/04/03 22:38:50 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.38 2008/02/12 20:28:48 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: pam_passwdqc
-Version: 1.0.4
+Version: 1.0.5
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -35,6 +35,15 @@ rm -rf %buildroot
 %_mandir/man*/*
 
 %changelog
+* Tue Feb 12 2008 Solar Designer <solar-at-owl.openwall.com> 1.0.5-owl1
+- Replaced the separator characters with some of those defined by RFC 3986
+as being safe within "userinfo" part of URLs without encoding.
+- Reduced the default value for the N2 parameter to min=... (the minimum
+length for passphrases) from 12 to 11.
+- Corrected the potentially misleading description of N2 (Debian bug #310595).
+- Applied minor grammar and style corrections to the documentation, a
+pam_passwdqc message, and source code comments.
+
 * Tue Apr 04 2006 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.0.4-owl1
 - Changed Makefile to pass list of libraries to linker after regular
 object files, to fix build with -Wl,--as-needed.
