@@ -126,7 +126,7 @@ static params_t defaults = {
 	"classes used.\n"
 #define MESSAGE_EXPLAIN_PASSPHRASE \
 	"A passphrase should be of at least %d words, %d to %d characters\n" \
-	"long and contain enough different characters.\n"
+	"long, and contain enough different characters.\n"
 #define MESSAGE_RANDOM \
 	"Alternatively, if noone else can see your terminal now, you can\n" \
 	"pick this as your password: \"%s\".\n"
