@@ -49,7 +49,8 @@ static int expected_different(int charset, int length)
 
 	x = ((fixed)(charset - 1) << FIXED_BITS) / charset;
 	y = x;
-	while (--length > 0) y = (y * x) >> FIXED_BITS;
+	while (--length > 0)
+		y = (y * x) >> FIXED_BITS;
 	z = (fixed)charset * (((fixed)1 << FIXED_BITS) - y);
 
 	return (int)(z >> FIXED_BITS);
@@ -72,10 +73,15 @@ static int is_simple(passwdqc_params_t *params, const char *newpass)
 	while ((c = (unsigned char)newpass[length])) {
 		length++;
 
-		if (!isascii(c)) unknowns++; else
-		if (isdigit(c)) digits++; else
-		if (islower(c)) lowers++; else
-		if (isupper(c)) uppers++; else
+		if (!isascii(c))
+			unknowns++;
+		else if (isdigit(c))
+			digits++;
+		else if (islower(c))
+			lowers++;
+		else if (isupper(c))
+			uppers++;
+		else
 			others++;
 
 		if (isascii(c) && isalpha(c) && isascii(p) && !isalpha(p))
@@ -86,23 +92,31 @@ static int is_simple(passwdqc_params_t *params, const char *newpass)
 			chars++;
 	}
 
-	if (!length) return 1;
+	if (!length)
+		return 1;
 
 /* Upper case characters and digits used in common ways don't increase the
  * strength of a password */
 	c = (unsigned char)newpass[0];
-	if (uppers && isascii(c) && isupper(c)) uppers--;
+	if (uppers && isascii(c) && isupper(c))
+		uppers--;
 	c = (unsigned char)newpass[length - 1];
-	if (digits && isascii(c) && isdigit(c)) digits--;
+	if (digits && isascii(c) && isdigit(c))
+		digits--;
 
 /* Count the number of different character classes we've seen.  We assume
  * that there are no non-ASCII characters for digits. */
 	classes = 0;
-	if (digits) classes++;
-	if (lowers) classes++;
-	if (uppers) classes++;
-	if (others) classes++;
-	if (unknowns && (!classes || (digits && classes == 1))) classes++;
+	if (digits)
+		classes++;
+	if (lowers)
+		classes++;
+	if (uppers)
+		classes++;
+	if (others)
+		classes++;
+	if (unknowns && (!classes || (digits && classes == 1)))
+		classes++;
 
 	for (; classes > 0; classes--)
 	switch (classes) {
@@ -231,7 +245,8 @@ static int is_based(passwdqc_params_t *params,
 				return 1;
 			}
 		}
-		if (!match) break;
+		if (!match)
+			break;
 	}
 
 	clean(scratch);
@@ -261,7 +276,8 @@ static int is_word_based(passwdqc_params_t *params,
 	word[6] = '\0';
 	for (i = 0; i < 0x1000; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], 6);
-		if ((int)strlen(word) < params->match_length) continue;
+		if ((int)strlen(word) < params->match_length)
+			continue;
 		unified = unify(word);
 		if (is_based(params, unified, needle, original)) {
 			clean(unified);
@@ -336,26 +352,28 @@ const char *_passwdqc_check(passwdqc_params_t *params,
 
 	if (!reason && oldpass && params->similar_deny &&
 	    (is_based(params, u_oldpass, u_newpass, newpass) ||
-	    is_based(params, u_oldpass, u_reversed, reversed)))
+	     is_based(params, u_oldpass, u_reversed, reversed)))
 		reason = REASON_SIMILAR;
 
 	if (!reason && pw &&
 	    (is_based(params, u_name, u_newpass, newpass) ||
-	    is_based(params, u_name, u_reversed, reversed) ||
-	    is_based(params, u_gecos, u_newpass, newpass) ||
-	    is_based(params, u_gecos, u_reversed, reversed)))
+	     is_based(params, u_name, u_reversed, reversed) ||
+	     is_based(params, u_gecos, u_newpass, newpass) ||
+	     is_based(params, u_gecos, u_reversed, reversed)))
 		reason = REASON_PERSONAL;
 
 	if (!reason && (int)strlen(newpass) < params->min[2] &&
 	    (is_word_based(params, u_newpass, newpass) ||
-	    is_word_based(params, u_reversed, reversed)))
+	     is_word_based(params, u_reversed, reversed)))
 		reason = REASON_WORD;
 
 	memset(truncated, 0, sizeof(truncated));
 	clean(reversed);
-	clean(u_newpass); clean(u_reversed);
+	clean(u_newpass);
+	clean(u_reversed);
 	clean(u_oldpass);
-	clean(u_name); clean(u_gecos);
+	clean(u_name);
+	clean(u_gecos);
 
 	return reason;
 }

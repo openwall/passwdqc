@@ -31,10 +31,12 @@ static int read_loop(int fd, unsigned char *buffer, int count)
 		block = read(fd, &buffer[offset], count);
 
 		if (block < 0) {
-			if (errno == EINTR) continue;
+			if (errno == EINTR)
+				continue;
 			return block;
 		}
-		if (!block) return offset;
+		if (!block)
+			return offset;
 
 		offset += block;
 		count -= block;
@@ -64,7 +66,8 @@ char *_passwdqc_random(passwdqc_params_t *params)
 	if (length >= sizeof(output) || (int)length > params->max)
 		return NULL;
 
-	if ((fd = open("/dev/urandom", O_RDONLY)) < 0) return NULL;
+	if ((fd = open("/dev/urandom", O_RDONLY)) < 0)
+		return NULL;
 
 	length = 0;
 	do {
@@ -76,7 +79,8 @@ char *_passwdqc_random(passwdqc_params_t *params)
 		i = (((int)bytes[1] & 0x0f) << 8) | (int)bytes[0];
 		start = _passwdqc_wordset_4k[i];
 		end = memchr(start, '\0', 6);
-		if (!end) end = start + 6;
+		if (!end)
+			end = start + 6;
 		extra = end - start;
 		if (length + extra >= sizeof(output) - 1) {
 			close(fd);
@@ -90,8 +94,7 @@ char *_passwdqc_random(passwdqc_params_t *params)
 			i = ((int)bytes[1] & 0x70) >> 4;
 			output[length++] = SEPARATORS[i];
 			bits -= 3;
-		} else
-		if (bits > 0)
+		} else if (bits > 0)
 			output[length++] = ' ';
 	} while (bits > 0);
 
