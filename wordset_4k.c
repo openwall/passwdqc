@@ -6,7 +6,7 @@
  * I've replaced two 7-character words to save space.
  */
 
-#include "passwdqc.h"
+#include "wordset_4k.h"
 
 char _passwdqc_wordset_4k[0x1000][6] = {
 	"Adam",

@@ -1,13 +1,15 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.38 2008/02/12 20:28:48 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.39 2009/09/28 23:00:19 ldv Exp $
 
 Summary: Pluggable password quality-control module.
-Name: pam_passwdqc
-Version: 1.0.5
+Name: passwdqc
+Version: 1.1.0
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
 URL: http://www.openwall.com/passwdqc/
-Source: ftp://ftp.openwall.com/pub/projects/pam/modules/%name/%name-%version.tar.gz
+Source: ftp://ftp.openwall.com/pub/projects/pam/modules/pam_passwdqc/%name-%version.tar.gz
+Provides: pam_passwdqc = %version-%release
+Obsoletes: pam_passwdqc < %version-%release
 BuildRequires: pam-devel
 BuildRoot: /override/%name-%version
 
@@ -18,6 +20,15 @@ to checking regular passwords, it offers support for passphrases and
 can provide randomly generated ones.  All features are optional and
 can be (re-)configured without rebuilding.
 
+%package devel
+Summary: Libraries and header files for building passwdqc-aware applications.
+Group: Development/Libraries
+Requires: %name = %version-%release
+
+%description devel
+This package contains development libraries and header files needed for
+building passwdqc-aware applications.
+
 %prep
 %setup -q
 
@@ -26,15 +37,31 @@ can be (re-)configured without rebuilding.
 
 %install
 rm -rf %buildroot
-%__make install DESTDIR=%buildroot MANDIR=%_mandir SECUREDIR=/%_lib/security
+%__make install DESTDIR=%buildroot MANDIR=%_mandir \
+	SHARED_LIBDIR=/%_lib DEVEL_LIBDIR=%_libdir \
+	SECUREDIR=/%_lib/security
 
 %files
 %defattr(-,root,root)
 %doc LICENSE README
+%config(noreplace) /etc/passwdqc.conf
+/%_lib/lib*.so*
+%_bindir/*
 /%_lib/security/pam_passwdqc.so
 %_mandir/man*/*
 
+%files devel
+%defattr(-,root,root)
+%_includedir/*.h
+%_libdir/lib*.so
+
 %changelog
+* Mon Sep 28 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.0-owl1
+- Introduced libpasswdqc shared library.
+- Implemented pwqgen and pwqcheck utilities.
+- Implemented config= parameter support in libpasswdqc.
+- Packaged /etc/passwdqc.conf file with default configuration.
+
 * Tue Feb 12 2008 Solar Designer <solar-at-owl.openwall.com> 1.0.5-owl1
 - Replaced the separator characters with some of those defined by RFC 3986
 as being safe within "userinfo" part of URLs without encoding.

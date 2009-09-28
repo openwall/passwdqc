@@ -1,0 +1,11 @@
+# $Owl: Owl/packages/passwdqc/passwdqc/libpasswdqc.map,v 1.1 2009/09/28 23:00:19 ldv Exp $
+
+{
+  global:
+    passwdqc_check;
+    passwdqc_params_parse;
+    passwdqc_params_reset;
+    passwdqc_random;
+  local:
+    *;
+};

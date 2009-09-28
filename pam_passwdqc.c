@@ -54,37 +54,6 @@ typedef lo_const void *pam_item_t;
 
 #include "passwdqc.h"
 
-#define F_ENFORCE_MASK			0x00000003
-#define F_ENFORCE_USERS			0x00000001
-#define F_ENFORCE_ROOT			0x00000002
-#define F_ENFORCE_EVERYONE		F_ENFORCE_MASK
-#define F_NON_UNIX			0x00000004
-#define F_ASK_OLDAUTHTOK_MASK		0x00000030
-#define F_ASK_OLDAUTHTOK_PRELIM		0x00000010
-#define F_ASK_OLDAUTHTOK_UPDATE		0x00000020
-#define F_CHECK_OLDAUTHTOK		0x00000040
-#define F_USE_FIRST_PASS		0x00000100
-#define F_USE_AUTHTOK			0x00000200
-
-typedef struct {
-	passwdqc_params_t qc;
-	int flags;
-	int retry;
-} params_t;
-
-static params_t defaults = {
-	{
-		{INT_MAX, 24, 11, 8, 7},	/* min */
-		40,				/* max */
-		3,				/* passphrase_words */
-		4,				/* match_length */
-		1,				/* similar_deny */
-		42				/* random_bits */
-	},
-	F_ENFORCE_EVERYONE,			/* flags */
-	3					/* retry */
-};
-
 #define PROMPT_OLDPASS \
 	"Enter current password: "
 #define PROMPT_NEWPASS1 \
@@ -95,7 +64,7 @@ static params_t defaults = {
 #define MESSAGE_MISCONFIGURED \
 	"System configuration error.  Please contact your administrator."
 #define MESSAGE_INVALID_OPTION \
-	"pam_passwdqc: Invalid option: \"%s\"."
+	"pam_passwdqc: %s."
 #define MESSAGE_INTRO_PASSWORD \
 	"\nYou can now choose the new password.\n"
 #define MESSAGE_INTRO_BOTH \
@@ -192,21 +161,20 @@ static int say(pam_handle_t *pamh, int style, const char *format, ...)
 
 	if ((unsigned int)needed < sizeof(buffer)) {
 		status = converse(pamh, style, buffer, &resp);
-		pwqc_overwrite_string(buffer);
 		pwqc_drop_pam_reply(resp, 1);
 	} else {
 		status = PAM_ABORT;
-		memset(buffer, 0, sizeof(buffer));
 	}
+	memset(buffer, 0, sizeof(buffer));
 
 	return status;
 }
 
-static int check_max(params_t *params, pam_handle_t *pamh,
+static int check_max(passwdqc_params_qc_t *qc, pam_handle_t *pamh,
     const char *newpass)
 {
-	if ((int)strlen(newpass) > params->qc.max) {
-		if (params->qc.max != 8) {
+	if ((int)strlen(newpass) > qc->max) {
+		if (qc->max != 8) {
 			say(pamh, PAM_ERROR_MSG, MESSAGE_TOOLONG);
 			return -1;
 		}
@@ -261,143 +229,37 @@ static int am_root(pam_handle_t *pamh)
 	return !strcmp(service, "passwd");
 }
 
-static int parse(params_t *params, pam_handle_t *pamh,
-    int argc, const char **argv)
-{
-	const char *p;
-	char *e;
-	int i;
-	unsigned long v;
-
-	while (argc) {
-		if (!strncmp(*argv, "min=", 4)) {
-			p = *argv + 4;
-			for (i = 0; i < 5; i++) {
-				if (!strncmp(p, "disabled", 8)) {
-					v = INT_MAX;
-					p += 8;
-				} else {
-					v = strtoul(p, &e, 10);
-					p = e;
-				}
-				if (i < 4 && *p++ != ',')
-					break;
-				if (v > INT_MAX)
-					break;
-				if (i && (int)v > params->qc.min[i - 1])
-					break;
-				params->qc.min[i] = v;
-			}
-			if (*p)
-				break;
-		} else if (!strncmp(*argv, "max=", 4)) {
-			v = strtoul(*argv + 4, &e, 10);
-			if (*e || v < 8 || v > INT_MAX)
-				break;
-			params->qc.max = v;
-		} else if (!strncmp(*argv, "passphrase=", 11)) {
-			v = strtoul(*argv + 11, &e, 10);
-			if (*e || v > INT_MAX)
-				break;
-			params->qc.passphrase_words = v;
-		} else if (!strncmp(*argv, "match=", 6)) {
-			v = strtoul(*argv + 6, &e, 10);
-			if (*e || v > INT_MAX)
-				break;
-			params->qc.match_length = v;
-		} else if (!strncmp(*argv, "similar=", 8)) {
-			if (!strcmp(*argv + 8, "permit"))
-				params->qc.similar_deny = 0;
-			else if (!strcmp(*argv + 8, "deny"))
-				params->qc.similar_deny = 1;
-			else
-				break;
-		} else if (!strncmp(*argv, "random=", 7)) {
-			v = strtoul(*argv + 7, &e, 10);
-			if (!strcmp(e, ",only")) {
-				e += 5;
-				params->qc.min[4] = INT_MAX;
-			}
-			if (*e || (v && v < 24) || v > 72)
-				break;
-			params->qc.random_bits = v;
-		} else if (!strncmp(*argv, "enforce=", 8)) {
-			params->flags &= ~F_ENFORCE_MASK;
-			if (!strcmp(*argv + 8, "users"))
-				params->flags |= F_ENFORCE_USERS;
-			else if (!strcmp(*argv + 8, "everyone"))
-				params->flags |= F_ENFORCE_EVERYONE;
-			else if (strcmp(*argv + 8, "none"))
-				break;
-		} else if (!strcmp(*argv, "non-unix")) {
-			if (params->flags & F_CHECK_OLDAUTHTOK)
-				break;
-			params->flags |= F_NON_UNIX;
-		} else if (!strncmp(*argv, "retry=", 6)) {
-			v = strtoul(*argv + 6, &e, 10);
-			if (*e || v > INT_MAX)
-				break;
-			params->retry = v;
-		} else if (!strncmp(*argv, "ask_oldauthtok", 14)) {
-			params->flags &= ~F_ASK_OLDAUTHTOK_MASK;
-			if (params->flags & F_USE_FIRST_PASS)
-				break;
-			if (!strcmp(*argv + 14, "=update"))
-				params->flags |= F_ASK_OLDAUTHTOK_UPDATE;
-			else if (!(*argv)[14])
-				params->flags |= F_ASK_OLDAUTHTOK_PRELIM;
-			else
-				break;
-		} else if (!strcmp(*argv, "check_oldauthtok")) {
-			if (params->flags & F_NON_UNIX)
-				break;
-			params->flags |= F_CHECK_OLDAUTHTOK;
-		} else if (!strcmp(*argv, "use_first_pass")) {
-			if (params->flags & F_ASK_OLDAUTHTOK_MASK)
-				break;
-			params->flags |= F_USE_FIRST_PASS | F_USE_AUTHTOK;
-		} else if (!strcmp(*argv, "use_authtok")) {
-			params->flags |= F_USE_AUTHTOK;
-		} else
-			break;
-		argc--;
-		argv++;
-	}
-
-	if (argc) {
-		say(pamh, PAM_ERROR_MSG, am_root(pamh) ?
-		    MESSAGE_INVALID_OPTION : MESSAGE_MISCONFIGURED, *argv);
-		return PAM_ABORT;
-	}
-
-	return PAM_SUCCESS;
-}
-
 PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
     int argc, const char **argv)
 {
-	params_t params;
+	passwdqc_params_t params;
 	struct pam_response *resp;
 	struct passwd *pw, fake_pw;
 	pam_item_t item;
 	const char *user, *oldpass, *newpass;
 	char *trypass, *randompass;
-	const char *reason;
+	char *parse_reason;
+	const char *check_reason;
 	int ask_oldauthtok;
 	int randomonly, enforce, retries_left, retry_wanted;
 	int status;
 
-	params = defaults;
-	status = parse(&params, pamh, argc, argv);
-	if (status != PAM_SUCCESS)
-		return status;
+	passwdqc_params_reset(&params);
+	if (passwdqc_params_parse(&params, &parse_reason, argc, argv)) {
+		say(pamh, PAM_ERROR_MSG, am_root(pamh) ?
+		    MESSAGE_INVALID_OPTION : MESSAGE_MISCONFIGURED,
+		    parse_reason);
+		free(parse_reason);
+		return PAM_ABORT;
+	}
+	status = PAM_SUCCESS;
 
 	ask_oldauthtok = 0;
 	if (flags & PAM_PRELIM_CHECK) {
-		if (params.flags & F_ASK_OLDAUTHTOK_PRELIM)
+		if (params.pam.flags & F_ASK_OLDAUTHTOK_PRELIM)
 			ask_oldauthtok = 1;
 	} else if (flags & PAM_UPDATE_AUTHTOK) {
-		if (params.flags & F_ASK_OLDAUTHTOK_UPDATE)
+		if (params.pam.flags & F_ASK_OLDAUTHTOK_UPDATE)
 			ask_oldauthtok = 1;
 	} else
 		return PAM_SERVICE_ERR;
@@ -432,7 +294,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		return status;
 	oldpass = item;
 
-	if (params.flags & F_NON_UNIX) {
+	if (params.pam.flags & F_NON_UNIX) {
 		pw = &fake_pw;
 		pw->pw_name = (char *)user;
 		pw->pw_gecos = "";
@@ -441,8 +303,8 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		endpwent();
 		if (!pw)
 			return PAM_USER_UNKNOWN;
-		if ((params.flags & F_CHECK_OLDAUTHTOK) && !am_root(pamh) &&
-		    (!oldpass || check_pass(pw, oldpass)))
+		if ((params.pam.flags & F_CHECK_OLDAUTHTOK) && !am_root(pamh)
+		    && (!oldpass || check_pass(pw, oldpass)))
 			status = PAM_AUTH_ERR;
 		memset(pw->pw_passwd, 0, strlen(pw->pw_passwd));
 		if (status != PAM_SUCCESS)
@@ -452,27 +314,30 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	randomonly = params.qc.min[4] > params.qc.max;
 
 	if (am_root(pamh))
-		enforce = params.flags & F_ENFORCE_ROOT;
+		enforce = params.pam.flags & F_ENFORCE_ROOT;
 	else
-		enforce = params.flags & F_ENFORCE_USERS;
+		enforce = params.pam.flags & F_ENFORCE_USERS;
 
-	if (params.flags & F_USE_AUTHTOK) {
+	if (params.pam.flags & F_USE_AUTHTOK) {
 		status = pam_get_item(pamh, PAM_AUTHTOK, &item);
 		if (status != PAM_SUCCESS)
 			return status;
 		newpass = item;
-		if (!newpass || (check_max(&params, pamh, newpass) && enforce))
+		if (!newpass ||
+		    (check_max(&params.qc, pamh, newpass) && enforce))
 			return PAM_AUTHTOK_ERR;
-		reason = _passwdqc_check(&params.qc, newpass, oldpass, pw);
-		if (reason) {
-			say(pamh, PAM_ERROR_MSG, MESSAGE_WEAKPASS, reason);
+		check_reason =
+		    passwdqc_check(&params.qc, newpass, oldpass, pw);
+		if (check_reason) {
+			say(pamh, PAM_ERROR_MSG, MESSAGE_WEAKPASS,
+			    check_reason);
 			if (enforce)
 				status = PAM_AUTHTOK_ERR;
 		}
 		return status;
 	}
 
-	retries_left = params.retry;
+	retries_left = params.pam.retry;
 
 retry:
 	retry_wanted = 0;
@@ -520,13 +385,13 @@ retry:
 			return status;
 	}
 
-	randompass = _passwdqc_random(&params.qc);
+	randompass = passwdqc_random(&params.qc);
 	if (randompass) {
 		status = say(pamh, PAM_TEXT_INFO, randomonly ?
 		    MESSAGE_RANDOMONLY : MESSAGE_RANDOM, randompass);
 		if (status != PAM_SUCCESS) {
 			pwqc_overwrite_string(randompass);
-			randompass = NULL;
+			pwqc_drop_mem(randompass);
 		}
 	} else if (randomonly) {
 		say(pamh, PAM_ERROR_MSG, am_root(pamh) ?
@@ -540,6 +405,7 @@ retry:
 
 	if (status != PAM_SUCCESS) {
 		pwqc_overwrite_string(randompass);
+		pwqc_drop_mem(randompass);
 		return status;
 	}
 
@@ -549,23 +415,24 @@ retry:
 
 	if (!trypass) {
 		pwqc_overwrite_string(randompass);
+		pwqc_drop_mem(randompass);
 		return PAM_AUTHTOK_ERR;
 	}
 
-	if (check_max(&params, pamh, trypass) && enforce) {
+	if (check_max(&params.qc, pamh, trypass) && enforce) {
 		status = PAM_AUTHTOK_ERR;
 		retry_wanted = 1;
 	}
 
-	reason = NULL;
 	if (status == PAM_SUCCESS &&
 	    (!randompass || !strstr(trypass, randompass)) &&
 	    (randomonly ||
-	     (reason = _passwdqc_check(&params.qc, trypass, oldpass, pw)))) {
+	     (check_reason = passwdqc_check(&params.qc, trypass, oldpass, pw)))) {
 		if (randomonly)
 			say(pamh, PAM_ERROR_MSG, MESSAGE_NOTRANDOM);
 		else
-			say(pamh, PAM_ERROR_MSG, MESSAGE_WEAKPASS, reason);
+			say(pamh, PAM_ERROR_MSG, MESSAGE_WEAKPASS,
+			    check_reason);
 		if (enforce) {
 			status = PAM_AUTHTOK_ERR;
 			retry_wanted = 1;
@@ -594,6 +461,8 @@ retry:
 		status = pam_set_item(pamh, PAM_AUTHTOK, trypass);
 
 	pwqc_overwrite_string(randompass);
+	pwqc_drop_mem(randompass);
+
 	pwqc_overwrite_string(trypass);
 	pwqc_drop_mem(trypass);
 

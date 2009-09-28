@@ -9,6 +9,7 @@
 #include <fcntl.h>
 
 #include "passwdqc.h"
+#include "wordset_4k.h"
 
 /*
  * We separate words in the generated "passphrases" with random special
@@ -45,9 +46,9 @@ static int read_loop(int fd, unsigned char *buffer, int count)
 	return offset;
 }
 
-char *_passwdqc_random(passwdqc_params_t *params)
+char *passwdqc_random(passwdqc_params_qc_t *params)
 {
-	static char output[0x100];
+	char output[0x100];
 	int bits;
 	int use_separators, count, i;
 	unsigned int length, extra;
@@ -103,5 +104,5 @@ char *_passwdqc_random(passwdqc_params_t *params)
 
 	close(fd);
 
-	return output;
+	return strdup(output);
 }
