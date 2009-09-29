@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.39 2009/09/28 23:00:19 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.40 2009/09/29 23:37:21 ldv Exp $
 
 Summary: Pluggable password quality-control module.
 Name: passwdqc
@@ -61,6 +61,7 @@ rm -rf %buildroot
 - Implemented pwqgen and pwqcheck utilities.
 - Implemented config= parameter support in libpasswdqc.
 - Packaged /etc/passwdqc.conf file with default configuration.
+- Added passwdqc.conf(5) manual page.
 
 * Tue Feb 12 2008 Solar Designer <solar-at-owl.openwall.com> 1.0.5-owl1
 - Replaced the separator characters with some of those defined by RFC 3986
