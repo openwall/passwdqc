@@ -1,0 +1,90 @@
+.\" Copyright (c) 2009 Dmitry V. Levin
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. The name of the author may not be used to endorse or promote
+.\"    products derived from this software without specific prior written
+.\"    permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqgen.1,v 1.1 2009/10/01 00:03:15 ldv Exp $
+.\"
+.Dd September 30, 2009
+.Dt PWQGEN 1
+.Os Openwall GNU/*/Linux
+.Sh NAME
+.Nm pwqgen
+.Nd Generate quality controllable random passphrase
+.Sh SYNOPSIS
+.Nm Op Ar options
+.Sh DESCRIPTION
+The
+.Nm
+program generates random passphrase using libpasswdqc library.
+Strength of the generated passphrase depends on size of randomness
+read from
+.Pa /dev/urandom .
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Cm random Ns = Ns Ar N
+.Pq default: Cm random Ns = Ns 42
+The size of randomly-generated passphrase in bits (24 to 72).
+.It Cm config Ns = Ns Ar FILE
+Load config
+.Ar FILE
+in
+.Cm passwdqc.conf
+format.  This file may define any options described in
+.Xr passwdqc.conf 5 , but only
+.Cm random
+and
+.Cm config
+options are honored by
+.Nm .
+.It Cm --version
+Output
+.Nm
+program version and exit.
+.It Cm -h , --help
+Output
+.Nm
+help text and exit.
+.El
+.Sh RETURN VALUE
+.Nm
+exits with nonzero status when it encounters invalid config file,
+invalid option, invalid parameter value, when it fails to obtain enough
+randomness, and in any case when it fails to generate passphrase.
+.Sh FILES
+.Pa /etc/passwdqc.conf .
+.Sh SEE ALSO
+.Xr urandom 4 ,
+.Xr passwdqc.conf 5 ,
+.Xr pam_passwdqc 8 .
+.Sh AUTHORS
+The pam_passwdqc module was written for Openwall GNU/*/Linux by
+.An Solar Designer .
+Both the
+.Nm
+program, which was originally made for ALT GNU/*/Linux, and this manual page
+.Pq derived from the pam_passwdqc author's documentation Ns ,
+which was made for Openwall GNU/*/Linux, are written by
+.An Dmitry V. Levin .

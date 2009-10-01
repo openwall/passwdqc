@@ -12,6 +12,7 @@ MAP_PAM = pam_passwdqc.map
 SHLIBMODE = 755
 HEADER = passwdqc.h
 INCMODE = 644
+MAN1 = pwqgen.1
 MAN5 = passwdqc.conf.5
 MAN8 = $(TITLE).8
 MANMODE = 644
@@ -140,6 +141,9 @@ install:
 
 	$(MKDIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL) -m $(INCMODE) $(HEADER) $(DESTDIR)$(INCLUDEDIR)/
+
+	$(MKDIR) $(DESTDIR)$(MANDIR)/man1
+	$(INSTALL) -m $(MANMODE) $(MAN1) $(DESTDIR)$(MANDIR)/man1/
 
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man5
 	$(INSTALL) -m $(MANMODE) $(MAN5) $(DESTDIR)$(MANDIR)/man5/

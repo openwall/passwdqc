@@ -10,11 +10,13 @@ int main(int argc, const char **argv)
 
 	if (argc > 1 && argv[1][0] == '-') {
 		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
-			printf("Generate quality controllable passwords.\n"
+			printf("Generate quality controllable passphrase.\n"
 			    "\nUsage: pwqgen [options]\n"
 			    "\nValid options are:\n"
 			    "  random=N\n"
-			    "       set size of randomly-generated passphrases in bits;\n"
+			    "       set size of randomly-generated passphrase in bits;\n"
+			    "  config=FILE\n"
+			    "       Load config FILE in passwdqc.conf format;\n"
 			    "  --version\n"
 			    "       print program version and exit;\n"
 			    "  -h or --help\n"
@@ -39,9 +41,9 @@ int main(int argc, const char **argv)
 
 	pass = passwdqc_random(&params.qc);
 	if (!pass) {
-		fprintf(stderr, "pwqgen: Failed to generate a password.\n"
+		fprintf(stderr, "pwqgen: Failed to generate a passphrase.\n"
 		    "This could happen for a number of reasons: you could have requested\n"
-		    "an impossible password length, or the access to kernel random number\n"
+		    "an impossible passphrase length, or the access to kernel random number\n"
 		    "pool could have failed.\n");
 		return 1;
 	}
