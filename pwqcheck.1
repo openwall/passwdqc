@@ -1,0 +1,173 @@
+.\" Copyright (c) 2009 Dmitry V. Levin
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. The name of the author may not be used to endorse or promote
+.\"    products derived from this software without specific prior written
+.\"    permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.1 2009/10/02 00:05:00 ldv Exp $
+.\"
+.Dd September 30, 2009
+.Dt PWQCHECK 1
+.Os Openwall GNU/*/Linux
+.Sh NAME
+.Nm pwqcheck
+.Nd Check passphrase quality
+.Sh SYNOPSIS
+.Nm Op Ar options
+.Sh DESCRIPTION
+The
+.Nm
+program checks passphrase quality using libpasswdqc library.
+It expects to read 3 lines from standard input:
+.Bl -tag -width flag -compact -offset indent
+.It first line is a new password,
+.It second line is an old password, and
+.It third line is either an existing account name or a Xr passwd 5 entry.
+.El
+.Pp
+There is a number of supported options which can be used to control the
+.Nm
+behavior.
+.Sh OPTIONS
+.Bl -tag -width indent
+.It Cm min Ns = Ns Ar N0 , Ns Ar N1 , Ns Ar N2 , Ns Ar N3 , Ns Ar N4
+.Pq default: Cm min Ns = Ns Cm disabled , Ns 24 , Ns 11 , Ns 8 , Ns 7
+The minimum allowed password lengths for different kinds of
+passwords/passphrases.
+The keyword
+.Cm disabled
+can be used to
+disallow passwords of a given kind regardless of their length.
+Each subsequent number is required to be no larger than the preceding
+one.
+.Pp
+.Ar N0
+is used for passwords consisting of characters from one character
+class only.
+The character classes are: digits, lower-case letters, upper-case
+letters, and other characters.
+There is also a special class for
+.No non- Ns Tn ASCII
+characters, which could not be classified, but are assumed to be non-digits.
+.Pp
+.Ar N1
+is used for passwords consisting of characters from two character
+classes that do not meet the requirements for a passphrase.
+.Pp
+.Ar N2
+is used for passphrases.
+Note that besides meeting this length requirement,
+a passphrase must also consist of a sufficient number of words (see the
+.Cm passphrase
+option below).
+.Pp
+.Ar N3
+and
+.Ar N4
+are used for passwords consisting of characters from three
+and four character classes, respectively.
+.Pp
+When calculating the number of character classes, upper-case letters
+used as the first character and digits used as the last character of a
+password are not counted.
+.Pp
+In addition to being sufficiently long, passwords are required to
+contain enough different characters for the character classes and
+the minimum length they have been checked against.
+.Pp
+.It Cm max Ns = Ns Ar N
+.Pq default: Cm max Ns = Ns 40
+The maximum allowed password length.
+This can be used to prevent users from setting passwords that may be
+too long for some system services.
+The value 8 is treated specially: if
+.Cm max
+is set to 8, passwords longer than 8 characters will not be rejected,
+but will be truncated to 8 characters for the strength checks and the
+user will be warned.
+This is to be used with the traditional DES-based password hashes,
+which truncate the password at 8 characters.
+.Pp
+It is important that you do set
+.Cm max Ns = Ns 8
+if you are using the traditional
+hashes, or some weak passwords will pass the checks.
+.It Cm passphrase Ns = Ns Ar N
+.Pq default: Cm passphrase Ns = Ns 3
+The number of words required for a passphrase.
+.It Cm match Ns = Ns Ar N
+.Pq default: Cm match Ns = Ns 4
+The length of common substring required to conclude that a password is
+at least partially based on information found in a character string,
+or 0 to disable the substring search.
+Note that the password will not be rejected once a weak substring is
+found; it will instead be subjected to the usual strength requirements
+with the weak substring removed.
+.Pp
+The substring search is case-insensitive and is able to detect and
+remove a common substring spelled backwards.
+.It Cm config Ns = Ns Ar FILE
+Load config
+.Ar FILE
+in
+.Cm passwdqc.conf
+format.  This file may define any options described in
+.Xr passwdqc.conf 5 , but only
+.Cm min Ns , Cm max Ns , Cm passphrase Ns , Cm match
+and
+.Cm config
+options are honored by
+.Nm .
+.It Cm --version
+Output
+.Nm
+program version and exit.
+.It Cm -h , --help
+Output
+.Nm
+help text and exit.
+.El
+.Sh RETURN VALUE
+.Nm
+exits with nonzero status when it encounters invalid config file,
+invalid option, invalid parameter value, invalid data in standard input,
+when it detects weak passphrase, and in any case when it fails to check
+passphrase strength.
+.Sh FILES
+.Pa /etc/passwdqc.conf .
+.Sh SEE ALSO
+.Xr pwqgen 1 ,
+.Xr urandom 4 ,
+.Xr passwd 5 ,
+.Xr passwdqc.conf 5 ,
+.Xr pam_passwdqc 8 .
+.Sh AUTHORS
+The pam_passwdqc module was written for Openwall GNU/*/Linux by
+.An Solar Designer .
+Both the
+.Nm
+program, which was originally made for ALT GNU/*/Linux, and this manual page
+.Pq derived from the pam_passwdqc author's documentation Ns ,
+which was made for Openwall GNU/*/Linux, are written by
+.An Dmitry V. Levin .

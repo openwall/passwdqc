@@ -80,25 +80,27 @@ int main(int argc, const char **argv)
 	char *parse_reason, *newpass = NULL, *oldpass = NULL, *pwbuf = NULL;
 	struct passwd pw;
 	int size = 8192;
-	int rc = 1;
+	int rc = EXIT_FAILURE;
 
 	if (argc > 1 && argv[1][0] == '-') {
 		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
-			printf("Check password quality.\n"
+			printf("Check passphrase quality.\n"
 			    "\npwqcheck reads 3 lines from standard input:\n"
-			    "  first line is new password,\n"
-			    "  second line is old password, and\n"
-			    "  third line is either existing account name or passwd entry.\n"
+			    "  first line is a new passphrase,\n"
+			    "  second line is an old passphrase, and\n"
+			    "  third line is either an existing account name or a passwd entry.\n"
 			    "\nUsage: pwqcheck [options]\n"
 			    "\nValid options are:\n"
 			    "  min=N0,N1,N2,N3,N4\n"
-			    "       set minimum allowed password lengths for different kinds of passwords;\n"
+			    "       set minimum allowed passphrase lengths for different kinds of passphrases;\n"
 			    "  max=N\n"
-			    "       set maximum allowed password length;\n"
+			    "       set maximum allowed passphrase length;\n"
 			    "  passphrase=N\n"
 			    "       set number of words required for a passphrase;\n"
 			    "  match=N\n"
 			    "       set length of common substring in substring check;\n"
+			    "  config=FILE\n"
+			    "       load config FILE in passwdqc.conf format;\n"
 			    "  --version\n"
 			    "       print program version and exit;\n"
 			    "  -h or --help\n"
@@ -119,7 +121,7 @@ int main(int argc, const char **argv)
 		fprintf(stderr, "pwqcheck: %s\n",
 		    (parse_reason ? parse_reason : "Out of memory"));
 		free(parse_reason);
-		return 1;
+		return rc;
 	}
 
 	if (params.qc.max + 1 > size)
@@ -131,11 +133,11 @@ int main(int argc, const char **argv)
 
 	check_reason = passwdqc_check(&params.qc, newpass, oldpass, &pw);
 	if (check_reason) {
-		fprintf(stderr, "pwqcheck: Weak password: %s\n", check_reason);
+		fprintf(stderr, "pwqcheck: Weak passphrase: %s\n", check_reason);
 		goto done;
 	}
 
-	rc = 0;
+	rc = EXIT_SUCCESS;
 
       done:
 	clean(pwbuf, size);
