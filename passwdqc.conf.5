@@ -33,7 +33,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.1 2009/09/29 23:37:21 ldv Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.2 2009/10/02 00:08:20 ldv Exp $
 .\"
 .Dd September 29, 2009
 .Dt PASSWDQC.CONF 5
@@ -65,21 +65,18 @@ and
 are not allowed.
 .Sh DIRECTIVE OPTIONS
 .Bl -tag -width indent
-.It Cm config Ns = Ns Ar pathname
-Load
-.Nm Ns -style file.  One configuration file may load another
-configuration files, but loops are not allowed.
+.It Cm config Ns = Ns Ar FILE
+Load config
+.Ar FILE
+in
+.Cm passwdqc.conf
+format.  This file may define any options described in this manual,
+including load of another configuration files, but loops are not allowed.
 .El
 .Sh PASSWORD QUALITY CONTROL OPTIONS
 .Bl -tag -width indent
-.It Xo
-.Sm off
-.Cm min No = Ar N0 , N1 , N2 , N3 , N4
-.Sm on
-.Xc
-.Sm off
-.Pq Cm min No = Cm disabled , No 24 , 11 , 8 , 7
-.Sm on
+.It Cm min Ns = Ns Ar N0 , Ns Ar N1 , Ns Ar N2 , Ns Ar N3 , Ns Ar N4
+.Pq default: Cm min Ns = Ns Cm disabled , Ns 24 , Ns 11 , Ns 8 , Ns 7
 The minimum allowed password lengths for different kinds of
 passwords/passphrases.
 The keyword
@@ -124,7 +121,7 @@ contain enough different characters for the character classes and
 the minimum length they have been checked against.
 .Pp
 .It Cm max Ns = Ns Ar N
-.Pq Cm max Ns = Ns 40
+.Pq default: Cm max Ns = Ns 40
 The maximum allowed password length.
 This can be used to prevent users from setting passwords that may be
 too long for some system services.
@@ -141,11 +138,11 @@ It is important that you do set
 if you are using the traditional
 hashes, or some weak passwords will pass the checks.
 .It Cm passphrase Ns = Ns Ar N
-.Pq Cm passphrase Ns = Ns 3
+.Pq default: Cm passphrase Ns = Ns 3
 The number of words required for a passphrase, or 0 to disable the
 support for user-chosen passphrases.
 .It Cm match Ns = Ns Ar N
-.Pq Cm match Ns = Ns 4
+.Pq default: Cm match Ns = Ns 4
 The length of common substring required to conclude that a password is
 at least partially based on information found in a character string,
 or 0 to disable the substring search.
@@ -160,7 +157,7 @@ remove a common substring spelled backwards.
 .Cm similar No = Cm permit | deny
 .Sm on
 .Xc
-.Pq Cm similar Ns = Ns Cm deny
+.Pq default: Cm similar Ns = Ns Cm deny
 Whether a new password is allowed to be similar to the old one.
 The passwords are considered to be similar when there is a sufficiently
 long common substring and the new password with the substring removed
@@ -170,7 +167,7 @@ would be weak.
 .Cm random No = Ar N Op , Cm only
 .Sm on
 .Xc
-.Pq Cm random Ns = Ns 42
+.Pq default: Cm random Ns = Ns 42
 The size of randomly-generated passphrases in bits (24 to 72),
 or 0 to disable this feature.
 Any passphrase that contains the offered randomly-generated string will be
@@ -187,7 +184,7 @@ modifier can be used to disallow user-chosen passwords.
 .Cm enforce No = Cm none | users | everyone
 .Sm on
 .Xc
-.Pq Cm enforce Ns = Ns Cm everyone
+.Pq default: Cm enforce Ns = Ns Cm everyone
 The PAM module can be configured to warn of weak passwords only, but not
 actually enforce strong passwords.
 The
@@ -202,7 +199,7 @@ This behavior can be disabled with the
 .Cm non-unix
 option.
 .It Cm retry Ns = Ns Ar N
-.Pq Cm retry Ns = Ns 3
+.Pq default: Cm retry Ns = Ns 3
 The number of times the PAM module will ask for a new password if the
 user fails to provide a sufficiently strong password and enter it twice
 the first time.
