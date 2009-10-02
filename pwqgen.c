@@ -16,7 +16,7 @@ int main(int argc, const char **argv)
 			    "  random=N\n"
 			    "       set size of randomly-generated passphrase in bits;\n"
 			    "  config=FILE\n"
-			    "       Load config FILE in passwdqc.conf format;\n"
+			    "       load config FILE in passwdqc.conf format;\n"
 			    "  --version\n"
 			    "       print program version and exit;\n"
 			    "  -h or --help\n"
