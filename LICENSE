@@ -2,7 +2,7 @@ The manual pages (pam_passwdqc.8, passwdqc.conf.5, pwqcheck.1, and
 pwqgen.1) are under the 3-clause BSD-style license as specified within
 the files themselves.
 
-wordset_4k.c is in the public domain.
+concat.c, wordset_4k.c, and wordset_4k.h are in the public domain.
 
 The rest of the files in this package fall under the following terms:
 
@@ -16,4 +16,4 @@ same relaxed terms.  In particular, you're free to place modified
 versions under (L)GPL, thus disallowing further re-distribution in
 binary-only form.
 
-$Owl: Owl/packages/passwdqc/passwdqc/LICENSE,v 1.4 2009/10/09 21:21:41 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/LICENSE,v 1.5 2009/10/09 22:52:56 solar Exp $
