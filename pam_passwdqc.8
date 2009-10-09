@@ -1,6 +1,8 @@
-.\" Copyright (c) 2000-2003,2005,2008 Solar Designer.
-.\" All rights reserved.
 .\" Copyright (c) 2001 Networks Associates Technology, Inc.
+.\" All rights reserved.
+.\" Copyright (c) 2009 Dmitry V. Levin
+.\" All rights reserved.
+.\" Copyright (c) 2009 Solar Designer
 .\" All rights reserved.
 .\"
 .\" Portions of this software were developed for the FreeBSD Project by
@@ -33,9 +35,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.12 2009/09/29 23:37:21 ldv Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pam_passwdqc.8,v 1.13 2009/10/09 23:59:01 solar Exp $
 .\"
-.Dd September 29, 2009
+.Dd October 10, 2009
 .Dt PAM_PASSWDQC 8
 .Os
 .Sh NAME
@@ -72,8 +74,8 @@ it meets certain minimum standards.
 If the chosen password is unsatisfactory, the service function returns
 .Dv PAM_AUTHTOK_ERR .
 .Pp
-The set of options which may be passed to the module is exactly the
-same as the set of options which may be specified in
+The set of options that may be passed to the module is exactly the
+same as the set of options that may be specified in the
 .Pa /etc/passwdqc.conf
 file.  These options are described in
 .Xr passwdqc.conf 5 .
@@ -86,11 +88,13 @@ The
 .Nm
 module was written for Openwall GNU/*/Linux by
 .An Solar Designer Aq solar at openwall.com .
-This manual page, derived from the author's documentation, was written
-for the
+This manual page was written for the
 .Fx
 Project by
 ThinkSec AS and NAI Labs, the Security Research Division of Network
 Associates, Inc. under DARPA/SPAWAR contract N66001-01-C-8035
 .Pq Dq CBOSS ,
 as part of the DARPA CHATS research program.
+It has since been revised, most importantly to refer to
+.Xr passwdqc.conf 5
+instead of describing the options right on this page.
