@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2008,2009 by Dmitry V. Levin.  See LICENSE.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
