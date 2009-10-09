@@ -97,12 +97,12 @@ typedef lo_const void *pam_item_t;
 	"A passphrase should be of at least %d words, %d to %d characters\n" \
 	"long, and contain enough different characters.\n"
 #define MESSAGE_RANDOM \
-	"Alternatively, if noone else can see your terminal now, you can\n" \
+	"Alternatively, if no one else can see your terminal now, you can\n" \
 	"pick this as your password: \"%s\".\n"
 #define MESSAGE_RANDOMONLY \
 	"This system is configured to permit randomly generated passwords\n" \
-	"only.  If noone else can see your terminal now, you can pick this\n" \
-	"as your password: \"%s\".  Otherwise, come back later.\n"
+	"only.  If no one else can see your terminal now, you can pick this\n" \
+	"as your password: \"%s\".  Otherwise come back later.\n"
 #define MESSAGE_RANDOMFAILED \
 	"This system is configured to use randomly generated passwords\n" \
 	"only, but the attempt to generate a password has failed.  This\n" \
