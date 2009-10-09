@@ -4,6 +4,8 @@
  * believe is in the public domain.
  *
  * I've replaced two 7-character words to save space.
+ *
+ * - Solar Designer
  */
 
 #include "wordset_4k.h"
