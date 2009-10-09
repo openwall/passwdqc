@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer.  See LICENSE.
+ * Written by Solar Designer <solar at openwall.com> and placed in the
+ * public domain.
  */
 
 #ifndef WORDSET_4K_H__
