@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.40 2009/09/29 23:37:21 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.41 2009/10/10 00:12:32 solar Exp $
 
 Summary: Pluggable password quality-control module.
 Name: passwdqc
@@ -56,7 +56,14 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
-* Mon Sep 28 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.0-owl1
+* Sat Oct 10 2009 Solar Designer <solar-at-owl.openwall.com> 1.1.0-owl1
+- Export passwdqc_params_load in libpasswdqc.
+- Minor English grammar corrections to messages produced by pam_passwdqc.
+- Minor documentation edits.
+- Added/adjusted copyright statements and attributions to reflect Dmitry's
+recent changes.
+
+* Mon Sep 28 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> unreleased
 - Introduced libpasswdqc shared library.
 - Implemented pwqgen and pwqcheck utilities.
 - Implemented config= parameter support in libpasswdqc.
