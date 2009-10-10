@@ -35,7 +35,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.3 2009/10/09 23:59:01 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.4 2009/10/10 23:21:53 solar Exp $
 .\"
 .Dd October 10, 2009
 .Dt PASSWDQC.CONF 5
@@ -68,12 +68,13 @@ are not allowed.
 .Sh DIRECTIVE OPTIONS
 .Bl -tag -width indent
 .It Cm config Ns = Ns Ar FILE
-Load config
+Load the specified configuration
 .Ar FILE
-in
+in the
 .Cm passwdqc.conf
-format.  This file may define any options described in this manual,
-including load of another configuration file, but loops are not allowed.
+format.
+This file may define any options described in this manual,
+including load of yet another configuration file, but loops are not allowed.
 .El
 .Sh PASSWORD QUALITY CONTROL OPTIONS
 .Bl -tag -width indent
