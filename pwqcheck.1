@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.1 2009/10/02 00:05:00 ldv Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.2 2009/10/10 22:41:48 solar Exp $
 .\"
 .Dd September 30, 2009
 .Dt PWQCHECK 1
@@ -38,7 +38,7 @@
 .Sh DESCRIPTION
 The
 .Nm
-program checks passphrase quality using libpasswdqc library.
+program checks passphrase quality using the libpasswdqc library.
 It expects to read 3 lines from standard input:
 .Bl -tag -width flag -compact -offset indent
 .It first line is a new password,
@@ -46,7 +46,7 @@ It expects to read 3 lines from standard input:
 .It third line is either an existing account name or a Xr passwd 5 entry.
 .El
 .Pp
-There is a number of supported options which can be used to control the
+There are a number of supported options, which can be used to control the
 .Nm
 behavior.
 .Sh OPTIONS
@@ -130,13 +130,11 @@ remove a common substring spelled backwards.
 .It Cm config Ns = Ns Ar FILE
 Load config
 .Ar FILE
-in
+in the
 .Cm passwdqc.conf
 format.  This file may define any options described in
-.Xr passwdqc.conf 5 , but only
-.Cm min Ns , Cm max Ns , Cm passphrase Ns , Cm match
-and
-.Cm config
+.Xr passwdqc.conf 5 , but only the
+.Cm min Ns , Cm max Ns , Cm passphrase Ns , Cm match Ns , and Cm config
 options are honored by
 .Nm .
 .It Cm --version
@@ -150,9 +148,9 @@ help text and exit.
 .El
 .Sh RETURN VALUE
 .Nm
-exits with nonzero status when it encounters invalid config file,
+exits with non-zero status when it encounters invalid config file,
 invalid option, invalid parameter value, invalid data in standard input,
-when it detects weak passphrase, and in any case when it fails to check
+when it detects a weak passphrase, and in any case when it fails to check
 passphrase strength.
 .Sh FILES
 .Pa /etc/passwdqc.conf .
@@ -163,11 +161,10 @@ passphrase strength.
 .Xr passwdqc.conf 5 ,
 .Xr pam_passwdqc 8 .
 .Sh AUTHORS
-The pam_passwdqc module was written for Openwall GNU/*/Linux by
-.An Solar Designer .
-Both the
+The pam_passwdqc module was written for Openwall GNU/*/Linux by Solar Designer.
+The
 .Nm
-program, which was originally made for ALT GNU/*/Linux, and this manual page
-.Pq derived from the pam_passwdqc author's documentation Ns ,
-which was made for Openwall GNU/*/Linux, are written by
-.An Dmitry V. Levin .
+program was originally written for ALT GNU/*/Linux by Dmitry V. Levin,
+indirectly reusing code from pam_passwdqc (via libpasswdqc).
+This manual page (derived from the pam_passwdqc documentation)
+was written for Openwall GNU/*/Linux by Dmitry V. Levin.
