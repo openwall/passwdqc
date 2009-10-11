@@ -1,6 +1,6 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.41 2009/10/10 00:12:32 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.42 2009/10/11 12:33:30 solar Exp $
 
-Summary: Pluggable password quality-control module.
+Summary: Password/passphrase strength checking toolset.
 Name: passwdqc
 Version: 1.1.0
 Release: owl1
@@ -19,6 +19,11 @@ PAM-aware password changing programs, such as passwd(1).  In addition
 to checking regular passwords, it offers support for passphrases and
 can provide randomly generated ones.  All features are optional and
 can be (re-)configured without rebuilding.
+
+The package additionally includes libpasswdqc (a password/passphrase
+strength checking library), pwqcheck (a standalone password/passphrase
+strength checking program), and pwqgen (a standalone random passphrase
+generator program).
 
 %package devel
 Summary: Libraries and header files for building passwdqc-aware applications.
