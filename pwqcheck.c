@@ -96,7 +96,7 @@ int main(int argc, const char **argv)
 			    "\nUsage: pwqcheck [options]\n"
 			    "\nValid options are:\n"
 			    "  min=N0,N1,N2,N3,N4\n"
-			    "       set minimum allowed passphrase lengths for different kinds of passphrases;\n"
+			    "       set minimum allowed lengths for different kinds of passphrases;\n"
 			    "  max=N\n"
 			    "       set maximum allowed passphrase length;\n"
 			    "  passphrase=N\n"
