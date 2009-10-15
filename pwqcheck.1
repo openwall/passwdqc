@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.6 2009/10/15 20:58:59 ldv Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.7 2009/10/15 22:16:07 ldv Exp $
 .\"
 .Dd October 10, 2009
 .Dt PWQCHECK 1
@@ -48,6 +48,15 @@ It expects to read 3 lines from standard input:
 There are a number of supported options, which can be used to control the
 .Nm
 behavior.
+.Pp
+.Nm
+prints
+.Ar OK
+on success.  Scripts invoking
+.Nm
+are suggested to check for both a zero exit code and the
+.Ar OK
+line.
 .Sh OPTIONS
 .Bl -tag -width indent
 .It Cm min Ns = Ns Ar N0 , Ns Ar N1 , Ns Ar N2 , Ns Ar N3 , Ns Ar N4

@@ -114,7 +114,7 @@ int main(int argc, const char **argv)
 
 		if (!strcmp("--version", argv[1])) {
 			printf("pwqcheck version %s\n", PASSWDQC_VERSION);
-			exit(EXIT_SUCCESS);
+			return EXIT_SUCCESS;
 		}
 	}
 
@@ -141,7 +141,8 @@ int main(int argc, const char **argv)
 		goto done;
 	}
 
-	rc = EXIT_SUCCESS;
+	if (puts("OK") >= 0 && fflush(stdout) >= 0)
+		rc = EXIT_SUCCESS;
 
       done:
 	clean(pwbuf, size);
