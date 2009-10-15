@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.42 2009/10/11 12:33:30 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.43 2009/10/15 22:29:02 ldv Exp $
 
 Summary: Password/passphrase strength checking toolset.
 Name: passwdqc
-Version: 1.1.0
+Version: 1.1.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -61,6 +61,14 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Thu Oct 15 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.1-owl1
+- Relaxed license of pwqgen and pwqcheck manual pages.
+- Ensure that pwqgen's exit status is zero only if generated passphrase
+have been printed successfully.
+- Changed pwqcheck to print "OK" line on success.
+- Changed pwqcheck to print "Weak passphrase" diagnostics to stdout
+instead of stderr.
+
 * Sat Oct 10 2009 Solar Designer <solar-at-owl.openwall.com> 1.1.0-owl1
 - Export passwdqc_params_load in libpasswdqc.
 - Minor English grammar corrections to messages produced by pam_passwdqc.
