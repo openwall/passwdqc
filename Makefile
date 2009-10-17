@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000-2003,2005 by Solar Designer
+# Copyright (c) 2000-2003,2005,2009 by Solar Designer
 # Copyright (c) 2008,2009 by Dmitry V. Levin
 # See LICENSE
 #
@@ -32,12 +32,16 @@ DESTDIR =
 
 CC = gcc
 LD = $(CC)
+LD_lib = $(LD)
 RM = rm -f
 LN_s = ln -s
 MKDIR = mkdir -p
 INSTALL = install -c
-CFLAGS = -Wall -fPIC -O2
+CFLAGS = -Wall -O2
+CFLAGS_lib = $(CFLAGS) -fPIC
+CFLAGS_bin = $(CFLAGS) -fomit-frame-pointer
 
+LDFLAGS =
 LDFLAGS_shared = --shared
 LDFLAGS_shared_LINUX = --shared
 LDFLAGS_shared_SUN = -G
@@ -50,8 +54,8 @@ LDFLAGS_lib_HP = $(LDFLAGS_shared_HP)
 LDFLAGS_pam = $(LDFLAGS_shared)
 LDFLAGS_pam_LINUX = $(LDFLAGS_shared_LINUX) \
 	-Wl,--version-script,$(MAP_PAM)
-LDFLAGS_SUN = $(LDFLAGS_shared_SUN)
-LDFLAGS_HP = $(LDFLAGS_shared_HP)
+LDFLAGS_pam_SUN = $(LDFLAGS_shared_SUN)
+LDFLAGS_pam_HP = $(LDFLAGS_shared_HP)
 
 LDLIBS_lib =
 LDLIBS_pam = -lpam -lcrypt
@@ -62,9 +66,13 @@ LDLIBS_pam_HP = -lpam -lsec
 # Uncomment this to use cc instead of gcc
 #CC = cc
 # Uncomment this to use Sun's C compiler flags
-#CFLAGS = -KPIC -xO2
+#CFLAGS = -xO2
+#CFLAGS_lib = $(CFLAGS) -KPIC
+#CFLAGS_bin = $(CFLAGS)
 # Uncomment this to use HP's ANSI C compiler flags
-#CFLAGS = -Ae +w1 +W 474,486,542 +z +O2
+#CFLAGS = -Ae +w1 +W 474,486,542 +O2
+#CFLAGS_lib = $(CFLAGS) +z
+#CFLAGS_bin = $(CFLAGS)
 
 CONFIGS = passwdqc.conf
 BINS = pwqgen pwqcheck
@@ -76,19 +84,19 @@ OBJS_CHECK = pwqcheck.o
 
 all:
 	case "`uname -s`" in \
-	Linux)	$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
+	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_LINUX)" \
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
 			$(PROJ);; \
-	SunOS)	$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
-			LD=ld \
+	SunOS)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
+			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_SUN)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_SUN)" \
 			LDLIBS_pam="$(LDLIBS_pam_SUN)" \
 			$(PROJ);; \
-	HP-UX)	$(MAKE) CFLAGS="$(CFLAGS) -DHAVE_SHADOW" \
-			LD=ld \
+	HP-UX)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
+			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_HP)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_HP)" \
 			LDLIBS_pam="$(LDLIBS_pam_HP)" \
@@ -97,22 +105,28 @@ all:
 	esac
 
 $(SHARED_LIB): $(OBJS_LIB) $(MAP_LIB)
-	$(LD) $(LDFLAGS_lib) $(OBJS_LIB) $(LDLIBS_lib) -o $(SHARED_LIB)
+	$(LD_lib) $(LDFLAGS_lib) $(OBJS_LIB) $(LDLIBS_lib) -o $(SHARED_LIB)
 
 $(DEVEL_LIB): $(SHARED_LIB)
 	$(LN_s) $(SHARED_LIB) $(DEVEL_LIB)
 
 $(SHARED_PAM): $(OBJS_PAM) $(MAP_PAM) $(DEVEL_LIB)
-	$(LD) $(LDFLAGS_pam) $(OBJS_PAM) $(LDLIBS_pam) -L. -lpasswdqc -o $(SHARED_PAM)
+	$(LD_lib) $(LDFLAGS_pam) $(OBJS_PAM) $(LDLIBS_pam) -L. -lpasswdqc -o $(SHARED_PAM)
 
 pwqgen: $(OBJS_GEN) $(DEVEL_LIB)
-	$(LD) $(OBJS_GEN) -L. -lpasswdqc -o $@
+	$(LD) $(LDFLAGS) $(OBJS_GEN) -L. -lpasswdqc -o $@
 
 pwqcheck: $(OBJS_CHECK) $(DEVEL_LIB)
-	$(LD) $(OBJS_CHECK) -L. -lpasswdqc -o $@
+	$(LD) $(LDFLAGS) $(OBJS_CHECK) -L. -lpasswdqc -o $@
+
+pwqgen.o: pwqgen.c passwdqc.h
+	$(CC) $(CFLAGS_bin) -c $*.c
+
+pwqcheck.o: pwqcheck.c passwdqc.h
+	$(CC) $(CFLAGS_bin) -c $*.c
 
 .c.o:
-	$(CC) $(CFLAGS) -c $*.c
+	$(CC) $(CFLAGS_lib) -c $*.c
 
 concat.o: concat.h
 pam_passwdqc.o: passwdqc.h pam_macros.h
@@ -120,8 +134,6 @@ passwdqc_check.o: passwdqc.h wordset_4k.h
 passwdqc_load.o: passwdqc.h concat.h
 passwdqc_parse.o: passwdqc.h concat.h
 passwdqc_random.o: passwdqc.h wordset_4k.h
-pwqgen.o: passwdqc.h
-pwqcheck.o: passwdqc.h
 wordset_4k.o: wordset_4k.h
 
 install:
