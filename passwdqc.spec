@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.43 2009/10/15 22:29:02 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.44 2009/10/17 01:18:56 solar Exp $
 
 Summary: Password/passphrase strength checking toolset.
 Name: passwdqc
-Version: 1.1.1
+Version: 1.1.2
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -38,7 +38,9 @@ building passwdqc-aware applications.
 %setup -q
 
 %build
-%__make CFLAGS="-Wall -fPIC -DLINUX_PAM %optflags"
+%__make \
+	CFLAGS_lib="-Wall -fPIC -DLINUX_PAM %optflags_lib" \
+	CFLAGS_bin="-Wall %optflags"
 
 %install
 rm -rf %buildroot
@@ -61,6 +63,14 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Sat Oct 17 2009 Solar Designer <solar-at-owl.openwall.com> 1.1.2-owl1
+- In pwqcheck.c, replaced the uses of strsep(), which were insufficiently
+portable, with code based on strchr().
+- Corrected the linker invocations for Solaris (tested on Solaris 10) and
+likely for HP-UX (untested).  We broke this between 1.0.5 and 1.1.0.
+- Split the CFLAGS into two, separate for libraries (libpasswdqc, pam_passwdqc)
+and binaries (the pwq* programs).
+
 * Thu Oct 15 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.1-owl1
 - Relaxed license of pwqgen and pwqcheck manual pages.
 - Ensure that pwqgen's exit status is zero only if generated passphrase
