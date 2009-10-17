@@ -30,16 +30,24 @@ static char *read_line(int size)
 
 static char *extract_string(char **stringp)
 {
-	char *p = strsep(stringp, ":");
+	char *token = *stringp, *colon;
 
-	return p ? p : "";
+	if (!token)
+		return "";
+
+	colon = strchr(token, ':');
+	if (colon) {
+		*colon = '\0';
+		*stringp = colon + 1;
+	} else
+		*stringp = NULL;
+
+	return token;
 }
 
 static int extract_int(char **stringp)
 {
-	char *p = strsep(stringp, ":");
-
-	return p ? atoi(p) : 0;
+	return atoi(extract_string(stringp));
 }
 
 static struct passwd *parse_pwbuf(char *buf, struct passwd *pw)
