@@ -35,7 +35,7 @@ LD = $(CC)
 LD_lib = $(LD)
 RM = rm -f
 LN_s = ln -s
-MKDIR = mkdir -p
+MKDIR = umask 022 && mkdir -p
 INSTALL = install -c
 CFLAGS = -Wall -O2
 CFLAGS_lib = $(CFLAGS) -fPIC
@@ -137,8 +137,6 @@ passwdqc_random.o: passwdqc.h wordset_4k.h
 wordset_4k.o: wordset_4k.h
 
 install:
-	umask 022
-
 	$(MKDIR) $(DESTDIR)$(CONFDIR)
 	$(INSTALL) -m $(CONFMODE) $(CONFIGS) $(DESTDIR)$(CONFDIR)/
 
