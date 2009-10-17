@@ -137,6 +137,8 @@ passwdqc_random.o: passwdqc.h wordset_4k.h
 wordset_4k.o: wordset_4k.h
 
 install:
+	umask 022
+
 	$(MKDIR) $(DESTDIR)$(CONFDIR)
 	$(INSTALL) -m $(CONFMODE) $(CONFIGS) $(DESTDIR)$(CONFDIR)/
 
