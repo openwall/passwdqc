@@ -30,7 +30,7 @@ int main(int argc, const char **argv)
 
 		if (!strcmp("--version", argv[1])) {
 			printf("pwqgen version %s\n", PASSWDQC_VERSION);
-			return EXIT_SUCCESS;
+			return 0;
 		}
 	}
 
@@ -40,7 +40,7 @@ int main(int argc, const char **argv)
 		fprintf(stderr, "pwqgen: %s\n",
 		    (reason ? reason : "Out of memory"));
 		free(reason);
-		return EXIT_FAILURE;
+		return 1;
 	}
 
 	pass = passwdqc_random(&params.qc);
@@ -49,9 +49,8 @@ int main(int argc, const char **argv)
 		    "This could happen for a number of reasons: you could have requested\n"
 		    "an impossible passphrase length, or the access to kernel random number\n"
 		    "pool could have failed.\n");
-		return EXIT_FAILURE;
+		return 1;
 	}
 
-	return (puts(pass) >= 0 && fflush(stdout) >= 0) ?
-		EXIT_SUCCESS : EXIT_FAILURE;
+	return (puts(pass) >= 0 && fflush(stdout) >= 0) ? 0 : 1;
 }

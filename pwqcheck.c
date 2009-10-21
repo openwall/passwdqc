@@ -92,7 +92,7 @@ int main(int argc, const char **argv)
 	char *parse_reason, *newpass = NULL, *oldpass = NULL, *pwbuf = NULL;
 	struct passwd pw;
 	int size = 8192;
-	int rc = EXIT_FAILURE;
+	int rc = 1;
 
 	if (argc > 1 && argv[1][0] == '-') {
 		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
@@ -122,7 +122,7 @@ int main(int argc, const char **argv)
 
 		if (!strcmp("--version", argv[1])) {
 			printf("pwqcheck version %s\n", PASSWDQC_VERSION);
-			return EXIT_SUCCESS;
+			return 0;
 		}
 	}
 
@@ -150,7 +150,7 @@ int main(int argc, const char **argv)
 	}
 
 	if (puts("OK") >= 0 && fflush(stdout) >= 0)
-		rc = EXIT_SUCCESS;
+		rc = 0;
 
       done:
 	clean(pwbuf, size);
