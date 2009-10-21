@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <ctype.h>
 #include <errno.h>
 #include <sys/stat.h>
 
@@ -32,7 +31,7 @@ skip_whitespaces(char *str)
 {
 	char *p;
 
-	for (p = str; *p && isspace(*p); ++p)
+	for (p = str; *p == ' ' || *p == '\t'; ++p)
 		;
 	return p;
 }
@@ -42,7 +41,7 @@ skip_nonwhitespaces(char *str)
 {
 	char *p;
 
-	for (p = str; *p && !isspace(*p); ++p)
+	for (p = str; *p && *p != ' ' && *p != '\t'; ++p)
 		;
 	return p;
 }
