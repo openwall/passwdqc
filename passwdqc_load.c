@@ -21,7 +21,7 @@ static char *mkreason(const char *what, const char *pathname,
 	const char *at_num = (lineno ? buf : "");
 
 	if (lineno)
-		snprintf(buf, sizeof buf, "%u", lineno);
+		sprintf(buf, "%u", lineno);
 	return concat(what, " \"", pathname, "\"", at_line, at_num, ": ",
 	    (why ? why : strerror(errno)), NULL);
 }
