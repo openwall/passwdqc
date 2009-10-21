@@ -145,6 +145,7 @@ passwdqc_random.o: passwdqc.h wordset_4k.h
 wordset_4k.o: wordset_4k.h
 
 install: install_lib install_utils install_pam
+	@echo 'Consider executing ldconfig(8) to update a dynamic linker cache.'
 
 install_lib:
 	$(MKDIR) $(DESTDIR)$(CONFDIR)
