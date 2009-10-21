@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <errno.h>
 #include <sys/stat.h>
 
@@ -26,6 +27,26 @@ static char *mkreason(const char *what, const char *pathname,
 	    (why ? why : strerror(errno)), NULL);
 }
 
+static char *
+skip_whitespaces(char *str)
+{
+	char *p;
+
+	for (p = str; *p && isspace(*p); ++p)
+		;
+	return p;
+}
+
+static char *
+skip_nonwhitespaces(char *str)
+{
+	char *p;
+
+	for (p = str; *p && !isspace(*p); ++p)
+		;
+	return p;
+}
+
 static int
 parse_file(FILE *fp, passwdqc_params_t *params, char **reason,
     const char *pathname)
@@ -34,8 +55,9 @@ parse_file(FILE *fp, passwdqc_params_t *params, char **reason,
 	char buf[8192];
 
 	for (lineno = 1; fgets(buf, sizeof(buf), fp); ++lineno) {
-		const char *str;
-		char *saveptr;
+		char *str, *end, *rt;
+		const char *cstr;
+		int rc;
 
 		if (strlen(buf) >= sizeof(buf) - 1) {
 			*reason = mkreason("Error reading", pathname,
@@ -43,20 +65,24 @@ parse_file(FILE *fp, passwdqc_params_t *params, char **reason,
 			return -1;
 		}
 
-		str = strtok_r(buf, " \t\r\n", &saveptr);
-		if (str && *str == '#')
+		str = skip_whitespaces(buf);
+		if (!*str || *str == '#')
 			continue;
 
-		for (; str; str = strtok_r(NULL, " \t\r\n", &saveptr)) {
-			int rc;
-			char *rt;
+		end = skip_nonwhitespaces(str);
+		if (*skip_whitespaces(end)) {
+			*reason = mkreason("Error loading", pathname,
+			    lineno, "Unexpected token");
+			return -1;
+		}
+		*end = '\0';
 
-			if ((rc = passwdqc_params_parse(params, &rt, 1, &str))) {
-				*reason = mkreason("Error loading", pathname,
-				    lineno, (rt ? rt : "Out of memory"));
-				free(rt);
-				return rc;
-			}
+		cstr = str;
+		if ((rc = passwdqc_params_parse(params, &rt, 1, &cstr))) {
+			*reason = mkreason("Error loading", pathname,
+			    lineno, (rt ? rt : "Out of memory"));
+			free(rt);
+			return rc;
 		}
 	}
 
