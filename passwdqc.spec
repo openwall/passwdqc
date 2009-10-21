@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.45 2009/10/21 18:51:22 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.46 2009/10/21 23:36:59 ldv Exp $
 
 Summary: Password/passphrase strength checking toolset.
 Name: passwdqc
-Version: 1.1.2
+Version: 1.1.3
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -66,6 +66,16 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Wed Oct 21 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.3-owl1
+- Set umask 022 in "make install".
+- Eliminated insufficiently portable EXIT_FAILURE and EXIT_SUCCESS macros.
+- In passwdqc_load.c, replaced redundant snprintf(3) with plain sprintf(3).
+- Added pw_dir checks to passwdqc_check(), similar to already existings
+pw_gecos checks.
+- Dropped undocumented support for multiple options per config file line.
+- Switched to a heavily cut-down BSD license.
+- Added ldconfig calls to %%post and %%postun scripts.
+
 * Sat Oct 17 2009 Solar Designer <solar-at-owl.openwall.com> 1.1.2-owl1
 - In pwqcheck.c, replaced the uses of strsep(), which were insufficiently
 portable, with code based on strchr().
