@@ -296,14 +296,14 @@ const char *passwdqc_check(passwdqc_params_qc_t *params,
 	char truncated[9], *reversed;
 	char *u_newpass, *u_reversed;
 	char *u_oldpass;
-	char *u_name, *u_gecos;
+	char *u_name, *u_gecos, *u_dir;
 	const char *reason;
 	int length;
 
 	reversed = NULL;
 	u_newpass = u_reversed = NULL;
 	u_oldpass = NULL;
-	u_name = u_gecos = NULL;
+	u_name = u_gecos = u_dir = NULL;
 
 	reason = NULL;
 
@@ -342,12 +342,13 @@ const char *passwdqc_check(passwdqc_params_qc_t *params,
 			if (pw) {
 				u_name = unify(pw->pw_name);
 				u_gecos = unify(pw->pw_gecos);
+				u_dir = unify(pw->pw_dir);
 			}
 		}
 		if (!reversed ||
 		    !u_newpass || !u_reversed ||
 		    (oldpass && !u_oldpass) ||
-		    (pw && (!u_name || !u_gecos)))
+		    (pw && (!u_name || !u_gecos || !u_dir)))
 			reason = REASON_ERROR;
 	}
 
@@ -360,7 +361,9 @@ const char *passwdqc_check(passwdqc_params_qc_t *params,
 	    (is_based(params, u_name, u_newpass, newpass) ||
 	     is_based(params, u_name, u_reversed, reversed) ||
 	     is_based(params, u_gecos, u_newpass, newpass) ||
-	     is_based(params, u_gecos, u_reversed, reversed)))
+	     is_based(params, u_gecos, u_reversed, reversed) ||
+	     is_based(params, u_dir, u_newpass, newpass) ||
+	     is_based(params, u_dir, u_reversed, reversed)))
 		reason = REASON_PERSONAL;
 
 	if (!reason && (int)strlen(newpass) < params->min[2] &&
@@ -375,6 +378,7 @@ const char *passwdqc_check(passwdqc_params_qc_t *params,
 	clean(u_oldpass);
 	clean(u_name);
 	clean(u_gecos);
+	clean(u_dir);
 
 	return reason;
 }
