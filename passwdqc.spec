@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.44 2009/10/17 01:18:56 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.45 2009/10/21 18:51:22 ldv Exp $
 
 Summary: Password/passphrase strength checking toolset.
 Name: passwdqc
@@ -47,6 +47,9 @@ rm -rf %buildroot
 %__make install DESTDIR=%buildroot MANDIR=%_mandir \
 	SHARED_LIBDIR=/%_lib DEVEL_LIBDIR=%_libdir \
 	SECUREDIR=/%_lib/security
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
