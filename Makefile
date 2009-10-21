@@ -83,26 +83,34 @@ OBJS_GEN = pwqgen.o
 OBJS_CHECK = pwqcheck.o
 
 all:
+
+all pam utils:
 	case "`uname -s`" in \
 	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_LINUX)" \
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
-			$(PROJ);; \
+			$@_wrapped;; \
 	SunOS)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_SUN)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_SUN)" \
 			LDLIBS_pam="$(LDLIBS_pam_SUN)" \
-			$(PROJ);; \
+			$@_wrapped;; \
 	HP-UX)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_HP)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_HP)" \
 			LDLIBS_pam="$(LDLIBS_pam_HP)" \
-			$(PROJ);; \
-	*)	$(MAKE) $(PROJ);; \
+			$@_wrapped;; \
+	*)	$(MAKE) $@_wrapped;; \
 	esac
+
+all_wrapped: pam_wrapped utils_wrapped
+
+pam_wrapped: $(SHARED_PAM)
+
+utils_wrapped: $(BINS)
 
 $(SHARED_LIB): $(OBJS_LIB) $(MAP_LIB)
 	$(LD_lib) $(LDFLAGS_lib) $(OBJS_LIB) $(LDLIBS_lib) -o $(SHARED_LIB)
@@ -136,7 +144,9 @@ passwdqc_parse.o: passwdqc.h concat.h
 passwdqc_random.o: passwdqc.h wordset_4k.h
 wordset_4k.o: wordset_4k.h
 
-install:
+install: install_lib install_utils install_pam
+
+install_lib:
 	$(MKDIR) $(DESTDIR)$(CONFDIR)
 	$(INSTALL) -m $(CONFMODE) $(CONFIGS) $(DESTDIR)$(CONFDIR)/
 
@@ -147,30 +157,46 @@ install:
 	$(LN_s) $(SHARED_LIBDIR_REL)/$(SHARED_LIB) \
 		$(DESTDIR)$(DEVEL_LIBDIR)/$(DEVEL_LIB)
 
-	$(MKDIR) $(DESTDIR)$(BINDIR)
-	$(INSTALL) -m $(BINMODE) $(BINS) $(DESTDIR)$(BINDIR)/
-
-	$(MKDIR) $(DESTDIR)$(SECUREDIR)
-	$(INSTALL) -m $(SHLIBMODE) $(SHARED_PAM) $(DESTDIR)$(SECUREDIR)/
-
 	$(MKDIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL) -m $(INCMODE) $(HEADER) $(DESTDIR)$(INCLUDEDIR)/
-
-	$(MKDIR) $(DESTDIR)$(MANDIR)/man1
-	$(INSTALL) -m $(MANMODE) $(MAN1) $(DESTDIR)$(MANDIR)/man1/
 
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man5
 	$(INSTALL) -m $(MANMODE) $(MAN5) $(DESTDIR)$(MANDIR)/man5/
 
+install_utils:
+	$(MKDIR) $(DESTDIR)$(BINDIR)
+	$(INSTALL) -m $(BINMODE) $(BINS) $(DESTDIR)$(BINDIR)/
+
+	$(MKDIR) $(DESTDIR)$(MANDIR)/man1
+	$(INSTALL) -m $(MANMODE) $(MAN1) $(DESTDIR)$(MANDIR)/man1/
+
+install_pam:
+	$(MKDIR) $(DESTDIR)$(SECUREDIR)
+	$(INSTALL) -m $(SHLIBMODE) $(SHARED_PAM) $(DESTDIR)$(SECUREDIR)/
+
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man8
 	$(INSTALL) -m $(MANMODE) $(MAN8) $(DESTDIR)$(MANDIR)/man8/
 
-remove:
+remove: remove_pam remove_utils remove_lib
+
+remove_pam:
 	$(RM) $(DESTDIR)$(MANDIR)/man8/$(MAN8)
-	$(RM) $(DESTDIR)$(INCLUDEDIR)/$(HEADER)
 	$(RM) $(DESTDIR)$(SECUREDIR)/$(SHARED_PAM)
-	$(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$(DEVEL_LIB)
-	$(RM) $(DESTDIR)$(SHARED_LIBDIR)/$(SHARED_LIB)
+
+remove_utils:
+	for f in $(MAN1); do $(RM) $(DESTDIR)$(MANDIR)/man1/$$f; done
+	for f in $(BINS); do $(RM) $(DESTDIR)$(BINDIR)/$$f; done
+
+remove_lib:
+	for f in $(MAN5); do $(RM) $(DESTDIR)$(MANDIR)/man5/$$f; done
+	for f in $(HEADER); do $(RM) $(DESTDIR)$(INCLUDEDIR)/$$f; done
+	for f in $(DEVEL_LIB); do $(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$$f; done
+	for f in $(SHARED_LIB); do $(RM) $(DESTDIR)$(SHARED_LIBDIR)/$$f; done
+	for f in $(CONFIGS); do $(RM) $(DESTDIR)$(CONFDIR)/$$f; done
 
 clean:
 	$(RM) $(PROJ) *.o
+
+.PHONY: all all_wrapped clean install install_lib install_pam install_utils \
+	pam pam_wrapped remove remove_lib remove_pam remove_utils \
+	utils utils_wrapped
