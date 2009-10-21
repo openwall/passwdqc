@@ -1,20 +1,26 @@
-The manual pages (pam_passwdqc.8, passwdqc.conf.5, pwqcheck.1, and
-pwqgen.1) are under the 3-clause BSD-style license as specified within
-the files themselves.
+Two manual pages (pam_passwdqc.8 and passwdqc.conf.5) are under the
+3-clause BSD-style license as specified within the files themselves.
 
 concat.c, wordset_4k.c, wordset_4k.h, and pam_macros.h are in the public
-domain.
+domain, but at your option they may also be used under this package's
+license below.
 
-The rest of the files in this package fall under the following terms:
+The rest of the files in this package fall under the following terms
+(heavily cut-down "BSD license"):
 
-You're allowed to do whatever you like with this software (including
-re-distribution in source and/or binary form, with or without
-modification), provided that credit is given where it is due and any
-modified versions are marked as such.  There's absolutely no warranty.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted.
 
-Note that you don't have to re-distribute this software under these
-same relaxed terms.  In particular, you're free to place modified
-versions under (L)GPL, thus disallowing further re-distribution in
-binary-only form.
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE.
 
-$Owl: Owl/packages/passwdqc/passwdqc/LICENSE,v 1.6 2009/10/09 23:10:14 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/LICENSE,v 1.7 2009/10/21 19:38:39 solar Exp $
