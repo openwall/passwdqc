@@ -31,7 +31,7 @@ skip_whitespaces(char *str)
 {
 	char *p;
 
-	for (p = str; *p == ' ' || *p == '\t'; ++p)
+	for (p = str; *p == ' ' || *p == '\t' || *p == '\r' || *p == '\n'; ++p)
 		;
 	return p;
 }
@@ -41,7 +41,8 @@ skip_nonwhitespaces(char *str)
 {
 	char *p;
 
-	for (p = str; *p && *p != ' ' && *p != '\t'; ++p)
+	for (p = str;
+	    *p && *p != ' ' && *p != '\t' && *p != '\r' && *p != '\n'; ++p)
 		;
 	return p;
 }
