@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.46 2009/10/21 23:36:59 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.47 2009/10/22 00:17:01 solar Exp $
 
 Summary: Password/passphrase strength checking toolset.
 Name: passwdqc
@@ -67,10 +67,9 @@ rm -rf %buildroot
 
 %changelog
 * Wed Oct 21 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.3-owl1
-- Set umask 022 in "make install".
 - Eliminated insufficiently portable EXIT_FAILURE and EXIT_SUCCESS macros.
 - In passwdqc_load.c, replaced redundant snprintf(3) with plain sprintf(3).
-- Added pw_dir checks to passwdqc_check(), similar to already existings
+- Added pw_dir checks to passwdqc_check(), similar to already existing
 pw_gecos checks.
 - Dropped undocumented support for multiple options per config file line.
 - Switched to a heavily cut-down BSD license.
@@ -83,11 +82,12 @@ portable, with code based on strchr().
 likely for HP-UX (untested).  We broke this between 1.0.5 and 1.1.0.
 - Split the CFLAGS into two, separate for libraries (libpasswdqc, pam_passwdqc)
 and binaries (the pwq* programs).
+- In the Makefile, set umask 022 on mkdir's invoked by "make install".
 
 * Thu Oct 15 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.1-owl1
 - Relaxed license of pwqgen and pwqcheck manual pages.
 - Ensure that pwqgen's exit status is zero only if generated passphrase
-have been printed successfully.
+has been printed successfully.
 - Changed pwqcheck to print "OK" line on success.
 - Changed pwqcheck to print "Weak passphrase" diagnostics to stdout
 instead of stderr.
