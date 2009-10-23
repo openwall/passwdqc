@@ -1,0 +1,33 @@
+Many Linux distributions, FreeBSD 5.0+, and DragonFly BSD 2.2+ include
+pam_passwdqc or the full-blown passwdqc package in the distribution or
+provide it as a "native" package to be installed - so you may just use
+that.  The instructions below apply if your distribution lacks passwdqc
+or if you prefer to build and install passwdqc on your own (such as to
+get a newer version of it than one available in/for the distribution).
+
+On a system with the PAM (Pluggable Authentication Modules) framework,
+you may build all components of passwdqc (the library, the PAM module,
+and two command-line programs) by simply running "make".  To install,
+run "make install".  To uninstall, run "make remove".
+
+On a system without PAM, you may build everything but the PAM module
+with "make utils".  To install, run "make install_lib install_utils".
+To uninstall, run "make remove_lib remove_utils".
+
+Please note that currently passwdqc's default is to install right into
+system directories such as /etc, /lib, /usr/lib, /usr/include,
+/usr/share/man, /usr/bin.  If desired, these pathnames may be overridden
+on make's command-line (please see Makefile for the available macro
+names and passwdqc.spec for some examples).
+
+Since passwdqc installs a new shared library, you may need to run the
+ldconfig(8) program to update the dynamic linker cache.
+
+Please refer to README and PLATFORMS for information on configuring your
+system to use the PAM module.  You may also refer to the pam_passwdqc(8)
+and passwdqc.conf(5) manual pages.
+
+Please refer to the pwqcheck(1) and pwqgen(1) manual pages for
+information on using the command-line programs.
+
+$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.1 2009/10/23 02:38:19 solar Exp $
