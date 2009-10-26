@@ -7,6 +7,22 @@
 #include <string.h>
 #include "passwdqc.h"
 
+static void
+print_help(void)
+{
+	puts("Generate quality controllable passphrase.\n"
+	    "\nUsage: pwqgen [options]\n"
+	    "\nValid options are:\n"
+	    "  random=N\n"
+	    "       set size of randomly-generated passphrase in bits;\n"
+	    "  config=FILE\n"
+	    "       load config FILE in passwdqc.conf format;\n"
+	    "  --version\n"
+	    "       print program version and exit;\n"
+	    "  -h or --help\n"
+	    "       print this help text and exit.");
+}
+
 int main(int argc, const char **argv)
 {
 	passwdqc_params_t params;
@@ -14,17 +30,7 @@ int main(int argc, const char **argv)
 
 	if (argc > 1 && argv[1][0] == '-') {
 		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
-			printf("Generate quality controllable passphrase.\n"
-			    "\nUsage: pwqgen [options]\n"
-			    "\nValid options are:\n"
-			    "  random=N\n"
-			    "       set size of randomly-generated passphrase in bits;\n"
-			    "  config=FILE\n"
-			    "       load config FILE in passwdqc.conf format;\n"
-			    "  --version\n"
-			    "       print program version and exit;\n"
-			    "  -h or --help\n"
-			    "       print this help text and exit.\n");
+			print_help();
 			return 0;
 		}
 

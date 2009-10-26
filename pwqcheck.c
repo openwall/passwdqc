@@ -91,6 +91,32 @@ static void clean(char *dst, int size)
 	free(dst);
 }
 
+static void
+print_help(void)
+{
+	puts("Check passphrase quality.\n"
+	    "\npwqcheck reads 3 lines from standard input:\n"
+	    "  first line is a new passphrase,\n"
+	    "  second line is an old passphrase, and\n"
+	    "  third line is either an existing account name or a passwd entry.\n"
+	    "\nUsage: pwqcheck [options]\n"
+	    "\nValid options are:\n"
+	    "  min=N0,N1,N2,N3,N4\n"
+	    "       set minimum allowed lengths for different kinds of passphrases;\n"
+	    "  max=N\n"
+	    "       set maximum allowed passphrase length;\n"
+	    "  passphrase=N\n"
+	    "       set number of words required for a passphrase;\n"
+	    "  match=N\n"
+	    "       set length of common substring in substring check;\n"
+	    "  config=FILE\n"
+	    "       load config FILE in passwdqc.conf format;\n"
+	    "  --version\n"
+	    "       print program version and exit;\n"
+	    "  -h or --help\n"
+	    "       print this help text and exit.");
+}
+
 int main(int argc, const char **argv)
 {
 	passwdqc_params_t params;
@@ -102,27 +128,7 @@ int main(int argc, const char **argv)
 
 	if (argc > 1 && argv[1][0] == '-') {
 		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
-			printf("Check passphrase quality.\n"
-			    "\npwqcheck reads 3 lines from standard input:\n"
-			    "  first line is a new passphrase,\n"
-			    "  second line is an old passphrase, and\n"
-			    "  third line is either an existing account name or a passwd entry.\n"
-			    "\nUsage: pwqcheck [options]\n"
-			    "\nValid options are:\n"
-			    "  min=N0,N1,N2,N3,N4\n"
-			    "       set minimum allowed lengths for different kinds of passphrases;\n"
-			    "  max=N\n"
-			    "       set maximum allowed passphrase length;\n"
-			    "  passphrase=N\n"
-			    "       set number of words required for a passphrase;\n"
-			    "  match=N\n"
-			    "       set length of common substring in substring check;\n"
-			    "  config=FILE\n"
-			    "       load config FILE in passwdqc.conf format;\n"
-			    "  --version\n"
-			    "       print program version and exit;\n"
-			    "  -h or --help\n"
-			    "       print this help text and exit.\n");
+			print_help();
 			return 0;
 		}
 
