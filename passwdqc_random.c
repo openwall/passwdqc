@@ -46,7 +46,7 @@ static int read_loop(int fd, unsigned char *buffer, int count)
 	return offset;
 }
 
-char *passwdqc_random(passwdqc_params_qc_t *params)
+char *passwdqc_random(const passwdqc_params_qc_t *params)
 {
 	char output[0x100];
 	int bits;

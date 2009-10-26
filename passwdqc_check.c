@@ -62,7 +62,7 @@ static int expected_different(int charset, int length)
  * contain enough different characters for its class, or doesn't contain
  * enough words for a passphrase.
  */
-static int is_simple(passwdqc_params_qc_t *params, const char *newpass)
+static int is_simple(const passwdqc_params_qc_t *params, const char *newpass)
 {
 	int length, classes, words, chars;
 	int digits, lowers, uppers, others, unknowns;
@@ -207,7 +207,7 @@ static void clean(char *dst)
  * substring and needle would be too simple for a password with the
  * substring removed.
  */
-static int is_based(passwdqc_params_qc_t *params,
+static int is_based(const passwdqc_params_qc_t *params,
     const char *haystack, const char *needle, const char *original)
 {
 	char *scratch;
@@ -267,7 +267,7 @@ static int is_based(passwdqc_params_qc_t *params,
  * that aren't short English words.  Perhaps support for large wordlists
  * should still be added, even though this is now of little importance.
  */
-static int is_word_based(passwdqc_params_qc_t *params,
+static int is_word_based(const passwdqc_params_qc_t *params,
     const char *needle, const char *original)
 {
 	char word[7];
@@ -290,8 +290,8 @@ static int is_word_based(passwdqc_params_qc_t *params,
 	return 0;
 }
 
-const char *passwdqc_check(passwdqc_params_qc_t *params,
-    const char *newpass, const char *oldpass, struct passwd *pw)
+const char *passwdqc_check(const passwdqc_params_qc_t *params,
+    const char *newpass, const char *oldpass, const struct passwd *pw)
 {
 	char truncated[9], *reversed;
 	char *u_newpass, *u_reversed;

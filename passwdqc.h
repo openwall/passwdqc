@@ -27,9 +27,9 @@ typedef struct {
 	passwdqc_params_pam_t pam;
 } passwdqc_params_t;
 
-extern const char *passwdqc_check(passwdqc_params_qc_t *params,
-    const char *newpass, const char *oldpass, struct passwd *pw);
-extern char *passwdqc_random(passwdqc_params_qc_t *params);
+extern const char *passwdqc_check(const passwdqc_params_qc_t *params,
+    const char *newpass, const char *oldpass, const struct passwd *pw);
+extern char *passwdqc_random(const passwdqc_params_qc_t *params);
 
 extern int passwdqc_params_parse(passwdqc_params_t *params,
     char **reason, int argc, const char *const *argv);
