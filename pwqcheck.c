@@ -7,18 +7,24 @@
 #include <string.h>
 #include "passwdqc.h"
 
-static char *read_line(int size)
+static char *read_line(unsigned int size)
 {
-	char *p, *buf = malloc(size);
+	char *p, *buf = malloc(size + 1);
 
 	if (!buf) {
 		fprintf(stderr, "pwqcheck: Memory allocation failed.\n");
 		return NULL;
 	}
 
-	if (!fgets(buf, size, stdin)) {
+	if (!fgets(buf, size + 1, stdin)) {
 		free(buf);
 		fprintf(stderr, "pwqcheck: Error reading standard input.\n");
+		return NULL;
+	}
+
+	if (strlen(buf) >= size) {
+		free(buf);
+		fprintf(stderr, "pwqcheck: Line too long.\n");
 		return NULL;
 	}
 
