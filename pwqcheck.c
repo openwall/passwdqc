@@ -51,11 +51,6 @@ static char *extract_string(char **stringp)
 	return token;
 }
 
-static int extract_int(char **stringp)
-{
-	return atoi(extract_string(stringp));
-}
-
 static struct passwd *parse_pwbuf(char *buf, struct passwd *pw)
 {
 	if (!strchr(buf, ':')) {
@@ -70,8 +65,8 @@ static struct passwd *parse_pwbuf(char *buf, struct passwd *pw)
 		memset(pw, 0, sizeof(*pw));
 		pw->pw_name = extract_string(&buf);
 		pw->pw_passwd = extract_string(&buf);
-		pw->pw_uid = extract_int(&buf);
-		pw->pw_gid = extract_int(&buf);
+		extract_string(&buf); /* uid */
+		extract_string(&buf); /* gid */
 		pw->pw_gecos = extract_string(&buf);
 		pw->pw_dir = extract_string(&buf);
 		pw->pw_shell = buf ? buf : "";
