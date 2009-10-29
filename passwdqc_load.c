@@ -86,7 +86,7 @@ parse_file(FILE *fp, passwdqc_params_t *params, char **reason,
 		}
 	}
 
-	if (!feof(fp)) {
+	if (!feof(fp) || ferror(fp)) {
 		*reason = mkreason("Error reading", pathname, 0, NULL);
 		return -1;
 	}
