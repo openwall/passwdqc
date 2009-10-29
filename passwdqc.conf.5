@@ -35,9 +35,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.4 2009/10/10 23:21:53 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.5 2009/10/29 04:56:01 solar Exp $
 .\"
-.Dd October 10, 2009
+.Dd October 29, 2009
 .Dt PASSWDQC.CONF 5
 .Os
 .Sh NAME
@@ -77,9 +77,14 @@ This file may define any options described in this manual,
 including load of yet another configuration file, but loops are not allowed.
 .El
 .Sh PASSWORD QUALITY CONTROL OPTIONS
-.Bl -tag -width indent
-.It Cm min Ns = Ns Ar N0 , Ns Ar N1 , Ns Ar N2 , Ns Ar N3 , Ns Ar N4
-.Pq default: Cm min Ns = Ns Cm disabled , Ns 24 , Ns 11 , Ns 8 , Ns 7
+.Bl -tag -width Ds
+.Sm off
+.It Xo
+.Cm min No =
+.Ar N0 , N1 , N2 , N3 , N4
+.Xc
+.Sm on
+.Pq default: min=disabled,24,11,8,7
 The minimum allowed password lengths for different kinds of
 passwords/passphrases.
 The keyword
@@ -167,7 +172,8 @@ long common substring and the new password with the substring removed
 would be weak.
 .It Xo
 .Sm off
-.Cm random No = Ar N Op , Cm only
+.Cm random No = Ar N
+.Op , Cm only
 .Sm on
 .Xc
 .Pq default: Cm random Ns = Ns 42

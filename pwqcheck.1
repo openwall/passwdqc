@@ -18,9 +18,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.9 2009/10/21 19:38:39 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.10 2009/10/29 04:56:02 solar Exp $
 .\"
-.Dd October 15, 2009
+.Dd October 29, 2009
 .Dt PWQCHECK 1
 .Os Openwall GNU/*/Linux
 .Sh NAME
@@ -33,10 +33,16 @@ The
 .Nm
 program checks passphrase quality using the libpasswdqc library.
 It expects to read 3 lines from standard input:
-.Bl -tag -width flag -compact -offset indent
-.It first line is a new password,
-.It second line is an old password, and
-.It third line is either an existing account name or a Xr passwd 5 entry.
+.Pp
+.Bl -item -compact -offset indent
+.It
+first line is a new password,
+.It
+second line is an old password, and
+.It
+third line is either an existing account name or a
+.Xr passwd 5
+entry.
 .El
 .Pp
 There are a number of supported options, which can be used to control the
@@ -52,9 +58,14 @@ are suggested to check for both a zero exit code and the
 .Ar OK
 line.
 .Sh OPTIONS
-.Bl -tag -width indent
-.It Cm min Ns = Ns Ar N0 , Ns Ar N1 , Ns Ar N2 , Ns Ar N3 , Ns Ar N4
-.Pq default: Cm min Ns = Ns Cm disabled , Ns 24 , Ns 11 , Ns 8 , Ns 7
+.Bl -tag -width Ds
+.Sm off
+.It Xo
+.Cm min No =
+.Ar N0 , N1 , N2 , N3 , N4
+.Xc
+.Sm on
+.Pq default: min=disabled,24,11,8,7
 The minimum allowed password lengths for different kinds of
 passwords/passphrases.
 The keyword
@@ -136,7 +147,12 @@ in the
 .Cm passwdqc.conf
 format.  This file may define any options described in
 .Xr passwdqc.conf 5 , but only the
-.Cm min Ns , Cm max Ns , Cm passphrase Ns , Cm match Ns , and Cm config
+.Cm min ,
+.Cm max ,
+.Cm passphrase ,
+.Cm match Ns ,
+and
+.Cm config
 options are honored by
 .Nm .
 .It Cm --version
