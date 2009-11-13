@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.49 2009/10/30 02:24:25 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.50 2009/11/13 23:28:28 ldv Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.1.3
+Version: 1.1.4
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -71,6 +71,16 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Fri Oct 30 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.4-owl1
+- Added const qualifier to all arguments of passwdqc_check() and
+passwdqc_random().
+- Implemented pwqcheck's stdin check for too long lines.
+- Applied markup corrections to passwdqc.conf(5) and pwqcheck(1) for better
+portability (by Kevin Steves and Jason McIntyre, with minor changes made
+by Solar Designer).
+- Changed use of mdoc's .Os macro to be consistent with other Openwall
+Project's software (by Solar Designer).
+
 * Wed Oct 21 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.3-owl1
 - Eliminated insufficiently portable EXIT_FAILURE and EXIT_SUCCESS macros.
 - In passwdqc_load.c, replaced redundant snprintf(3) with plain sprintf(3).
