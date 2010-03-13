@@ -42,6 +42,9 @@ You will likely also need to set "max=8" in order to actually enforce
 not-so-weak passwords with the obsolete traditional DES-based hashes
 that most Solaris systems use and the flawed approach HP-UX uses to
 process characters past 8.  Of course this way you only get about one
-third of the functionality of pam_passwdqc.
+third of the functionality of pam_passwdqc.  As a better alternative,
+on modern Solaris systems you may edit the "CRYPT_DEFAULT=__unix__" line
+in /etc/security/policy.conf to read "CRYPT_DEFAULT=2a" to enable the
+OpenBSD-style bcrypt (Blowfish-based) password hashing.
 
-$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.12 2010/03/13 08:19:42 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.13 2010/03/13 08:29:55 solar Exp $
