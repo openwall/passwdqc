@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.50 2009/11/13 23:28:28 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.51 2010/03/13 10:52:39 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.1.4
+Version: 1.1.5
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -71,6 +71,11 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Sat Mar 13 2010 Solar Designer <solar-at-owl.openwall.com> 1.1.5-owl1
+- New command-line options for pwqcheck: -1 and -2 for reading just 1 and
+just 2 lines from stdin, respectively (instead of reading 3 lines, which is
+the default).
+
 * Fri Oct 30 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.4-owl1
 - Added const qualifier to all arguments of passwdqc_check() and
 passwdqc_random().
