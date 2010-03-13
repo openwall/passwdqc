@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2008,2009 by Dmitry V. Levin.  See LICENSE.
+ * Copyright (c) 2008,2009 by Dmitry V. Levin
+ * Copyright (c) 2010 by Solar Designer
+ * See LICENSE
  */
 
 #include <stdio.h>
@@ -51,25 +53,27 @@ static char *extract_string(char **stringp)
 	return token;
 }
 
-static struct passwd *parse_pwbuf(char *buf, struct passwd *pw)
+static struct passwd *parse_pwline(char *line, struct passwd *pw)
 {
-	if (!strchr(buf, ':')) {
-		struct passwd *p = getpwnam(buf);
-
+	if (!strchr(line, ':')) {
+		struct passwd *p = getpwnam(line);
+		endpwent();
 		if (!p) {
 			fprintf(stderr, "pwqcheck: User not found.\n");
 			return NULL;
 		}
+		if (p->pw_passwd)
+			memset(p->pw_passwd, 0, strlen(p->pw_passwd));
 		memcpy(pw, p, sizeof(*pw));
 	} else {
 		memset(pw, 0, sizeof(*pw));
-		pw->pw_name = extract_string(&buf);
-		pw->pw_passwd = extract_string(&buf);
-		extract_string(&buf); /* uid */
-		extract_string(&buf); /* gid */
-		pw->pw_gecos = extract_string(&buf);
-		pw->pw_dir = extract_string(&buf);
-		pw->pw_shell = buf ? buf : "";
+		pw->pw_name = extract_string(&line);
+		pw->pw_passwd = extract_string(&line);
+		extract_string(&line); /* uid */
+		extract_string(&line); /* gid */
+		pw->pw_gecos = extract_string(&line);
+		pw->pw_dir = extract_string(&line);
+		pw->pw_shell = line ? line : "";
 		if (!*pw->pw_name || !*pw->pw_dir) {
 			fprintf(stderr, "pwqcheck: Invalid passwd entry.\n");
 			return NULL;
@@ -90,7 +94,7 @@ static void
 print_help(void)
 {
 	puts("Check passphrase quality.\n"
-	    "\npwqcheck reads 3 lines from standard input:\n"
+	    "\npwqcheck reads up to 3 lines from standard input:\n"
 	    "  first line is a new passphrase,\n"
 	    "  second line is an old passphrase, and\n"
 	    "  third line is either an existing account name or a passwd entry.\n"
@@ -106,6 +110,10 @@ print_help(void)
 	    "       set length of common substring in substring check;\n"
 	    "  config=FILE\n"
 	    "       load config FILE in passwdqc.conf format;\n"
+	    "  -1\n"
+	    "       read just 1 line (new passphrase)\n"
+	    "  -2\n"
+	    "       read just 2 lines (new and old passphrases)\n"
 	    "  --version\n"
 	    "       print program version and exit;\n"
 	    "  -h or --help\n"
@@ -116,8 +124,9 @@ int main(int argc, const char **argv)
 {
 	passwdqc_params_t params;
 	const char *check_reason;
-	char *parse_reason, *newpass = NULL, *oldpass = NULL, *pwbuf = NULL;
-	struct passwd pw;
+	char *parse_reason, *newpass = NULL, *oldpass = NULL, *pwline = NULL;
+	struct passwd pwbuf, *pw = NULL;
+	int lines_to_read = 3;
 	int size = 8192;
 	int rc = 1;
 
@@ -130,6 +139,11 @@ int main(int argc, const char **argv)
 		if (!strcmp("--version", argv[1])) {
 			printf("pwqcheck version %s\n", PASSWDQC_VERSION);
 			return 0;
+		}
+
+		if ((argv[1][1] == '1' || argv[1][1] == '2') && !argv[1][2]) {
+			lines_to_read = argv[1][1] - '0';
+			argc--; argv++;
 		}
 	}
 
@@ -146,11 +160,15 @@ int main(int argc, const char **argv)
 	if (params.qc.max + 1 > size)
 		size = params.qc.max + 1;
 
-	if (!(newpass = read_line(size)) || !(oldpass = read_line(size))
-	    || !(pwbuf = read_line(size)) || !parse_pwbuf(pwbuf, &pw))
+	if (!(newpass = read_line(size)))
+		goto done;
+	if (lines_to_read >= 2 && !(oldpass = read_line(size)))
+		goto done;
+	if (lines_to_read >= 3 && (!(pwline = read_line(size)) ||
+	    !parse_pwline(pwline, pw = &pwbuf)))
 		goto done;
 
-	check_reason = passwdqc_check(&params.qc, newpass, oldpass, &pw);
+	check_reason = passwdqc_check(&params.qc, newpass, oldpass, pw);
 	if (check_reason) {
 		printf("Weak passphrase: %s\n", check_reason);
 		goto done;
@@ -160,7 +178,8 @@ int main(int argc, const char **argv)
 		rc = 0;
 
       done:
-	clean(pwbuf, size);
+	memset(&pwbuf, 0, sizeof(pwbuf));
+	clean(pwline, size);
 	clean(oldpass, size);
 	clean(newpass, size);
 
