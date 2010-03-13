@@ -9,14 +9,16 @@ module which understands "use_authtok".  Thus, you may choose which
 module prompts for the old password, things should work either way.
 
 
-	FreeBSD.
+	FreeBSD 5+, DragonFly BSD 2.2+.
 
-FreeBSD 5 and newer includes pam_passwdqc in the base system.  You
-should be able to use either the included or the distributed separately
-version of pam_passwdqc with FreeBSD 5.  There's a commented out usage
-example in the default /etc/pam.d/passwd.  FreeBSD 4 and older used a
-cut down version of Linux-PAM (not OpenPAM) and didn't use PAM for
-password changing.
+FreeBSD 5 and newer, as well as DragonFly BSD 2.2 and newer, include
+pam_passwdqc in the base system.  You should be able to use either the
+included or the distributed separately version of pam_passwdqc with
+these systems.  There's a commented out usage example in the default
+/etc/pam.d/passwd.
+
+FreeBSD 4 and older used a cut down version of Linux-PAM (not OpenPAM)
+and didn't use PAM for password changing.
 
 
 	OpenBSD.
@@ -47,4 +49,4 @@ on modern Solaris systems you may edit the "CRYPT_DEFAULT=__unix__" line
 in /etc/security/policy.conf to read "CRYPT_DEFAULT=2a" to enable the
 OpenBSD-style bcrypt (Blowfish-based) password hashing.
 
-$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.13 2010/03/13 08:29:55 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.14 2010/03/13 08:59:42 solar Exp $
