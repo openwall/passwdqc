@@ -95,9 +95,9 @@ passwords are considered to be similar when there is a sufficiently
 long common substring and the new password with the substring partially
 discounted would be weak.
 
-	random=N[,only]			[random=44]
+	random=N[,only]			[random=47]
 
-The size of randomly-generated passphrases in bits (24 to 76), or 0 to
+The size of randomly-generated passphrases in bits (26 to 81), or 0 to
 disable this feature.  Any passphrase that contains the offered
 randomly-generated string will be allowed regardless of other possible
 restrictions.
@@ -152,4 +152,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.14 2010/03/13 20:50:23 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.15 2010/03/13 21:29:15 solar Exp $
