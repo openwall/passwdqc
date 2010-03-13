@@ -2,6 +2,7 @@
  * Copyright (c) 2000-2002,2010 by Solar Designer.  See LICENSE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -33,6 +34,9 @@
 
 #define REASON_WORD \
 	"based on a dictionary word and not a passphrase"
+
+#define REASON_SEQ \
+	"based on a common sequence of characters and not a passphrase"
 
 #define FIXED_BITS			15
 
@@ -176,9 +180,28 @@ static char *unify(const char *src)
 	do {
 		c = (unsigned char)*sptr;
 		if (isascii(c) && isupper(c))
-			*dptr++ = tolower(c);
-		else
-			*dptr++ = *sptr;
+			c = tolower(c);
+		switch (c) {
+		case 'a': case '@':
+			c = '4'; break;
+		case 'e':
+			c = '3'; break;
+/* Unfortunately, if we translate both 'i' and 'l' to '1', this would
+ * associate these two letters with each other - e.g., "mile" would
+ * match "MLLE", which is undesired.  To solve this, we'd need to test
+ * different translations separately, which is not implemented yet. */
+		case 'i': case '|':
+			c = '!'; break;
+		case 'l':
+			c = '1'; break;
+		case 'o':
+			c = '0'; break;
+		case 's': case '$':
+			c = '5'; break;
+		case 't': case '+':
+			c = '7'; break;
+		}
+		*dptr++ = c;
 	} while (*sptr++);
 
 	return dst;
@@ -217,11 +240,11 @@ static void clean(char *dst)
  */
 static int is_based(const passwdqc_params_qc_t *params,
     const char *haystack, const char *needle, const char *original,
-    int remove)
+    int mode)
 {
 	char *scratch;
 	int length;
-	int i, j;
+	int i, j, k;
 	const char *p;
 	int bias;
 
@@ -242,7 +265,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 		bias = 0;
 		for (p = haystack; *p; p++)
 		if (*p == needle[i] && !strncmp(p, &needle[i], j)) {
-			if (remove) {
+			if (mode == 0) { /* remove & credit */
 				if (!scratch) {
 					if (!(scratch = malloc(length + 1)))
 						return 1;
@@ -257,7 +280,14 @@ static int is_based(const passwdqc_params_qc_t *params,
 					clean(scratch);
 					return 1;
 				}
-			} else {
+			} else { /* discount */
+/* Require a 1 character longer match for substrings containing leetspeak
+ * when matching against dictionary words */
+				if (mode == 1 && j == params->match_length)
+				for (k = i; k < i + j; k++)
+				if (!isalpha((int)(unsigned char)original[k]))
+					goto next_match_length;
+
 				/* discount j - (match_length - 1) chars */
 				bias = (int)params->match_length - 1 - j;
 				if (is_simple(params, original, bias))
@@ -266,12 +296,26 @@ static int is_based(const passwdqc_params_qc_t *params,
 		}
 		if (!bias)
 			break;
+next_match_length:
+		;
 	}
 
 	clean(scratch);
 
 	return 0;
 }
+
+const char *seq[] = {
+	"0123456789",
+	"`1234567890-=",
+	"~!@#$%^&*()_+",
+	"abcdefghijklmnopqrstuvwxyz",
+	"qwertyuiop[]\\asdfghjkl;'zxcvbnm,./",
+	"qwertyuiop{}|asdfghjkl:\"zxcvbnm<>?",
+	"qwertyuiopasdfghjklzxcvbnm",
+	"1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik,9ol.0p;/-['=]\\",
+	"qazwsxedcrfvtgbyhnujmikolp"
+};
 
 /*
  * This wordlist check is now the least important given the checks above
@@ -285,12 +329,15 @@ static int is_based(const passwdqc_params_qc_t *params,
  * that aren't short English words.  Perhaps support for large wordlists
  * should still be added, even though this is now of little importance.
  */
-static int is_word_based(const passwdqc_params_qc_t *params,
+static const char *is_word_based(const passwdqc_params_qc_t *params,
     const char *needle, const char *original)
 {
 	char word[7];
 	char *unified;
 	int i;
+
+	if (!params->match_length)	/* disabled */
+		return NULL;
 
 	word[6] = '\0';
 	for (i = 0; i < 0x1000; i++) {
@@ -298,14 +345,30 @@ static int is_word_based(const passwdqc_params_qc_t *params,
 		if ((int)strlen(word) < params->match_length)
 			continue;
 		unified = unify(word);
-		if (is_based(params, unified, needle, original, 0)) {
-			clean(unified);
-			return 1;
+		if (is_based(params, unified, needle, original, 1)) {
+			free(unified);
+			return REASON_WORD;
 		}
-		clean(unified);
+		free(unified);
 	}
 
-	return 0;
+	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
+		unified = unify(seq[i]);
+		if (is_based(params, unified, needle, original, 2)) {
+			free(unified);
+			return REASON_SEQ;
+		}
+		free(unified);
+	}
+
+	if (params->match_length <= 4)
+	for (i = 1900; i < 2099; i++) {
+		sprintf(word, "%d", i);
+		if (is_based(params, word, needle, original, 2))
+			return REASON_SEQ;
+	}
+
+	return NULL;
 }
 
 const char *passwdqc_check(const passwdqc_params_qc_t *params,
@@ -371,23 +434,22 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 	}
 
 	if (!reason && oldpass && params->similar_deny &&
-	    (is_based(params, u_oldpass, u_newpass, newpass, 1) ||
-	     is_based(params, u_oldpass, u_reversed, reversed, 1)))
+	    (is_based(params, u_oldpass, u_newpass, newpass, 0) ||
+	     is_based(params, u_oldpass, u_reversed, reversed, 0)))
 		reason = REASON_SIMILAR;
 
 	if (!reason && pw &&
-	    (is_based(params, u_name, u_newpass, newpass, 1) ||
-	     is_based(params, u_name, u_reversed, reversed, 1) ||
-	     is_based(params, u_gecos, u_newpass, newpass, 1) ||
-	     is_based(params, u_gecos, u_reversed, reversed, 1) ||
-	     is_based(params, u_dir, u_newpass, newpass, 1) ||
-	     is_based(params, u_dir, u_reversed, reversed, 1)))
+	    (is_based(params, u_name, u_newpass, newpass, 0) ||
+	     is_based(params, u_name, u_reversed, reversed, 0) ||
+	     is_based(params, u_gecos, u_newpass, newpass, 0) ||
+	     is_based(params, u_gecos, u_reversed, reversed, 0) ||
+	     is_based(params, u_dir, u_newpass, newpass, 0) ||
+	     is_based(params, u_dir, u_reversed, reversed, 0)))
 		reason = REASON_PERSONAL;
 
-	if (!reason &&
-	    (is_word_based(params, u_newpass, newpass) ||
-	     is_word_based(params, u_reversed, reversed)))
-		reason = REASON_WORD;
+	if (!reason)
+		(reason = is_word_based(params, u_newpass, newpass)) ||
+		(reason = is_word_based(params, u_reversed, reversed));
 
 	memset(truncated, 0, sizeof(truncated));
 	clean(reversed);
