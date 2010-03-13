@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2002,2010 by Solar Designer.  See LICENSE.
  */
 
 #include <stdlib.h>
@@ -61,8 +61,15 @@ static int expected_different(int charset, int length)
  * A password is too simple if it is too short for its class, or doesn't
  * contain enough different characters for its class, or doesn't contain
  * enough words for a passphrase.
+ *
+ * The bias may be positive or negative.  It is added to the length,
+ * except that a negative bias is not considered in the passphrase
+ * length check because a passphrase is expected to contain words.
+ * The bias does not apply to the number of different characters; the
+ * actual number is used in all checks.
  */
-static int is_simple(const passwdqc_params_qc_t *params, const char *newpass)
+static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
+    int bias)
 {
 	int length, classes, words, chars;
 	int digits, lowers, uppers, others, unknowns;
@@ -122,31 +129,31 @@ static int is_simple(const passwdqc_params_qc_t *params, const char *newpass)
 	for (; classes > 0; classes--)
 	switch (classes) {
 	case 1:
-		if (length >= params->min[0] &&
+		if (length + bias >= params->min[0] &&
 		    chars >= expected_different(10, params->min[0]) - 1)
 			return 0;
 		return 1;
 
 	case 2:
-		if (length >= params->min[1] &&
+		if (length + bias >= params->min[1] &&
 		    chars >= expected_different(36, params->min[1]) - 1)
 			return 0;
 		if (!params->passphrase_words ||
 		    words < params->passphrase_words)
 			continue;
-		if (length >= params->min[2] &&
+		if (length + (bias > 0 ? bias : 0) >= params->min[2] &&
 		    chars >= expected_different(27, params->min[2]) - 1)
 			return 0;
 		continue;
 
 	case 3:
-		if (length >= params->min[3] &&
+		if (length + bias >= params->min[3] &&
 		    chars >= expected_different(62, params->min[3]) - 1)
 			return 0;
 		continue;
 
 	case 4:
-		if (length >= params->min[4] &&
+		if (length + bias >= params->min[4] &&
 		    chars >= expected_different(95, params->min[4]) - 1)
 			return 0;
 		continue;
@@ -205,16 +212,18 @@ static void clean(char *dst)
 /*
  * Needle is based on haystack if both contain a long enough common
  * substring and needle would be too simple for a password with the
- * substring removed.
+ * substring either removed with partial length credit for it added
+ * or partially discounted for the purpose of the length check.
  */
 static int is_based(const passwdqc_params_qc_t *params,
-    const char *haystack, const char *needle, const char *original)
+    const char *haystack, const char *needle, const char *original,
+    int remove)
 {
 	char *scratch;
 	int length;
 	int i, j;
 	const char *p;
-	int match;
+	int bias;
 
 	if (!params->match_length)	/* disabled */
 		return 0;
@@ -230,23 +239,32 @@ static int is_based(const passwdqc_params_qc_t *params,
 	length = strlen(needle);
 	for (i = 0; i <= length - params->match_length; i++)
 	for (j = params->match_length; i + j <= length; j++) {
-		match = 0;
+		bias = 0;
 		for (p = haystack; *p; p++)
 		if (*p == needle[i] && !strncmp(p, &needle[i], j)) {
-			match = 1;
-			if (!scratch) {
-				if (!(scratch = malloc(length + 1)))
+			if (remove) {
+				if (!scratch) {
+					if (!(scratch = malloc(length + 1)))
+						return 1;
+				}
+				/* remove j chars */
+				memcpy(scratch, original, i);
+				memcpy(&scratch[i], &original[i + j],
+				    length + 1 - (i + j));
+				/* add credit for match_length - 1 chars */
+				bias = params->match_length - 1;
+				if (is_simple(params, scratch, bias)) {
+					clean(scratch);
+					return 1;
+				}
+			} else {
+				/* discount j - (match_length - 1) chars */
+				bias = (int)params->match_length - 1 - j;
+				if (is_simple(params, original, bias))
 					return 1;
 			}
-			memcpy(scratch, original, i);
-			memcpy(&scratch[i], &original[i + j],
-			    length + 1 - (i + j));
-			if (is_simple(params, scratch)) {
-				clean(scratch);
-				return 1;
-			}
 		}
-		if (!match)
+		if (!bias)
 			break;
 	}
 
@@ -280,7 +298,7 @@ static int is_word_based(const passwdqc_params_qc_t *params,
 		if ((int)strlen(word) < params->match_length)
 			continue;
 		unified = unify(word);
-		if (is_based(params, unified, needle, original)) {
+		if (is_based(params, unified, needle, original, 0)) {
 			clean(unified);
 			return 1;
 		}
@@ -326,7 +344,7 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 			reason = REASON_LONG;
 	}
 
-	if (!reason && is_simple(params, newpass)) {
+	if (!reason && is_simple(params, newpass, 0)) {
 		if (length < params->min[1] && params->min[1] <= params->max)
 			reason = REASON_SIMPLESHORT;
 		else
@@ -353,20 +371,20 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 	}
 
 	if (!reason && oldpass && params->similar_deny &&
-	    (is_based(params, u_oldpass, u_newpass, newpass) ||
-	     is_based(params, u_oldpass, u_reversed, reversed)))
+	    (is_based(params, u_oldpass, u_newpass, newpass, 1) ||
+	     is_based(params, u_oldpass, u_reversed, reversed, 1)))
 		reason = REASON_SIMILAR;
 
 	if (!reason && pw &&
-	    (is_based(params, u_name, u_newpass, newpass) ||
-	     is_based(params, u_name, u_reversed, reversed) ||
-	     is_based(params, u_gecos, u_newpass, newpass) ||
-	     is_based(params, u_gecos, u_reversed, reversed) ||
-	     is_based(params, u_dir, u_newpass, newpass) ||
-	     is_based(params, u_dir, u_reversed, reversed)))
+	    (is_based(params, u_name, u_newpass, newpass, 1) ||
+	     is_based(params, u_name, u_reversed, reversed, 1) ||
+	     is_based(params, u_gecos, u_newpass, newpass, 1) ||
+	     is_based(params, u_gecos, u_reversed, reversed, 1) ||
+	     is_based(params, u_dir, u_newpass, newpass, 1) ||
+	     is_based(params, u_dir, u_reversed, reversed, 1)))
 		reason = REASON_PERSONAL;
 
-	if (!reason && (int)strlen(newpass) < params->min[2] &&
+	if (!reason &&
 	    (is_word_based(params, u_newpass, newpass) ||
 	     is_word_based(params, u_reversed, reversed)))
 		reason = REASON_WORD;

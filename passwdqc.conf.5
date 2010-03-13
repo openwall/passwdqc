@@ -35,7 +35,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.7 2010/03/13 06:51:46 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.8 2010/03/13 14:48:09 solar Exp $
 .\"
 .Dd March 13, 2010
 .Dt PASSWDQC.CONF 5
@@ -156,7 +156,7 @@ at least partially based on information found in a character string,
 or 0 to disable the substring search.
 Note that the password will not be rejected once a weak substring is
 found; it will instead be subjected to the usual strength requirements
-with the weak substring removed.
+with the weak substring partially discounted.
 .Pp
 The substring search is case-insensitive and is able to detect and
 remove a common substring spelled backwards.
@@ -168,8 +168,8 @@ remove a common substring spelled backwards.
 .Pq default: Cm similar Ns = Ns Cm deny
 Whether a new password is allowed to be similar to the old one.
 The passwords are considered to be similar when there is a sufficiently
-long common substring and the new password with the substring removed
-would be weak.
+long common substring and the new password with the substring partially
+discounted would be weak.
 .It Xo
 .Sm off
 .Cm random No = Ar N

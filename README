@@ -83,7 +83,7 @@ at least partially based on information found in a character string,
 or 0 to disable the substring search.  Note that the password will not
 be rejected once a weak substring is found; it will instead be
 subjected to the usual strength requirements with the weak substring
-removed.
+partially discounted.
 
 The substring search is case-insensitive and is able to detect and
 remove a common substring spelled backwards.
@@ -92,8 +92,8 @@ remove a common substring spelled backwards.
 
 Whether a new password is allowed to be similar to the old one.  The
 passwords are considered to be similar when there is a sufficiently
-long common substring and the new password with the substring removed
-would be weak.
+long common substring and the new password with the substring partially
+discounted would be weak.
 
 	random=N[,only]			[random=42]
 
@@ -152,4 +152,4 @@ the former is incompatible with "ask_oldauthtok".
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.12 2009/10/10 23:16:52 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.13 2010/03/13 14:48:09 solar Exp $
