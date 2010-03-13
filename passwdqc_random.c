@@ -13,15 +13,17 @@
 
 /*
  * We separate words in the generated "passphrases" with random special
- * characters out of a set of 8 (so we encode 3 bits per separator
+ * characters out of a set of 16 (so we encode 4 bits per separator
  * character).  To enable the use of our "passphrases" within FTP URLs
  * (and similar), we pick characters that are defined by RFC 3986 as
  * being safe within "userinfo" part of URLs without encoding and
  * without having a special meaning.  Out of those, we avoid characters
  * that are visually ambiguous or difficult over the phone.  This
- * happens to leave us with exactly 8 characters.
+ * happens to leave us with exactly 8 symbols, and we add 8 digits that
+ * are not visually ambiguous.  Unfortunately, the exclamation mark
+ * might be confused for the digit 1 (which we don't use), though.
  */
-#define SEPARATORS			"-_!$&*+="
+#define SEPARATORS			"-_!$&*+=23456789"
 
 static int read_loop(int fd, unsigned char *buffer, int count)
 {
@@ -57,10 +59,10 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 	unsigned char bytes[2];
 
 	bits = params->random_bits;
-	if (bits < 24 || bits > 128)
+	if (bits < 24 || bits > 140)
 		return NULL;
 
-	count = 1 + (bits + (14 - 12)) / 15;
+	count = 1 + (bits + (15 - 12)) / 16;
 	use_separators = ((bits + 11) / 12 != count);
 
 	length = count * 7 - 1;
@@ -91,10 +93,10 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 		length += extra;
 		bits -= 12;
 
-		if (use_separators && bits > 3) {
-			i = ((int)bytes[1] & 0x70) >> 4;
+		if (use_separators && bits > 4) {
+			i = ((int)bytes[1] & 0xf0) >> 4;
 			output[length++] = SEPARATORS[i];
-			bits -= 3;
+			bits -= 4;
 		} else if (bits > 0)
 			output[length++] = ' ';
 	} while (bits > 0);

@@ -78,7 +78,7 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 			e += 5;
 			params->qc.min[4] = INT_MAX;
 		}
-		if (*e || (v && v < 24) || v > 72)
+		if (*e || (v && v < 24) || v > 76)
 			goto parse_error;
 		params->qc.random_bits = v;
 	} else if ((p = skip_prefix(option, "enforce="))) {
@@ -159,7 +159,7 @@ static passwdqc_params_t defaults = {
 		3,				/* passphrase_words */
 		4,				/* match_length */
 		1,				/* similar_deny */
-		42				/* random_bits */
+		44				/* random_bits */
 	},
 	{
 		F_ENFORCE_EVERYONE,		/* flags */
