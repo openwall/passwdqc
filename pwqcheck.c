@@ -170,7 +170,7 @@ int main(int argc, const char **argv)
 
 	check_reason = passwdqc_check(&params.qc, newpass, oldpass, pw);
 	if (check_reason) {
-		printf("Weak passphrase: %s\n", check_reason);
+		printf("Bad passphrase: %s\n", check_reason);
 		goto done;
 	}
 
