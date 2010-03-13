@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2005,2008 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2002,2005,2008,2010 by Solar Designer.  See LICENSE.
  */
 
 #include <stdio.h>
@@ -48,7 +48,7 @@ static int read_loop(int fd, unsigned char *buffer, int count)
 
 char *passwdqc_random(const passwdqc_params_qc_t *params)
 {
-	char output[0x100];
+	char output[0x100], *retval;
 	int bits;
 	int use_separators, count, i;
 	unsigned int length, extra;
@@ -100,9 +100,11 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 	} while (bits > 0);
 
 	memset(bytes, 0, sizeof(bytes));
-	output[length] = '\0';
 
 	close(fd);
 
-	return strdup(output);
+	output[length] = '\0';
+	retval = strdup(output);
+	memset(output, 0, length);
+	return retval;
 }
