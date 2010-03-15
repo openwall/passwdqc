@@ -300,6 +300,10 @@ static int is_based(const passwdqc_params_qc_t *params,
 					return 1;
 			}
 		}
+/* Zero bias implies that there were no matches for this length.  If so,
+ * there's no reason to try the next substring length (it would result in
+ * no matches as well).  We break out of the substring length loop and
+ * proceed with all substring lengths for the next position in needle. */
 		if (!bias)
 			break;
 next_match_length:
