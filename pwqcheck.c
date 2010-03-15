@@ -9,7 +9,15 @@
 #include <string.h>
 #include "passwdqc.h"
 
-static char *read_line(unsigned int size)
+static void clean(char *dst, int size)
+{
+	if (!dst)
+		return;
+	memset(dst, 0, size);
+	free(dst);
+}
+
+static char *read_line(unsigned int size, int eof_ok)
 {
 	char *p, *buf = malloc(size + 1);
 
@@ -19,13 +27,15 @@ static char *read_line(unsigned int size)
 	}
 
 	if (!fgets(buf, size + 1, stdin)) {
-		free(buf);
-		fprintf(stderr, "pwqcheck: Error reading standard input.\n");
+		clean(buf, size + 1);
+		if (!eof_ok || !feof(stdin) || ferror(stdin))
+			fprintf(stderr,
+			    "pwqcheck: Error reading standard input.\n");
 		return NULL;
 	}
 
 	if (strlen(buf) >= size) {
-		free(buf);
+		clean(buf, size + 1);
 		fprintf(stderr, "pwqcheck: Line too long.\n");
 		return NULL;
 	}
@@ -82,19 +92,11 @@ static struct passwd *parse_pwline(char *line, struct passwd *pw)
 	return pw;
 }
 
-static void clean(char *dst, int size)
-{
-	if (!dst)
-		return;
-	memset(dst, 0, size);
-	free(dst);
-}
-
 static void
 print_help(void)
 {
 	puts("Check passphrase quality.\n"
-	    "\npwqcheck reads up to 3 lines from standard input:\n"
+	    "\nFor each passphrase to check, pwqcheck reads up to 3 lines from standard input:\n"
 	    "  first line is a new passphrase,\n"
 	    "  second line is an old passphrase, and\n"
 	    "  third line is either an existing account name or a passwd entry.\n"
@@ -111,9 +113,11 @@ print_help(void)
 	    "  config=FILE\n"
 	    "       load config FILE in passwdqc.conf format;\n"
 	    "  -1\n"
-	    "       read just 1 line (new passphrase)\n"
+	    "       read just 1 line (new passphrase);\n"
 	    "  -2\n"
-	    "       read just 2 lines (new and old passphrases)\n"
+	    "       read just 2 lines (new and old passphrases);\n"
+	    "  --multi\n"
+	    "       check multiple passphrases (until EOF);\n"
 	    "  --version\n"
 	    "       print program version and exit;\n"
 	    "  -h or --help\n"
@@ -124,27 +128,39 @@ int main(int argc, const char **argv)
 {
 	passwdqc_params_t params;
 	const char *check_reason;
-	char *parse_reason, *newpass = NULL, *oldpass = NULL, *pwline = NULL;
-	struct passwd pwbuf, *pw = NULL;
-	int lines_to_read = 3;
+	char *parse_reason, *newpass, *oldpass, *pwline;
+	struct passwd pwbuf, *pw;
+	int lines_to_read = 3, multi = 0;
 	int size = 8192;
 	int rc = 1;
 
-	if (argc > 1 && argv[1][0] == '-') {
-		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
+	while (argc > 1 && argv[1][0] == '-') {
+		const char *arg = argv[1];
+
+		if (!strcmp("-h", arg) || !strcmp("--help", arg)) {
 			print_help();
 			return 0;
 		}
 
-		if (!strcmp("--version", argv[1])) {
+		if (!strcmp("--version", arg)) {
 			printf("pwqcheck version %s\n", PASSWDQC_VERSION);
 			return 0;
 		}
 
-		if ((argv[1][1] == '1' || argv[1][1] == '2') && !argv[1][2]) {
-			lines_to_read = argv[1][1] - '0';
-			argc--; argv++;
+		if ((arg[1] == '1' || arg[1] == '2') && !arg[2]) {
+			lines_to_read = arg[1] - '0';
+			goto next_arg;
 		}
+
+		if (!strcmp("--multi", arg)) {
+			multi = 1;
+			goto next_arg;
+		}
+
+		break;
+
+next_arg:
+		argc--; argv++;
 	}
 
 	passwdqc_params_reset(&params);
@@ -160,28 +176,45 @@ int main(int argc, const char **argv)
 	if (params.qc.max + 1 > size)
 		size = params.qc.max + 1;
 
-	if (!(newpass = read_line(size)))
+next_pass:
+	oldpass = pwline = NULL; pw = NULL;
+	if (!(newpass = read_line(size, multi))) {
+		if (multi && feof(stdin) && !ferror(stdin) &&
+		    fflush(stdout) >= 0)
+			rc = 0;
 		goto done;
-	if (lines_to_read >= 2 && !(oldpass = read_line(size)))
+	}
+	if (lines_to_read >= 2 && !(oldpass = read_line(size, 0)))
 		goto done;
-	if (lines_to_read >= 3 && (!(pwline = read_line(size)) ||
+	if (lines_to_read >= 3 && (!(pwline = read_line(size, 0)) ||
 	    !parse_pwline(pwline, pw = &pwbuf)))
 		goto done;
 
 	check_reason = passwdqc_check(&params.qc, newpass, oldpass, pw);
-	if (check_reason) {
-		printf("Bad passphrase: %s\n", check_reason);
-		goto done;
+	if (!check_reason) {
+		if (multi)
+			printf("OK: %s\n", newpass);
+		else if (puts("OK") >= 0 && fflush(stdout) >= 0)
+			rc = 0;
+		goto cleanup;
 	}
+	if (multi)
+		printf("Bad passphrase (%s): %s\n", check_reason, newpass);
+	else
+		printf("Bad passphrase (%s)\n", check_reason);
 
-	if (puts("OK") >= 0 && fflush(stdout) >= 0)
-		rc = 0;
-
-      done:
+cleanup:
 	memset(&pwbuf, 0, sizeof(pwbuf));
 	clean(pwline, size);
 	clean(oldpass, size);
 	clean(newpass, size);
 
+	if (multi)
+		goto next_pass;
+
 	return rc;
+
+done:
+	multi = 0;
+	goto cleanup;
 }

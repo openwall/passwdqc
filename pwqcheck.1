@@ -18,9 +18,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.14 2010/03/13 14:48:09 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/pwqcheck.1,v 1.15 2010/03/15 04:17:19 solar Exp $
 .\"
-.Dd March 13, 2010
+.Dd March 15, 2010
 .Dt PWQCHECK 1
 .Os "Openwall Project"
 .Sh NAME
@@ -54,7 +54,7 @@ prints
 .Ar OK
 on success.  Scripts invoking
 .Nm
-are suggested to check for both a zero exit code and the
+are suggested to check for both a zero exit status and the
 .Ar OK
 line.
 .Sh OPTIONS
@@ -165,6 +165,26 @@ in the "default" section in
 .Cm /etc/login.conf .
 .It Cm -2
 Read just 2 lines (new and old passphrases).
+.It Cm --multi
+Check multiple passphrases (until EOF).
+This option may be used on its own or along with the
+.Cm -1
+or
+.Cm -2
+options.
+.Nm
+will read 1, 2, or 3 lines and will output one line per passphrase to check.
+The lines will start with either
+.Ar OK
+or a message explaining why the passphrase did not pass the checks,
+followed by a colon and a space, and finally followed by the passphrase.
+The explanatory message is guaranteed to not include a colon.
+With this option, the exit status of
+.Nm
+depends solely on whether there were any errors preventing the strength of
+passphrases from being fully checked or not.
+A primary use for this option is to test different policies and/or different
+versions of passwdqc on large passphrase lists.
 .It Cm --version
 Output
 .Nm
@@ -178,8 +198,12 @@ help text and exit.
 .Nm
 exits with non-zero status when it encounters invalid config file,
 invalid option, invalid parameter value, invalid data in standard input,
-when it detects a weak passphrase, and in any case when it fails to check
-passphrase strength.
+and in any case when it fails to check passphrase strength.
+Without the
+.Cm --multi
+option,
+.Nm
+also exits with non-zero status when it detects a weak passphrase.
 .Sh FILES
 .Pa /etc/passwdqc.conf .
 .Sh SEE ALSO
