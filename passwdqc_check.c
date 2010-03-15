@@ -96,10 +96,12 @@ static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
 		else
 			others++;
 
+/* A word starts when a letter follows a non-letter */
 		if (isascii(c) && isalpha(c) && isascii(p) && !isalpha(p))
 			words++;
 		p = c;
 
+/* Count this character just once: when we're not going to see it anymore */
 		if (!strchr(&newpass[length], c))
 			chars++;
 	}
