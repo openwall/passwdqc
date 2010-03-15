@@ -283,13 +283,19 @@ static int is_based(const passwdqc_params_qc_t *params,
 			} else { /* discount */
 /* Require a 1 character longer match for substrings containing leetspeak
  * when matching against dictionary words */
-				if (mode == 1 && j == params->match_length)
+				bias = -1;
+				if (mode == 1)
 				for (k = i; k < i + j; k++)
-				if (!isalpha((int)(unsigned char)original[k]))
-					goto next_match_length;
+				if (!isalpha((int)(unsigned char)original[k])) {
+					if (j == params->match_length)
+						goto next_match_length;
+					bias = 0;
+					break;
+				}
 
-				/* discount j - (match_length - 1) chars */
-				bias = (int)params->match_length - 1 - j;
+				/* discount j - (match_length + bias) chars */
+				bias += (int)params->match_length - j;
+				/* bias <= -1 */
 				if (is_simple(params, original, bias))
 					return 1;
 			}
