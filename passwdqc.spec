@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.51 2010/03/13 10:52:39 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.52 2010/03/16 01:36:07 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
@@ -41,6 +41,8 @@ building passwdqc-aware applications.
 
 %prep
 %setup -q
+
+%{expand:%%define optflags_lib %{?optflags_lib:%optflags_lib}%{!?optflags_lib:%optflags}}
 
 %build
 %__make \
