@@ -176,13 +176,13 @@ static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
 	return 1;
 }
 
-static char *unify(const char *src)
+static char *unify(char *dst, const char *src)
 {
 	const char *sptr;
-	char *dst, *dptr;
+	char *dptr;
 	int c;
 
-	if (!(dst = malloc(strlen(src) + 1)))
+	if (!dst && !(dst = malloc(strlen(src) + 1)))
 		return NULL;
 
 	sptr = src;
@@ -368,16 +368,12 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 		if (i < 0xfff &&
 		    !memcmp(word, _passwdqc_wordset_4k[i + 1], length))
 			continue;
-		unified = unify(word);
-		if (is_based(params, unified, needle, original, 1)) {
-			free(unified);
+		if (is_based(params, unify(word, word), needle, original, 1))
 			return REASON_WORD;
-		}
-		free(unified);
 	}
 
 	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
-		unified = unify(seq[i]);
+		unified = unify(NULL, seq[i]);
 		if (is_based(params, unified, needle, original, 2)) {
 			free(unified);
 			return REASON_SEQ;
@@ -440,14 +436,14 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 
 	if (!reason) {
 		if ((reversed = reverse(newpass))) {
-			u_newpass = unify(newpass);
-			u_reversed = unify(reversed);
+			u_newpass = unify(NULL, newpass);
+			u_reversed = unify(NULL, reversed);
 			if (oldpass)
-				u_oldpass = unify(oldpass);
+				u_oldpass = unify(NULL, oldpass);
 			if (pw) {
-				u_name = unify(pw->pw_name);
-				u_gecos = unify(pw->pw_gecos);
-				u_dir = unify(pw->pw_dir);
+				u_name = unify(NULL, pw->pw_name);
+				u_gecos = unify(NULL, pw->pw_gecos);
+				u_dir = unify(NULL, pw->pw_dir);
 			}
 		}
 		if (!reversed ||
