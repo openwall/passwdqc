@@ -408,71 +408,83 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 	u_oldpass = NULL;
 	u_name = u_gecos = u_dir = NULL;
 
-	reason = NULL;
+	reason = REASON_ERROR;
 
-	if (oldpass && !strcmp(oldpass, newpass))
+	if (oldpass && !strcmp(oldpass, newpass)) {
 		reason = REASON_SAME;
+		goto out;
+	}
 
 	length = strlen(newpass);
 
-	if (!reason && length < params->min[4])
+	if (length < params->min[4]) {
 		reason = REASON_SHORT;
+		goto out;
+	}
 
-	if (!reason && length > params->max) {
+	if (length > params->max) {
 		if (params->max == 8) {
 			truncated[0] = '\0';
 			strncat(truncated, newpass, 8);
 			newpass = truncated;
-			if (oldpass && !strncmp(oldpass, newpass, 8))
+			if (oldpass && !strncmp(oldpass, newpass, 8)) {
 				reason = REASON_SAME;
-		} else
+				goto out;
+			}
+		} else {
 			reason = REASON_LONG;
+			goto out;
+		}
 	}
 
-	if (!reason && is_simple(params, newpass, 0)) {
+	if (is_simple(params, newpass, 0)) {
 		if (length < params->min[1] && params->min[1] <= params->max)
 			reason = REASON_SIMPLESHORT;
 		else
 			reason = REASON_SIMPLE;
+		goto out;
 	}
 
-	if (!reason) {
-		if ((reversed = reverse(newpass))) {
-			u_newpass = unify(NULL, newpass);
-			u_reversed = unify(NULL, reversed);
-			if (oldpass)
-				u_oldpass = unify(NULL, oldpass);
-			if (pw) {
-				u_name = unify(NULL, pw->pw_name);
-				u_gecos = unify(NULL, pw->pw_gecos);
-				u_dir = unify(NULL, pw->pw_dir);
-			}
+	if ((reversed = reverse(newpass))) {
+		u_newpass = unify(NULL, newpass);
+		u_reversed = unify(NULL, reversed);
+		if (oldpass)
+			u_oldpass = unify(NULL, oldpass);
+		if (pw) {
+			u_name = unify(NULL, pw->pw_name);
+			u_gecos = unify(NULL, pw->pw_gecos);
+			u_dir = unify(NULL, pw->pw_dir);
 		}
-		if (!reversed ||
-		    !u_newpass || !u_reversed ||
-		    (oldpass && !u_oldpass) ||
-		    (pw && (!u_name || !u_gecos || !u_dir)))
-			reason = REASON_ERROR;
+	}
+	if (!reversed ||
+	    !u_newpass || !u_reversed ||
+	    (oldpass && !u_oldpass) ||
+	    (pw && (!u_name || !u_gecos || !u_dir)))
+		goto out;
+
+	if (oldpass && params->similar_deny &&
+	    (is_based(params, u_oldpass, u_newpass, newpass, 0) ||
+	     is_based(params, u_oldpass, u_reversed, reversed, 0))) {
+		reason = REASON_SIMILAR;
+		goto out;
 	}
 
-	if (!reason && oldpass && params->similar_deny &&
-	    (is_based(params, u_oldpass, u_newpass, newpass, 0) ||
-	     is_based(params, u_oldpass, u_reversed, reversed, 0)))
-		reason = REASON_SIMILAR;
-
-	if (!reason && pw &&
+	if (pw &&
 	    (is_based(params, u_name, u_newpass, newpass, 0) ||
 	     is_based(params, u_name, u_reversed, reversed, 0) ||
 	     is_based(params, u_gecos, u_newpass, newpass, 0) ||
 	     is_based(params, u_gecos, u_reversed, reversed, 0) ||
 	     is_based(params, u_dir, u_newpass, newpass, 0) ||
-	     is_based(params, u_dir, u_reversed, reversed, 0)))
+	     is_based(params, u_dir, u_reversed, reversed, 0))) {
 		reason = REASON_PERSONAL;
+		goto out;
+	}
 
+	reason = is_word_based(params, u_newpass, newpass);
 	if (!reason)
-		(reason = is_word_based(params, u_newpass, newpass)) ||
-		(reason = is_word_based(params, u_reversed, reversed));
+		reason = is_word_based(params, u_reversed, reversed);
 
+out:
 	memset(truncated, 0, sizeof(truncated));
 	clean(reversed);
 	clean(u_newpass);
