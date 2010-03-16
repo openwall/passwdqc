@@ -399,7 +399,7 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 
 	if (params->match_length <= 4)
 	for (i = 1900; i <= 2039; i++) {
-		sprintf(word, "%d", i);
+		sprintf(word, "%u", i);
 		if (is_based(params, word, needle, original, 2))
 			return REASON_SEQ;
 	}
