@@ -329,6 +329,15 @@ next_match_length:
 	return 0;
 }
 
+/*
+ * Common sequences of characters.
+ * We don't need to list any of the characters in reverse order because the
+ * code checks the new password in both "unified" and "unified and reversed"
+ * form against these strings (unifying them first indeed).  We also don't
+ * have to include common repeats of characters (e.g., "777", "!!!", "1000")
+ * because these are often taken care of by the requirement on the number of
+ * different characters.
+ */
 const char *seq[] = {
 	"0123456789",
 	"`1234567890-=",
@@ -363,6 +372,17 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	if (!params->match_length)	/* disabled */
 		return NULL;
 
+	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
+		unified = unify(NULL, seq[i]);
+		if (!unified)
+			return REASON_ERROR;
+		if (is_based(params, unified, needle, original, 2)) {
+			free(unified);
+			return REASON_SEQ;
+		}
+		free(unified);
+	}
+
 	word[6] = '\0';
 	for (i = 0; i < 0x1000; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], 6);
@@ -376,19 +396,8 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 			return REASON_WORD;
 	}
 
-	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
-		unified = unify(NULL, seq[i]);
-		if (!unified)
-			return REASON_ERROR;
-		if (is_based(params, unified, needle, original, 2)) {
-			free(unified);
-			return REASON_SEQ;
-		}
-		free(unified);
-	}
-
 	if (params->match_length <= 4)
-	for (i = 1900; i < 2099; i++) {
+	for (i = 1900; i <= 2039; i++) {
 		sprintf(word, "%d", i);
 		if (is_based(params, word, needle, original, 2))
 			return REASON_SEQ;
