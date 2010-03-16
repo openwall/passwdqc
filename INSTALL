@@ -23,6 +23,13 @@ names and passwdqc.spec for some examples).
 Since passwdqc installs a new shared library, you may need to run the
 ldconfig(8) program to update the dynamic linker cache.
 
+Alternatively, on a Red Hat'ish Linux system and under an account
+configured to build RPM packages (perhaps with ~/.rpmmacros specifying
+the proper pathnames for %_topdir, %_tmppath, and %buildroot), you may
+build RPM packages by running "rpmbuild -tb passwdqc-1.2.0.tar.gz", then
+install the two binary subpackages with "rpm -Uvh passwdqc*-1.2.0*.rpm".
+This works due to the RPM spec file included in the tarball.
+
 Please refer to README and PLATFORMS for information on configuring your
 system to use the PAM module.  You may also refer to the pam_passwdqc(8)
 and passwdqc.conf(5) manual pages.
@@ -30,4 +37,4 @@ and passwdqc.conf(5) manual pages.
 Please refer to the pwqcheck(1) and pwqgen(1) manual pages for
 information on using the command-line programs.
 
-$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.1 2009/10/23 02:38:19 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.2 2010/03/16 08:43:29 solar Exp $
