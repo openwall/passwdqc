@@ -354,7 +354,7 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 {
 	char word[7];
 	char *unified;
-	int i;
+	int i, length;
 
 	if (!params->match_length)	/* disabled */
 		return NULL;
@@ -362,7 +362,11 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	word[6] = '\0';
 	for (i = 0; i < 0x1000; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], 6);
-		if ((int)strlen(word) < params->match_length)
+		length = strlen(word);
+		if (length < params->match_length)
+			continue;
+		if (i < 0xfff &&
+		    !memcmp(word, _passwdqc_wordset_4k[i + 1], length))
 			continue;
 		unified = unify(word);
 		if (is_based(params, unified, needle, original, 1)) {
