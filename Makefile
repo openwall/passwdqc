@@ -37,7 +37,7 @@ RM = rm -f
 LN_s = ln -s -f
 MKDIR = umask 022 && mkdir -p
 INSTALL = install -c
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -W -O2
 CFLAGS_lib = $(CFLAGS) -fPIC
 CFLAGS_bin = $(CFLAGS) -fomit-frame-pointer
 
