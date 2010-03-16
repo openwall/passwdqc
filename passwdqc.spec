@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.52 2010/03/16 01:36:07 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.53 2010/03/16 08:27:35 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.1.5
+Version: 1.2.0
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,10 +73,23 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
-* Sat Mar 13 2010 Solar Designer <solar-at-owl.openwall.com> 1.1.5-owl1
+* Tue Mar 16 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.0-owl1
 - New command-line options for pwqcheck: -1 and -2 for reading just 1 and
 just 2 lines from stdin, respectively (instead of reading 3 lines, which is
-the default).
+the default), --multi for checking multiple passphrases at once (until EOF).
+- With randomly-generated passphrases, encode more entropy per separator
+character (by increasing the number of different separators from 8 to 16) and
+per word (by altering the case of the first letter of each word), which
+increases the default generated passphrase size from 42 to 47 bits.
+- Substring matching has been enhanced to partially discount rather than fully
+remove weak substrings, support leetspeak, and detect some common sequences of
+characters (sequential digits, letters in alphabetical order, adjacent keys on
+a QWERTY keyboard).
+- Detect and allow passphrases with non-ASCII characters in the words.
+- A number of optimizations have been made resulting in significant speedup
+of passwdqc_check() on real-world passwords.
+- Don't require %%optflags_lib such that the package can be built with
+"rpmbuild -tb" on the tarball on non-Owl.
 
 * Fri Oct 30 2009 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.1.4-owl1
 - Added const qualifier to all arguments of passwdqc_check() and
