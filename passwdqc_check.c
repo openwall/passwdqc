@@ -374,6 +374,8 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 
 	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
 		unified = unify(NULL, seq[i]);
+		if (!unified)
+			return REASON_ERROR;
 		if (is_based(params, unified, needle, original, 2)) {
 			free(unified);
 			return REASON_SEQ;
