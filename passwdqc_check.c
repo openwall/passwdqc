@@ -254,9 +254,9 @@ static int is_based(const passwdqc_params_qc_t *params,
 {
 	char *scratch;
 	int length;
-	int i, j, k;
+	int i, j;
 	const char *p;
-	int bias, worst_bias;
+	int worst_bias;
 
 	if (!params->match_length)	/* disabled */
 		return 0;
@@ -270,9 +270,10 @@ static int is_based(const passwdqc_params_qc_t *params,
 	length = strlen(needle);
 	for (i = 0; i <= length - params->match_length; i++)
 	for (j = params->match_length; i + j <= length; j++) {
-		bias = 0;
+		int bias = 0, j1 = j - 1;
+		const char q0 = needle[i], *q1 = &needle[i + 1];
 		for (p = haystack; *p; p++)
-		if (*p == needle[i] && !strncmp(p, &needle[i], j)) {
+		if (*p == q0 && !strncmp(p + 1, q1, j1)) { /* or memcmp() */
 			if (mode == 0) { /* remove & credit */
 				if (!scratch) {
 					if (!(scratch = malloc(length + 1)))
@@ -289,6 +290,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 					return 1;
 				}
 			} else { /* discount */
+				int k;
+
 /* Require a 1 character longer match for substrings containing leetspeak
  * when matching against dictionary words */
 				bias = -1;
