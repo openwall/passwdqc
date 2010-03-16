@@ -96,9 +96,17 @@ static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
 		else
 			others++;
 
-/* A word starts when a letter follows a non-letter */
-		if (isascii(c) && isalpha(c) && isascii(p) && !isalpha(p))
-			words++;
+/* A word starts when a letter follows a non-letter or when a non-ASCII
+ * character follows a space character.  We treat all non-ASCII characters
+ * as non-spaces, which is not entirely correct (there's the non-breaking
+ * space character at 0xa0, 0x9a, or 0xff), but it should not hurt. */
+		if (isascii(p)) {
+			if (isascii(c)) {
+				if (isalpha(c) && !isalpha(p))
+					words++;
+			} else if (isspace(p))
+				words++;
+		}
 		p = c;
 
 /* Count this character just once: when we're not going to see it anymore */
@@ -129,7 +137,7 @@ static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
 		classes++;
 	if (others)
 		classes++;
-	if (unknowns && (!classes || (digits && classes == 1)))
+	if (unknowns && classes <= 1 && (!classes || digits || words >= 2))
 		classes++;
 
 	for (; classes > 0; classes--)
