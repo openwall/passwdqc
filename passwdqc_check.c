@@ -438,10 +438,9 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 	}
 
 	if (is_simple(params, newpass, 0)) {
+		reason = REASON_SIMPLE;
 		if (length < params->min[1] && params->min[1] <= params->max)
 			reason = REASON_SIMPLESHORT;
-		else
-			reason = REASON_SIMPLE;
 		goto out;
 	}
 
@@ -460,7 +459,7 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 	    !u_newpass || !u_reversed ||
 	    (oldpass && !u_oldpass) ||
 	    (pw && (!u_name || !u_gecos || !u_dir)))
-		goto out;
+		goto out; /* REASON_ERROR */
 
 	if (oldpass && params->similar_deny &&
 	    (is_based(params, u_oldpass, u_newpass, newpass, 0) ||
