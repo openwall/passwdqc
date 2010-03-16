@@ -264,9 +264,6 @@ static int is_based(const passwdqc_params_qc_t *params,
 	if (params->match_length < 0)	/* misconfigured */
 		return 1;
 
-	if (strstr(haystack, needle))	/* based on haystack entirely */
-		return 1;
-
 	scratch = NULL;
 
 	length = strlen(needle);
