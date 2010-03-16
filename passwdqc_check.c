@@ -256,7 +256,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 	int length;
 	int i, j, k;
 	const char *p;
-	int bias;
+	int bias, worst_bias;
 
 	if (!params->match_length)	/* disabled */
 		return 0;
@@ -265,6 +265,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 		return 1;
 
 	scratch = NULL;
+	worst_bias = 0;
 
 	length = strlen(needle);
 	for (i = 0; i <= length - params->match_length; i++)
@@ -303,8 +304,11 @@ static int is_based(const passwdqc_params_qc_t *params,
 				/* discount j - (match_length + bias) chars */
 				bias += (int)params->match_length - j;
 				/* bias <= -1 */
-				if (is_simple(params, original, bias))
-					return 1;
+				if (bias < worst_bias) {
+					if (is_simple(params, original, bias))
+						return 1;
+					worst_bias = bias;
+				}
 			}
 		}
 /* Zero bias implies that there were no matches for this length.  If so,
