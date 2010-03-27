@@ -274,15 +274,21 @@ static int is_based(const passwdqc_params_qc_t *params,
 		const char q0 = needle[i], *q1 = &needle[i + 1];
 		for (p = haystack; *p; p++)
 		if (*p == q0 && !strncmp(p + 1, q1, j1)) { /* or memcmp() */
-			if (mode == 0) { /* remove & credit */
+			if ((mode & 0xff) == 0) { /* remove & credit */
 				if (!scratch) {
 					if (!(scratch = malloc(length + 1)))
 						return 1;
 				}
 				/* remove j chars */
-				memcpy(scratch, original, i);
-				memcpy(&scratch[i], &original[i + j],
-				    length + 1 - (i + j));
+				{
+					int pos = length - (i + j);
+					if (!(mode & 0x100)) /* not reversed */
+						pos = i;
+					memcpy(scratch, original, pos);
+					memcpy(&scratch[pos],
+					    &original[pos + j],
+					    length + 1 - (pos + j));
+				}
 				/* add credit for match_length - 1 chars */
 				bias = params->match_length - 1;
 				if (is_simple(params, scratch, bias)) {
@@ -290,18 +296,23 @@ static int is_based(const passwdqc_params_qc_t *params,
 					return 1;
 				}
 			} else { /* discount */
-				int k;
-
 /* Require a 1 character longer match for substrings containing leetspeak
  * when matching against dictionary words */
 				bias = -1;
-				if (mode == 1)
-				for (k = i; k < i + j; k++)
-				if (!isalpha((int)(unsigned char)original[k])) {
-					if (j == params->match_length)
-						goto next_match_length;
-					bias = 0;
-					break;
+				if ((mode & 0xff) == 1) { /* words */
+					int pos = i, end = i + j;
+					if (mode & 0x100) { /* reversed */
+						pos = length - end;
+						end = length - i;
+					}
+					for (; pos < end; pos++)
+					if (!isalpha((int)(unsigned char)
+					    original[pos])) {
+						if (j == params->match_length)
+							goto next_match_length;
+						bias = 0;
+						break;
+					}
 				}
 
 				/* discount j - (match_length + bias) chars */
@@ -363,27 +374,30 @@ const char *seq[] = {
  * should still be added, even though this is now of little importance.
  */
 static const char *is_word_based(const passwdqc_params_qc_t *params,
-    const char *needle, const char *original)
+    const char *needle, const char *original, int is_reversed)
 {
 	char word[7];
 	char *unified;
 	unsigned int i;
 	int length;
+	int mode;
 
 	if (!params->match_length)	/* disabled */
 		return NULL;
 
+	mode = is_reversed | 2;
 	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
 		unified = unify(NULL, seq[i]);
 		if (!unified)
 			return REASON_ERROR;
-		if (is_based(params, unified, needle, original, 2)) {
+		if (is_based(params, unified, needle, original, mode)) {
 			free(unified);
 			return REASON_SEQ;
 		}
 		free(unified);
 	}
 
+	mode = is_reversed | 1;
 	word[6] = '\0';
 	for (i = 0; i < 0x1000; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], 6);
@@ -393,14 +407,16 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 		if (i < 0xfff &&
 		    !memcmp(word, _passwdqc_wordset_4k[i + 1], length))
 			continue;
-		if (is_based(params, unify(word, word), needle, original, 1))
+		unify(word, word);
+		if (is_based(params, word, needle, original, mode))
 			return REASON_WORD;
 	}
 
+	mode = is_reversed | 2;
 	if (params->match_length <= 4)
 	for (i = 1900; i <= 2039; i++) {
 		sprintf(word, "%u", i);
-		if (is_based(params, word, needle, original, 2))
+		if (is_based(params, word, needle, original, mode))
 			return REASON_SEQ;
 	}
 
@@ -410,14 +426,13 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 const char *passwdqc_check(const passwdqc_params_qc_t *params,
     const char *newpass, const char *oldpass, const struct passwd *pw)
 {
-	char truncated[9], *reversed;
+	char truncated[9];
 	char *u_newpass, *u_reversed;
 	char *u_oldpass;
 	char *u_name, *u_gecos, *u_dir;
 	const char *reason;
 	int length;
 
-	reversed = NULL;
 	u_newpass = u_reversed = NULL;
 	u_oldpass = NULL;
 	u_name = u_gecos = u_dir = NULL;
@@ -458,48 +473,43 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 		goto out;
 	}
 
-	if ((reversed = reverse(newpass))) {
-		u_newpass = unify(NULL, newpass);
-		u_reversed = unify(NULL, reversed);
-		if (oldpass)
-			u_oldpass = unify(NULL, oldpass);
-		if (pw) {
-			u_name = unify(NULL, pw->pw_name);
-			u_gecos = unify(NULL, pw->pw_gecos);
-			u_dir = unify(NULL, pw->pw_dir);
-		}
-	}
-	if (!reversed ||
-	    !u_newpass || !u_reversed ||
-	    (oldpass && !u_oldpass) ||
-	    (pw && (!u_name || !u_gecos || !u_dir)))
+	if (!(u_newpass = unify(NULL, newpass)))
 		goto out; /* REASON_ERROR */
+	if (!(u_reversed = reverse(u_newpass)))
+		goto out;
+	if (oldpass && !(u_oldpass = unify(NULL, oldpass)))
+		goto out;
+	if (pw) {
+		if (!(u_name = unify(NULL, pw->pw_name)) ||
+		    !(u_gecos = unify(NULL, pw->pw_gecos)) ||
+		    !(u_dir = unify(NULL, pw->pw_dir)))
+			goto out;
+	}
 
 	if (oldpass && params->similar_deny &&
 	    (is_based(params, u_oldpass, u_newpass, newpass, 0) ||
-	     is_based(params, u_oldpass, u_reversed, reversed, 0))) {
+	     is_based(params, u_oldpass, u_reversed, newpass, 0x100))) {
 		reason = REASON_SIMILAR;
 		goto out;
 	}
 
 	if (pw &&
 	    (is_based(params, u_name, u_newpass, newpass, 0) ||
-	     is_based(params, u_name, u_reversed, reversed, 0) ||
+	     is_based(params, u_name, u_reversed, newpass, 0x100) ||
 	     is_based(params, u_gecos, u_newpass, newpass, 0) ||
-	     is_based(params, u_gecos, u_reversed, reversed, 0) ||
+	     is_based(params, u_gecos, u_reversed, newpass, 0x100) ||
 	     is_based(params, u_dir, u_newpass, newpass, 0) ||
-	     is_based(params, u_dir, u_reversed, reversed, 0))) {
+	     is_based(params, u_dir, u_reversed, newpass, 0x100))) {
 		reason = REASON_PERSONAL;
 		goto out;
 	}
 
-	reason = is_word_based(params, u_newpass, newpass);
+	reason = is_word_based(params, u_newpass, newpass, 0);
 	if (!reason)
-		reason = is_word_based(params, u_reversed, reversed);
+		reason = is_word_based(params, u_reversed, newpass, 0x100);
 
 out:
 	memset(truncated, 0, sizeof(truncated));
-	clean(reversed);
 	clean(u_newpass);
 	clean(u_reversed);
 	clean(u_oldpass);
