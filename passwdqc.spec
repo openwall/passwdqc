@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.54 2010/03/16 18:00:38 ldv Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.55 2010/03/27 19:38:57 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.2.0
+Version: 1.2.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,6 +73,12 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Sat Mar 27 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.1-owl1
+- When matching against the reversed new password, always pass the original
+non-reversed new password (possibly with a substring removed) into is_simple(),
+but remove or check the correct substring in is_based() considering that the
+matching is possibly being done against the reversed password.
+
 * Tue Mar 16 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.0-owl1
 - New command-line options for pwqcheck: -1 and -2 for reading just 1 and
 just 2 lines from stdin, respectively (instead of reading 3 lines, which is
