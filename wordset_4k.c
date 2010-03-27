@@ -1,11 +1,58 @@
 /*
  * 4096 English words for generation of easy to memorize random passphrases.
- * This list comes from a passphrase generator mentioned on sci.crypt, and I
- * believe is in the public domain.
+ * This list comes from the MakePass passphrase generator developed by
+ * Dianelos Georgoudis <dianelos at tecapro.com>, which was announced on
+ * sci.crypt on 1997/10/24.  Here's a relevant excerpt from that posting:
  *
- * I've replaced two 7-character words to save space.
+ * > The 4096 words in the word list were chosen according to the following
+ * > criteria:
+ * >    - each word must contain between 3 and 6 characters
+ * >    - each word must be a common English word
+ * >    - each word should be clearly different from each other
+ * >      word, orthographically or semantically
+ * >
+ * > The MakePass word list has been placed in the public domain
  *
- * - Solar Designer
+ * At least two other sci.crypt postings by Dianelos Georgoudis also state
+ * that the word list is in the public domain, and so did the web page at:
+ *
+ * http://web.archive.org/web/*/http://www.tecapro.com/makepass.html
+ *
+ * which existed until 2006 and is available from the Wayback Machine as of
+ * this writing (March 2010).  Specifically, the web page said:
+ *
+ * > The MakePass word list has been placed in the public domain.  To download
+ * > a copy click here.  You can use the MakePass word list for many other
+ * > purposes.
+ *
+ * "To download a copy click here" was a link to free/makepass.lst, which is
+ * currently available via the Wayback Machine:
+ *
+ * http://web.archive.org/web/*/http://www.tecapro.com/free/makepass.lst
+ *
+ * Even though the original description of the list stated that "each word
+ * must contain between 3 and 6 characters", there were two 7-character words:
+ * "England" and "Germany".  For use in passwdqc, these have been replaced
+ * with "erase" and "gag".
+ *
+ * The code in passwdqc_check.c and passwdqc_random.c makes the following
+ * assumptions about this list:
+ *
+ * - there are exactly 4096 words;
+ * - the words are of up to 6 characters long;
+ * - although some words may contain capital letters, no two words differ by
+ * the case of characters alone (e.g., converting the list to all-lowercase
+ * would yield a list of 4096 unique words);
+ * - the words contain alphabetical characters only;
+ * - if an entire word on this list matches the initial substring of other
+ * word(s) on the list, it is placed immediately before those words (e.g.,
+ * "bake", "baker", "bakery").
+ *
+ * Additionally, the default minimum passphrase length of 11 characters
+ * specified in passwdqc_parse.c has been chosen such that a passphrase
+ * consisting of any three words from this list with two separator
+ * characters will pass the minimum length check.  In other words, this
+ * default assumes that no word is shorter than 3 characters.
  */
 
 #include "wordset_4k.h"
