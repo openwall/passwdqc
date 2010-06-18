@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000-2003,2005,2009 by Solar Designer
+# Copyright (c) 2000-2003,2005,2009,2010 by Solar Designer
 # Copyright (c) 2008,2009 by Dmitry V. Levin
 # See LICENSE
 #
@@ -23,9 +23,11 @@ BINMODE = 755
 CONFDIR = /etc
 CONFMODE = 644
 SHARED_LIBDIR = /lib
+SHARED_LIBDIR_SUN = /usr/lib
 SHARED_LIBDIR_REL = ../..$(SHARED_LIBDIR)
 DEVEL_LIBDIR = /usr/lib
 SECUREDIR = /lib/security
+SECUREDIR_SUN = /usr/lib/security
 INCLUDEDIR = /usr/include
 MANDIR = /usr/share/man
 DESTDIR =
@@ -37,6 +39,8 @@ RM = rm -f
 LN_s = ln -s -f
 MKDIR = umask 022 && mkdir -p
 INSTALL = install -c
+# We support Sun's older /usr/ucb/install, but not the newer /usr/sbin/install.
+INSTALL_SUN = /usr/ucb/install -c
 CFLAGS = -Wall -W -O2
 CFLAGS_lib = $(CFLAGS) -fPIC
 CFLAGS_bin = $(CFLAGS) -fomit-frame-pointer
@@ -82,20 +86,23 @@ OBJS_PAM = pam_passwdqc.o
 OBJS_GEN = pwqgen.o
 OBJS_CHECK = pwqcheck.o
 
-all:
+default: all
 
-all pam utils:
+all pam utils install install_lib install_pam install_utils remove remove_lib remove_pam remove_utils:
 	case "`uname -s`" in \
 	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_LINUX)" \
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
 			$@_wrapped;; \
-	SunOS)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
+	SunOS)	$(MAKE) -e CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_SUN)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_SUN)" \
 			LDLIBS_pam="$(LDLIBS_pam_SUN)" \
+			INSTALL="$(INSTALL_SUN)" \
+			SHARED_LIBDIR="$(SHARED_LIBDIR_SUN)" \
+			SECUREDIR="$(SECUREDIR_SUN)" \
 			$@_wrapped;; \
 	HP-UX)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LD_lib=ld \
@@ -144,10 +151,10 @@ passwdqc_parse.o: passwdqc.h concat.h
 passwdqc_random.o: passwdqc.h wordset_4k.h
 wordset_4k.o: wordset_4k.h
 
-install: install_lib install_utils install_pam
+install_wrapped: install_lib_wrapped install_utils_wrapped install_pam_wrapped
 	@echo 'Consider running ldconfig(8) to update the dynamic linker cache.'
 
-install_lib:
+install_lib_wrapped:
 	$(MKDIR) $(DESTDIR)$(CONFDIR)
 	$(INSTALL) -m $(CONFMODE) $(CONFIGS) $(DESTDIR)$(CONFDIR)/
 
@@ -164,31 +171,31 @@ install_lib:
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man5
 	$(INSTALL) -m $(MANMODE) $(MAN5) $(DESTDIR)$(MANDIR)/man5/
 
-install_utils:
+install_utils_wrapped:
 	$(MKDIR) $(DESTDIR)$(BINDIR)
 	$(INSTALL) -m $(BINMODE) $(BINS) $(DESTDIR)$(BINDIR)/
 
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man1
 	$(INSTALL) -m $(MANMODE) $(MAN1) $(DESTDIR)$(MANDIR)/man1/
 
-install_pam:
+install_pam_wrapped:
 	$(MKDIR) $(DESTDIR)$(SECUREDIR)
 	$(INSTALL) -m $(SHLIBMODE) $(SHARED_PAM) $(DESTDIR)$(SECUREDIR)/
 
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man8
 	$(INSTALL) -m $(MANMODE) $(MAN8) $(DESTDIR)$(MANDIR)/man8/
 
-remove: remove_pam remove_utils remove_lib
+remove_wrapped: remove_pam_wrapped remove_utils_wrapped remove_lib_wrapped
 
-remove_pam:
+remove_pam_wrapped:
 	$(RM) $(DESTDIR)$(MANDIR)/man8/$(MAN8)
 	$(RM) $(DESTDIR)$(SECUREDIR)/$(SHARED_PAM)
 
-remove_utils:
+remove_utils_wrapped:
 	for f in $(MAN1); do $(RM) $(DESTDIR)$(MANDIR)/man1/$$f; done
 	for f in $(BINS); do $(RM) $(DESTDIR)$(BINDIR)/$$f; done
 
-remove_lib:
+remove_lib_wrapped:
 	for f in $(MAN5); do $(RM) $(DESTDIR)$(MANDIR)/man5/$$f; done
 	for f in $(HEADER); do $(RM) $(DESTDIR)$(INCLUDEDIR)/$$f; done
 	for f in $(DEVEL_LIB); do $(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$$f; done
@@ -200,4 +207,8 @@ clean:
 
 .PHONY: all all_wrapped clean install install_lib install_pam install_utils \
 	pam pam_wrapped remove remove_lib remove_pam remove_utils \
-	utils utils_wrapped
+	utils utils_wrapped \
+	install_wrapped install_lib_wrapped install_pam_wrapped \
+	install_utils_wrapped \
+	remove_wrapped remove_lib_wrapped remove_pam_wrapped \
+	remove_utils_wrapped
