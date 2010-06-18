@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.55 2010/03/27 19:38:57 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.56 2010/06/18 20:13:01 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.2.1
+Version: 1.2.2
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,6 +73,10 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Fri Jun 18 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.2-owl1
+- Makefile updates to make the "install" and "remove" targets with their
+default settings friendlier to Solaris systems.
+
 * Sat Mar 27 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.1-owl1
 - When matching against the reversed new password, always pass the original
 non-reversed new password (possibly with a substring removed) into is_simple(),
