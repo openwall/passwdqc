@@ -8,7 +8,7 @@ get a newer version of it than one available in/for the distribution).
 On a system with the PAM (Pluggable Authentication Modules) framework,
 you may build all components of passwdqc (the library, the PAM module,
 and two command-line programs) by simply running "make".  To install,
-run "make install".  To uninstall, run "make remove".
+run "make install".  To uninstall, run "make uninstall".
 
 On a system without PAM, you may build everything but the PAM module
 with "make utils".  To install, run "make install_lib install_utils".
@@ -37,4 +37,4 @@ and passwdqc.conf(5) manual pages.
 Please refer to the pwqcheck(1) and pwqgen(1) manual pages for
 information on using the command-line programs.
 
-$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.4 2010/06/18 20:13:01 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.5 2010/06/22 22:41:31 solar Exp $

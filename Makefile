@@ -88,7 +88,7 @@ OBJS_CHECK = pwqcheck.o
 
 default: all
 
-all pam utils install install_lib install_pam install_utils remove remove_lib remove_pam remove_utils:
+all pam utils install install_lib install_pam install_utils uninstall remove remove_lib remove_pam remove_utils:
 	case "`uname -s`" in \
 	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
 			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
@@ -185,7 +185,7 @@ install_pam_wrapped:
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man8
 	$(INSTALL) -m $(MANMODE) $(MAN8) $(DESTDIR)$(MANDIR)/man8/
 
-remove_wrapped: remove_pam_wrapped remove_utils_wrapped remove_lib_wrapped
+uninstall_wrapped remove_wrapped: remove_pam_wrapped remove_utils_wrapped remove_lib_wrapped
 
 remove_pam_wrapped:
 	$(RM) $(DESTDIR)$(MANDIR)/man8/$(MAN8)
@@ -206,7 +206,7 @@ clean:
 	$(RM) $(PROJ) *.o
 
 .PHONY: all all_wrapped clean install install_lib install_pam install_utils \
-	pam pam_wrapped remove remove_lib remove_pam remove_utils \
+	pam pam_wrapped uninstall remove remove_lib remove_pam remove_utils \
 	utils utils_wrapped \
 	install_wrapped install_lib_wrapped install_pam_wrapped \
 	install_utils_wrapped \
