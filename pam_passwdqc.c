@@ -424,6 +424,7 @@ retry:
 		retry_wanted = 1;
 	}
 
+	check_reason = NULL; /* unused */
 	if (status == PAM_SUCCESS &&
 	    (!randompass || !strstr(trypass, randompass)) &&
 	    (randomonly ||
