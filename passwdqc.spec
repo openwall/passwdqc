@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.57 2010/06/22 22:41:31 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.58 2010/06/22 23:10:33 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
@@ -77,6 +77,8 @@ rm -rf %buildroot
 - Introduced the GNU'ish "uninstall" make target name (a synonym for "remove").
 - Makefile updates to make the "install" and "uninstall" targets with their
 default settings friendlier to Solaris systems.
+- Added a link to a wiki page with detailed Solaris-specific instructions to
+the PLATFORMS file.
 
 * Sat Mar 27 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.1-owl1
 - When matching against the reversed new password, always pass the original
