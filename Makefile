@@ -7,6 +7,8 @@
 TITLE = pam_passwdqc
 SHARED_LIB = libpasswdqc.so.0
 DEVEL_LIB = libpasswdqc.so
+SHARED_LIB_DARWIN = libpasswdqc.0.dylib
+DEVEL_LIB_DARWIN = libpasswdqc.dylib
 MAP_LIB = libpasswdqc.map
 PAM_SO_SUFFIX =
 SHARED_PAM = $(TITLE).so$(PAM_SO_SUFFIX)
@@ -28,6 +30,7 @@ SHARED_LIBDIR_REL = ../..$(SHARED_LIBDIR)
 DEVEL_LIBDIR = /usr/lib
 SECUREDIR = /lib/security
 SECUREDIR_SUN = /usr/lib/security
+SECUREDIR_DARWIN = /usr/lib/pam
 INCLUDEDIR = /usr/include
 MANDIR = /usr/share/man
 DESTDIR =
@@ -66,6 +69,7 @@ LDLIBS_pam = -lpam -lcrypt
 LDLIBS_pam_LINUX = -lpam -lcrypt
 LDLIBS_pam_SUN = -lpam -lcrypt
 LDLIBS_pam_HP = -lpam -lsec
+LDLIBS_pam_DARWIN = -lpam -lSystem
 
 # Uncomment this to use cc instead of gcc
 #CC = cc
@@ -109,6 +113,12 @@ all pam utils install install_lib install_pam install_utils uninstall remove rem
 			LDFLAGS_lib="$(LDFLAGS_lib_HP)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_HP)" \
 			LDLIBS_pam="$(LDLIBS_pam_HP)" \
+			$@_wrapped;; \
+	Darwin)	$(MAKE) \
+			SHARED_LIB="$(SHARED_LIB_DARWIN)" \
+			DEVEL_LIB="$(DEVEL_LIB_DARWIN)" \
+			SECUREDIR="$(SECUREDIR_DARWIN)" \
+			LDLIBS_pam="$(LDLIBS_pam_DARWIN)" \
 			$@_wrapped;; \
 	*)	$(MAKE) $@_wrapped;; \
 	esac
