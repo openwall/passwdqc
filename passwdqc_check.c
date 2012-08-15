@@ -349,7 +349,7 @@ next_match_length:
  * because these are often taken care of by the requirement on the number of
  * different characters.
  */
-const char *seq[] = {
+const char * const seq[] = {
 	"0123456789",
 	"`1234567890-=",
 	"~!@#$%^&*()_+",

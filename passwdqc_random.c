@@ -54,7 +54,7 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 	int bits;
 	int use_separators, count, i;
 	unsigned int length, extra;
-	char *start, *end;
+	const char *start, *end;
 	int fd;
 	unsigned char bytes[3];
 

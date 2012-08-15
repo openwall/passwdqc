@@ -152,7 +152,7 @@ passwdqc_params_parse(passwdqc_params_t *params, char **reason,
 	return 0;
 }
 
-static passwdqc_params_t defaults = {
+static const passwdqc_params_t defaults = {
 	{
 		{INT_MAX, 24, 11, 8, 7},	/* min */
 		40,				/* max */

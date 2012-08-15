@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.59 2012/08/15 07:39:12 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.60 2012/08/15 08:06:27 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
@@ -75,6 +75,7 @@ rm -rf %buildroot
 %changelog
 * Wed Aug 15 2012 Solar Designer <solar-at-owl.openwall.com> 1.2.3-owl1
 - Handle possible NULL returns from crypt().
+- Declared all pre-initialized arrays and structs as const.
 
 * Tue Jun 22 2010 Solar Designer <solar-at-owl.openwall.com> 1.2.2-owl1
 - Introduced the GNU'ish "uninstall" make target name (a synonym for "remove").

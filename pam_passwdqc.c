@@ -490,7 +490,7 @@ retry:
 #ifdef PAM_MODULE_ENTRY
 PAM_MODULE_ENTRY("pam_passwdqc");
 #elif defined(PAM_STATIC)
-struct pam_module _pam_passwdqc_modstruct = {
+const struct pam_module _pam_passwdqc_modstruct = {
 	"pam_passwdqc",
 	NULL,
 	NULL,

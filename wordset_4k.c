@@ -57,7 +57,7 @@
 
 #include "wordset_4k.h"
 
-char _passwdqc_wordset_4k[0x1000][6] = {
+const char _passwdqc_wordset_4k[0x1000][6] = {
 	"Adam",
 	"Afghan",
 	"Alaska",
