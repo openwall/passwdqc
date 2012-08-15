@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2003,2005 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2003,2005,2012 by Solar Designer.  See LICENSE.
  */
 
 #ifdef __FreeBSD__
@@ -186,32 +186,39 @@ static int check_max(passwdqc_params_qc_t *qc, pam_handle_t *pamh,
 
 static int check_pass(struct passwd *pw, const char *pass)
 {
-#ifdef HAVE_SHADOW
-	struct spwd *spw;
 	const char *hash;
 	int retval;
 
+#ifdef HAVE_SHADOW
 #ifdef __hpux
 	if (iscomsec()) {
 #else
 	if (!strcmp(pw->pw_passwd, "x")) {
 #endif
-		spw = getspnam(pw->pw_name);
+		struct spwd *spw = getspnam(pw->pw_name);
 		endspent();
 		if (!spw)
 			return -1;
+		hash = NULL;
+		if (strlen(spw->sp_pwdp) >= 13) {
 #ifdef __hpux
-		hash = bigcrypt(pass, spw->sp_pwdp);
+			hash = bigcrypt(pass, spw->sp_pwdp);
 #else
-		hash = crypt(pass, spw->sp_pwdp);
+			hash = crypt(pass, spw->sp_pwdp);
 #endif
-		retval = strcmp(hash, spw->sp_pwdp) ? -1 : 0;
+		}
+		retval = (hash && !strcmp(hash, spw->sp_pwdp)) ? 0 : -1;
 		memset(spw->sp_pwdp, 0, strlen(spw->sp_pwdp));
 		return retval;
 	}
 #endif
 
-	return strcmp(crypt(pass, pw->pw_passwd), pw->pw_passwd) ? -1 : 0;
+	hash = NULL;
+	if (strlen(pw->pw_passwd) >= 13)
+		hash = crypt(pass, pw->pw_passwd);
+	retval = (hash && !strcmp(hash, pw->pw_passwd)) ? 0 : -1;
+	memset(pw->pw_passwd, 0, strlen(pw->pw_passwd));
+	return retval;
 }
 
 static int am_root(pam_handle_t *pamh)
@@ -299,6 +306,10 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		pw->pw_name = (char *)user;
 		pw->pw_gecos = "";
 	} else {
+/* As currently implemented, we don't avoid timing leaks for valid vs. not
+ * usernames and hashes.  Normally, the username would have already been
+ * checked and determined valid, and the check_oldauthtok option is only needed
+ * on systems that happen to have similar timing leaks all over the place. */
 		pw = getpwnam(user);
 		endpwent();
 		if (!pw)
