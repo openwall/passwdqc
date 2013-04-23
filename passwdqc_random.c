@@ -45,16 +45,16 @@
 /*
  * Maximum number of words to use.
  */
-#define WORDS_MAX			7
+#define WORDS_MAX			8
 
 /*
  * Minimum and maximum number of bits to encode.  With the settings above,
- * these are 26 and 132, respectively.
+ * these are 24 and 136, respectively.
  */
 #define BITS_MIN \
-	(2 * WORD_BITS)
+	(2 * (WORD_BITS - 1))
 #define BITS_MAX \
-	(WORD_BITS + WORDS_MAX * (SEPARATOR_BITS + WORD_BITS))
+	(WORDS_MAX * SWORD_BITS)
 
 static int read_loop(int fd, unsigned char *buffer, int count)
 {
@@ -83,8 +83,9 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 {
 	char output[0x100], *retval;
 	int bits;
-	int word_count, use_separators, i;
-	unsigned int length, extra;
+	int word_count, trailing_separator, use_separators, toggle_case;
+	int i;
+	unsigned int max_length, length, extra;
 	const char *start, *end;
 	int fd;
 	unsigned char bytes[3];
@@ -103,6 +104,13 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 	word_count = 1 + (bits + (SWORD_BITS - 1 - WORD_BITS)) / SWORD_BITS;
 
 /*
+ * Special case: would we still encode enough bits if we omit the final word,
+ * but keep the would-be-trailing separator?
+ */
+	trailing_separator = (SWORD_BITS * (word_count - 1) >= bits);
+	word_count -= trailing_separator;
+
+/*
  * To determine whether we need to use different separator characters or maybe
  * not, calculate the number of words we'd need to use if we don't use
  * different separators.  We calculate it by dividing "bits" by WORD_BITS with
@@ -112,27 +120,37 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  * word_count.
  */
 	use_separators = ((bits + (WORD_BITS - 1)) / WORD_BITS != word_count);
+	trailing_separator &= use_separators;
+
+/*
+ * Toggle case of the first character of each word only if we wouldn't achieve
+ * sufficient entropy otherwise.
+ */
+	toggle_case = (bits >
+	    ((WORD_BITS - 1) * word_count) +
+	    (use_separators ?
+	    (SEPARATOR_BITS * (word_count - !trailing_separator)) : 0));
 
 /*
  * Calculate and check the maximum possible length of a "passphrase" we may
  * generate for a given word_count.  We add 1 to WORDSET_4K_LENGTH_MAX to
- * account for separators (whether different or not).  We subtract 1 because
- * the number of one-character separators is one less than the number of words.
- * The check against sizeof(output) uses ">=" to account for NUL termination.
+ * account for separators (whether different or not).  When there's no
+ * trailing separator, we subtract 1.  The check against sizeof(output) uses
+ * ">=" to account for NUL termination.
  */
-	length = word_count * (WORDSET_4K_LENGTH_MAX + 1) - 1;
-	if (length >= sizeof(output) || (int)length > params->max)
+	max_length = word_count * (WORDSET_4K_LENGTH_MAX + 1) -
+	    !trailing_separator;
+	if (max_length >= sizeof(output) || (int)max_length > params->max)
 		return NULL;
 
 	if ((fd = open("/dev/urandom", O_RDONLY)) < 0)
 		return NULL;
 
+	retval = NULL;
 	length = 0;
 	do {
-		if (read_loop(fd, bytes, sizeof(bytes)) != sizeof(bytes)) {
-			close(fd);
-			return NULL;
-		}
+		if (read_loop(fd, bytes, sizeof(bytes)) != sizeof(bytes))
+			goto out;
 
 /*
  * Append a word.  Treating bytes as little-endian, we use bits 0 to 11 for the
@@ -145,14 +163,17 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 		if (!end)
 			end = start + WORDSET_4K_LENGTH_MAX;
 		extra = end - start;
-		if (length + extra >= sizeof(output) - 1) {
-			close(fd);
-			return NULL;
-		}
+/* The ">=" leaves room for either one more separator or NUL */
+		if (length + extra >= sizeof(output))
+			goto out;
 		memcpy(&output[length], start, extra);
-		output[length] ^= bytes[1] & 0x20; /* toggle case if bit set */
+		if (toggle_case) {
+/* Toggle case if bit set (we assume ASCII) */
+			output[length] ^= bytes[1] & 0x20;
+			bits--;
+		}
 		length += extra;
-		bits -= WORD_BITS;
+		bits -= WORD_BITS - 1;
 
 		if (bits <= 0)
 			break;
@@ -161,10 +182,9 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  * Append a separator character.  We use bits 16 to 19.  Bits 20 to 23 are left
  * unused.
  *
- * Special case: we may happen to generate one word less than word_count if the
- * final separator provides enough bits on its own.  This was not accounted for
- * in the calculations prior to this loop, but it is here.  With WORD_BITS 13
- * and SEPARATOR_BITS 4, this happens e.g. for bits values from 66 to 68.
+ * Special case: we may happen to leave a trailing separator if it provides
+ * enough bits on its own.  With WORD_BITS 13 and SEPARATOR_BITS 4, this
+ * happens e.g. for bits values from 31 to 34, 48 to 51, 65 to 68.
  */
 		if (use_separators) {
 			i = bytes[2] & 0x0f;
@@ -174,12 +194,20 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 			output[length++] = SEPARATORS[0];
 	} while (bits > 0);
 
+/*
+ * Since we may have added a separator after the check in the loop above, we
+ * must check again now.
+ */
+	if (length < sizeof(output)) {
+		output[length] = '\0';
+		retval = strdup(output);
+	}
+
+out:
 	memset(bytes, 0, sizeof(bytes));
+	memset(output, 0, length);
 
 	close(fd);
 
-	output[length] = '\0';
-	retval = strdup(output);
-	memset(output, 0, length);
 	return retval;
 }

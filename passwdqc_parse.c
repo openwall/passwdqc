@@ -78,7 +78,7 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 			e += 5;
 			params->qc.min[4] = INT_MAX;
 		}
-		if (*e || (v && v < 26) || v > 81)
+		if (*e || (v && v < 24) || v > 85)
 			goto parse_error;
 		params->qc.random_bits = v;
 	} else if ((p = skip_prefix(option, "enforce="))) {
