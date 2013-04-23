@@ -102,7 +102,7 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 			output[length++] = SEPARATORS[i];
 			bits -= 4;
 		} else
-			output[length++] = ' ';
+			output[length++] = SEPARATORS[0];
 	} while (bits > 0);
 
 	memset(bytes, 0, sizeof(bytes));
