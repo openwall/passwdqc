@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2005,2008,2010 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2002,2005,2008,2010,2013 by Solar Designer.  See LICENSE.
  */
 
 #include <stdio.h>
@@ -94,11 +94,14 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 		length += extra;
 		bits -= 13;
 
-		if (use_separators && bits > 4) {
+		if (bits <= 0)
+			break;
+
+		if (use_separators) {
 			i = bytes[2] & 0x0f;
 			output[length++] = SEPARATORS[i];
 			bits -= 4;
-		} else if (bits > 0)
+		} else
 			output[length++] = ' ';
 	} while (bits > 0);
 
