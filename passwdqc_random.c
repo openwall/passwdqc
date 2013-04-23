@@ -12,11 +12,6 @@
 #include "wordset_4k.h"
 
 /*
- * Maximum word length found in _passwdqc_wordset_4k[].
- */
-#define WORD_LENGTH_MAX			6
-
-/*
  * We separate words in the generated "passphrases" with random special
  * characters out of a set of 16 (so we encode 4 bits per separator
  * character).  To enable the use of our "passphrases" within FTP URLs
@@ -120,12 +115,12 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 
 /*
  * Calculate and check the maximum possible length of a "passphrase" we may
- * generate for a given word_count.  We add 1 to WORD_LENGTH_MAX to account for
- * separators (whether different or not).  We subtract 1 because the number of
- * one-character separators is one less than the number of words.  The check
- * against sizeof(output) uses ">=" to account for NUL termination.
+ * generate for a given word_count.  We add 1 to WORDSET_4K_LENGTH_MAX to
+ * account for separators (whether different or not).  We subtract 1 because
+ * the number of one-character separators is one less than the number of words.
+ * The check against sizeof(output) uses ">=" to account for NUL termination.
  */
-	length = word_count * (WORD_LENGTH_MAX + 1) - 1;
+	length = word_count * (WORDSET_4K_LENGTH_MAX + 1) - 1;
 	if (length >= sizeof(output) || (int)length > params->max)
 		return NULL;
 
@@ -146,9 +141,9 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  */
 		i = (((int)bytes[1] & 0x0f) << 8) | (int)bytes[0];
 		start = _passwdqc_wordset_4k[i];
-		end = memchr(start, '\0', WORD_LENGTH_MAX);
+		end = memchr(start, '\0', WORDSET_4K_LENGTH_MAX);
 		if (!end)
-			end = start + WORD_LENGTH_MAX;
+			end = start + WORDSET_4K_LENGTH_MAX;
 		extra = end - start;
 		if (length + extra >= sizeof(output) - 1) {
 			close(fd);

@@ -376,7 +376,7 @@ const char * const seq[] = {
 static const char *is_word_based(const passwdqc_params_qc_t *params,
     const char *needle, const char *original, int is_reversed)
 {
-	char word[7];
+	char word[WORDSET_4K_LENGTH_MAX + 1];
 	char *unified;
 	unsigned int i;
 	int length;
@@ -398,9 +398,9 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	}
 
 	mode = is_reversed | 1;
-	word[6] = '\0';
+	word[WORDSET_4K_LENGTH_MAX] = '\0';
 	for (i = 0; i < 0x1000; i++) {
-		memcpy(word, _passwdqc_wordset_4k[i], 6);
+		memcpy(word, _passwdqc_wordset_4k[i], WORDSET_4K_LENGTH_MAX);
 		length = strlen(word);
 		if (length < params->match_length)
 			continue;

@@ -57,7 +57,7 @@
 
 #include "wordset_4k.h"
 
-const char _passwdqc_wordset_4k[0x1000][6] = {
+const char _passwdqc_wordset_4k[0x1000][WORDSET_4K_LENGTH_MAX] = {
 	"Adam",
 	"Afghan",
 	"Alaska",
