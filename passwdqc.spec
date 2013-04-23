@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.61 2012/08/15 08:35:05 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.62 2013/04/23 14:24:55 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.2.3
+Version: 1.2.4
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,6 +73,16 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Tue Apr 23 2013 Solar Designer <solar-at-owl.openwall.com> 1.2.4-owl1
+- In randomly generated passphrases: toggle case of the first character of each
+word only if we wouldn't achieve sufficient entropy otherwise, use a trailing
+separator if we achieve sufficient entropy even with the final word omitted
+(in fact, we now enable the use of different separators in more cases for this
+reason), use dashes rather than spaces to separate words when different
+separator characters are not in use.
+- Expanded the allowed size of randomly-generated passphrases in bits (now it's
+24 to 85 in the tools, and 24 to 136 in the passwdqc_random() interface).
+
 * Wed Aug 15 2012 Solar Designer <solar-at-owl.openwall.com> 1.2.3-owl1
 - Handle possible NULL returns from crypt().
 - Declared all pre-initialized arrays and structs as const.
