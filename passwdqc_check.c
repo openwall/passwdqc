@@ -344,23 +344,34 @@ next_match_length:
 
 /*
  * Common sequences of characters.
- * We don't need to list any of the characters in reverse order because the
+ * We don't need to list any of the entire strings in reverse order because the
  * code checks the new password in both "unified" and "unified and reversed"
- * form against these strings (unifying them first indeed).  We also don't
- * have to include common repeats of characters (e.g., "777", "!!!", "1000")
- * because these are often taken care of by the requirement on the number of
- * different characters.
+ * form against these strings (unifying them first indeed).  We also don't have
+ * to include common repeats of characters (e.g., "777", "!!!", "1000") because
+ * these are often taken care of by the requirement on the number of different
+ * characters.
  */
 const char * const seq[] = {
 	"0123456789",
 	"`1234567890-=",
 	"~!@#$%^&*()_+",
 	"abcdefghijklmnopqrstuvwxyz",
+	"a1b2c3d4e5f6g7h8i9j0",
+	"1a2b3c4d5e6f7g8h9i0j",
+	"abc123",
 	"qwertyuiop[]\\asdfghjkl;'zxcvbnm,./",
 	"qwertyuiop{}|asdfghjkl:\"zxcvbnm<>?",
 	"qwertyuiopasdfghjklzxcvbnm",
 	"1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik,9ol.0p;/-['=]\\",
-	"qazwsxedcrfvtgbyhnujmikolp"
+	"!qaz@wsx#edc$rfv%tgb^yhn&ujm*ik<(ol>)p:?_{\"+}|",
+	"qazwsxedcrfvtgbyhnujmikolp",
+	"1q2w3e4r5t6y7u8i9o0p-[=]",
+	"q1w2e3r4t5y6u7i8o9p0[-]=\\",
+	"1qaz1qaz",
+	"1qaz!qaz", /* can't unify '1' and '!' - see comment in unify() */
+	"1qazzaq1",
+	"zaq!1qaz",
+	"zaq!2wsx"
 };
 
 /*
@@ -387,18 +398,6 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	if (!params->match_length)	/* disabled */
 		return NULL;
 
-	mode = is_reversed | 2;
-	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
-		unified = unify(NULL, seq[i]);
-		if (!unified)
-			return REASON_ERROR;
-		if (is_based(params, unified, needle, original, mode)) {
-			free(unified);
-			return REASON_SEQ;
-		}
-		free(unified);
-	}
-
 	mode = is_reversed | 1;
 	word[WORDSET_4K_LENGTH_MAX] = '\0';
 	for (i = 0; i < 0x1000; i++) {
@@ -415,6 +414,17 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	}
 
 	mode = is_reversed | 2;
+	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
+		unified = unify(NULL, seq[i]);
+		if (!unified)
+			return REASON_ERROR;
+		if (is_based(params, unified, needle, original, mode)) {
+			free(unified);
+			return REASON_SEQ;
+		}
+		free(unified);
+	}
+
 	if (params->match_length <= 4)
 	for (i = 1900; i <= 2039; i++) {
 		sprintf(word, "%u", i);
