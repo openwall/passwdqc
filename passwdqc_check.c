@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2010 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2002,2010,2013 by Solar Designer.  See LICENSE.
  */
 
 #include <stdio.h>
@@ -66,14 +66,15 @@ static int expected_different(int charset, int length)
  * contain enough different characters for its class, or doesn't contain
  * enough words for a passphrase.
  *
- * The bias may be positive or negative.  It is added to the length,
- * except that a negative bias is not considered in the passphrase
- * length check because a passphrase is expected to contain words.
- * The bias does not apply to the number of different characters; the
- * actual number is used in all checks.
+ * The biases are added to the length, and they may be positive or negative.
+ * The passphrase length check uses passphrase_bias instead of bias so that
+ * zero may be passed for this parameter when the (other) bias is non-zero
+ * because of a dictionary word, which is perfectly normal for a passphrase.
+ * The biases do not affect the number of different characters, character
+ * classes, and word count.
  */
 static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
-    int bias)
+    int bias, int passphrase_bias)
 {
 	int length, classes, words, chars;
 	int digits, lowers, uppers, others, unknowns;
@@ -155,7 +156,7 @@ static int is_simple(const passwdqc_params_qc_t *params, const char *newpass,
 		if (!params->passphrase_words ||
 		    words < params->passphrase_words)
 			continue;
-		if (length + (bias > 0 ? bias : 0) >= params->min[2] &&
+		if (length + passphrase_bias >= params->min[2] &&
 		    chars >= expected_different(27, params->min[2]) - 1)
 			return 0;
 		continue;
@@ -291,7 +292,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 				}
 				/* add credit for match_length - 1 chars */
 				bias = params->match_length - 1;
-				if (is_simple(params, scratch, bias)) {
+				if (is_simple(params, scratch, bias, bias)) {
 					clean(scratch);
 					return 1;
 				}
@@ -319,7 +320,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 				bias += (int)params->match_length - j;
 				/* bias <= -1 */
 				if (bias < worst_bias) {
-					if (is_simple(params, original, bias))
+					if (is_simple(params, original, bias,
+					    (mode & 0xff) == 1 ? 0 : bias))
 						return 1;
 					worst_bias = bias;
 				}
@@ -466,7 +468,7 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 		}
 	}
 
-	if (is_simple(params, newpass, 0)) {
+	if (is_simple(params, newpass, 0, 0)) {
 		reason = REASON_SIMPLE;
 		if (length < params->min[1] && params->min[1] <= params->max)
 			reason = REASON_SIMPLESHORT;
