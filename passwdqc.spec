@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.62 2013/04/23 14:24:55 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.63 2013/04/24 02:02:54 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.2.4
+Version: 1.3.0
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -60,7 +60,7 @@ rm -rf %buildroot
 
 %files
 %defattr(-,root,root)
-%doc LICENSE README
+%doc LICENSE README pwqcheck.php
 %config(noreplace) /etc/passwdqc.conf
 /%_lib/lib*.so*
 %_bindir/*
@@ -73,6 +73,19 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Wed Apr 24 2013 Solar Designer <solar-at-owl.openwall.com> 1.3.0-owl1
+- When checking is_simple() after discounting a common character sequence,
+apply the (negative) bias even for the passphrase length check.  Previously,
+we were not doing this because passphrases are normally built from words, and
+the same code was being used for the check for dictionary words.
+- Expanded the list of common character sequences.  Along with the change
+above, this reduces the number of passing passwords for RockYou top 100k from
+35 to 18, and for RockYou top 1M from 2333 to 2273 (all of these are with
+passwdqc's default policy).
+- Moved the common character sequences check to be made after the dictionary
+words check, to avoid introducing more cases of misreporting.
+- Added pwqcheck.php, a PHP wrapper function around the pwqcheck program.
+
 * Tue Apr 23 2013 Solar Designer <solar-at-owl.openwall.com> 1.2.4-owl1
 - In randomly generated passphrases: toggle case of the first character of each
 word only if we wouldn't achieve sufficient entropy otherwise, use a trailing
