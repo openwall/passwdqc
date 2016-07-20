@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2003,2005,2012 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2003,2005,2012,2016 by Solar Designer.  See LICENSE.
  */
 
 #ifdef __FreeBSD__
@@ -303,8 +303,10 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 
 	if (params.pam.flags & F_NON_UNIX) {
 		pw = &fake_pw;
+		memset(pw, 0, sizeof(*pw));
 		pw->pw_name = (char *)user;
 		pw->pw_gecos = "";
+		pw->pw_dir = "";
 	} else {
 /* As currently implemented, we don't avoid timing leaks for valid vs. not
  * usernames and hashes.  Normally, the username would have already been
