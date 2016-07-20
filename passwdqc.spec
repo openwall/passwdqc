@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.63 2013/04/24 02:02:54 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.64 2016/07/20 20:55:40 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.3.0
+Version: 1.3.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,6 +73,21 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Wed Jul 20 2016 Solar Designer <solar-at-owl.openwall.com> 1.3.1-owl1
+- With "non-unix", initialize the pw_dir field in fake_pw now that (since
+passwdqc 1.1.3 in 2009) passwdqc_check.c uses that field.
+Bug reported by Jim Paris via Debian: https://bugs.debian.org/831356
+- Use size_t for variables holding strlen() return values.
+- Cap "max" at 10000 (in case a config set it higher; the default remains 40).
+- Check against the shortest allowed password length prior to checking against
+the old password (this affects reporting when the old password is empty).
+- For zeroization of sensitive data, use a wrapper around memset() called via
+a function pointer to reduce the likelihood of a compiler optimizing those
+calls out and to allow for overriding of this function with an OS-specific
+"secure" memory zeroization function.
+- In pwqgen, set stdout to non-buffered, and zeroize and free our own buffer
+holding the generated password.
+
 * Wed Apr 24 2013 Solar Designer <solar-at-owl.openwall.com> 1.3.0-owl1
 - When checking is_simple() after discounting a common character sequence,
 apply the (negative) bias even for the passphrase length check.  Previously,
