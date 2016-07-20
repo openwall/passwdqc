@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "passwdqc.h"
 
 static void
@@ -27,6 +28,7 @@ int main(int argc, const char **argv)
 {
 	passwdqc_params_t params;
 	char *reason, *pass;
+	int retval;
 
 	if (argc > 1 && argv[1][0] == '-') {
 		if (!strcmp("-h", argv[1]) || !strcmp("--help", argv[1])) {
@@ -58,5 +60,12 @@ int main(int argc, const char **argv)
 		return 1;
 	}
 
-	return (puts(pass) >= 0 && fflush(stdout) >= 0) ? 0 : 1;
+	setvbuf(stdout, NULL, _IONBF, 0);
+
+	retval = (puts(pass) >= 0 && fflush(stdout) == 0) ? 0 : 1;
+
+	_passwdqc_memzero(pass, strlen(pass));
+	free(pass);
+
+	return retval;
 }
