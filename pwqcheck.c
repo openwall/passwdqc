@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008,2009 by Dmitry V. Levin
- * Copyright (c) 2010 by Solar Designer
+ * Copyright (c) 2010,2016 by Solar Designer
  * See LICENSE
  */
 
@@ -9,7 +9,7 @@
 #include <string.h>
 #include "passwdqc.h"
 
-static void clean(char *dst, int size)
+static void clean(char *dst, size_t size)
 {
 	if (!dst)
 		return;
@@ -17,7 +17,7 @@ static void clean(char *dst, int size)
 	free(dst);
 }
 
-static char *read_line(unsigned int size, int eof_ok)
+static char *read_line(size_t size, int eof_ok)
 {
 	char *p, *buf = malloc(size + 1);
 
@@ -131,7 +131,7 @@ int main(int argc, const char **argv)
 	char *parse_reason, *newpass, *oldpass, *pwline;
 	struct passwd pwbuf, *pw;
 	int lines_to_read = 3, multi = 0;
-	int size = 8192;
+	size_t size = 8192;
 	int rc = 1;
 
 	while (argc > 1 && argv[1][0] == '-') {
@@ -173,8 +173,8 @@ next_arg:
 		return rc;
 	}
 
-	if (params.qc.max + 1 > size)
-		size = params.qc.max + 1;
+	if ((size_t)params.qc.max + 1 > size)
+		size = (size_t)params.qc.max + 1;
 
 next_pass:
 	oldpass = pwline = NULL; pw = NULL;

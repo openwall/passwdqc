@@ -173,7 +173,7 @@ static int say(pam_handle_t *pamh, int style, const char *format, ...)
 static int check_max(passwdqc_params_qc_t *qc, pam_handle_t *pamh,
     const char *newpass)
 {
-	if ((int)strlen(newpass) > qc->max) {
+	if (strlen(newpass) > (size_t)qc->max) {
 		if (qc->max != 8) {
 			say(pamh, PAM_ERROR_MSG, MESSAGE_TOOLONG);
 			return -1;

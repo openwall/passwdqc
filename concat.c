@@ -27,7 +27,7 @@ char *concat(const char *s1, ...)
 	va_list args;
 	const char *s;
 	char *p, *result;
-	unsigned long l, m, n;
+	size_t l, m, n;
 
 	m = n = strlen(s1);
 	va_start(args, s1);
