@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 by Solar Designer
+ * Copyright (c) 2000-2002,2016 by Solar Designer
  * Copyright (c) 2008,2009 by Dmitry V. Levin
  * See LICENSE
  */
