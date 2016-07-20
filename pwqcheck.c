@@ -7,13 +7,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "passwdqc.h"
 
 static void clean(char *dst, size_t size)
 {
 	if (!dst)
 		return;
-	memset(dst, 0, size);
+	_passwdqc_memzero(dst, size);
 	free(dst);
 }
 
@@ -73,7 +74,7 @@ static struct passwd *parse_pwline(char *line, struct passwd *pw)
 			return NULL;
 		}
 		if (p->pw_passwd)
-			memset(p->pw_passwd, 0, strlen(p->pw_passwd));
+			_passwdqc_memzero(p->pw_passwd, strlen(p->pw_passwd));
 		memcpy(pw, p, sizeof(*pw));
 	} else {
 		memset(pw, 0, sizeof(*pw));
@@ -204,7 +205,7 @@ next_pass:
 		printf("Bad passphrase (%s)\n", check_reason);
 
 cleanup:
-	memset(&pwbuf, 0, sizeof(pwbuf));
+	_passwdqc_memzero(&pwbuf, sizeof(pwbuf));
 	clean(pwline, size);
 	clean(oldpass, size);
 	clean(newpass, size);

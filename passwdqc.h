@@ -51,4 +51,6 @@ extern void passwdqc_params_reset(passwdqc_params_t *params);
 
 #define PASSWDQC_VERSION		"1.3.0"
 
+extern void (*_passwdqc_memzero)(void *, size_t);
+
 #endif /* PASSWDQC_H__ */

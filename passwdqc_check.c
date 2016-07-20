@@ -237,10 +237,10 @@ static char *reverse(const char *src)
 
 static void clean(char *dst)
 {
-	if (dst) {
-		memset(dst, 0, strlen(dst));
-		free(dst);
-	}
+	if (!dst)
+		return;
+	_passwdqc_memzero(dst, strlen(dst));
+	free(dst);
 }
 
 /*
@@ -528,7 +528,7 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 		reason = is_word_based(params, u_reversed, newpass, 0x100);
 
 out:
-	memset(truncated, 0, sizeof(truncated));
+	_passwdqc_memzero(truncated, sizeof(truncated));
 	clean(u_newpass);
 	clean(u_reversed);
 	clean(u_oldpass);
@@ -538,3 +538,10 @@ out:
 
 	return reason;
 }
+
+static void memzero(void *buf, size_t len)
+{
+	memset(buf, 0, len);
+}
+
+void (*_passwdqc_memzero)(void *, size_t) = memzero;

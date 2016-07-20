@@ -204,8 +204,8 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 	}
 
 out:
-	memset(bytes, 0, sizeof(bytes));
-	memset(output, 0, length);
+	_passwdqc_memzero(bytes, sizeof(bytes));
+	_passwdqc_memzero(output, length);
 
 	close(fd);
 

@@ -165,7 +165,7 @@ static int say(pam_handle_t *pamh, int style, const char *format, ...)
 	} else {
 		status = PAM_ABORT;
 	}
-	memset(buffer, 0, sizeof(buffer));
+	_passwdqc_memzero(buffer, sizeof(buffer));
 
 	return status;
 }
@@ -208,7 +208,7 @@ static int check_pass(struct passwd *pw, const char *pass)
 #endif
 		}
 		retval = (hash && !strcmp(hash, spw->sp_pwdp)) ? 0 : -1;
-		memset(spw->sp_pwdp, 0, strlen(spw->sp_pwdp));
+		_passwdqc_memzero(spw->sp_pwdp, strlen(spw->sp_pwdp));
 		return retval;
 	}
 #endif
@@ -217,7 +217,7 @@ static int check_pass(struct passwd *pw, const char *pass)
 	if (strlen(pw->pw_passwd) >= 13)
 		hash = crypt(pass, pw->pw_passwd);
 	retval = (hash && !strcmp(hash, pw->pw_passwd)) ? 0 : -1;
-	memset(pw->pw_passwd, 0, strlen(pw->pw_passwd));
+	_passwdqc_memzero(pw->pw_passwd, strlen(pw->pw_passwd));
 	return retval;
 }
 
@@ -319,7 +319,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		if ((params.pam.flags & F_CHECK_OLDAUTHTOK) && !am_root(pamh)
 		    && (!oldpass || check_pass(pw, oldpass)))
 			status = PAM_AUTH_ERR;
-		memset(pw->pw_passwd, 0, strlen(pw->pw_passwd));
+		_passwdqc_memzero(pw->pw_passwd, strlen(pw->pw_passwd));
 		if (status != PAM_SUCCESS)
 			return status;
 	}
