@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2003,2005 by Solar Designer
+ * Copyright (c) 2000-2003,2005,2016 by Solar Designer
  * Copyright (c) 2008,2009 by Dmitry V. Levin
  * See LICENSE
  */
@@ -54,6 +54,8 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 		v = strtoul(p, &e, 10);
 		if (*e || v < 8 || v > INT_MAX)
 			goto parse_error;
+		if (v > 10000)
+			v = 10000;
 		params->qc.max = v;
 	} else if ((p = skip_prefix(option, "passphrase="))) {
 		v = strtoul(p, &e, 10);

@@ -458,6 +458,11 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 		goto out;
 	}
 
+	if (length > 10000) {
+		reason = REASON_LONG;
+		goto out;
+	}
+
 	if (length > (size_t)params->max) {
 		if (params->max == 8) {
 			truncated[0] = '\0';
