@@ -85,10 +85,10 @@ LDLIBS_pam_DARWIN = -lpam -lSystem
 CONFIGS = passwdqc.conf
 BINS = pwqgen pwqcheck
 PROJ = $(SHARED_LIB) $(DEVEL_LIB) $(SHARED_PAM) $(BINS)
-OBJS_LIB = concat.o passwdqc_check.o passwdqc_load.o passwdqc_parse.o passwdqc_random.o wordset_4k.o
-OBJS_PAM = pam_passwdqc.o
-OBJS_GEN = pwqgen.o
-OBJS_CHECK = pwqcheck.o
+OBJS_LIB = concat.o passwdqc_check.o passwdqc_load.o passwdqc_memzero.o passwdqc_parse.o passwdqc_random.o wordset_4k.o
+OBJS_PAM = pam_passwdqc.o passwdqc_memzero.o
+OBJS_GEN = pwqgen.o passwdqc_memzero.o
+OBJS_CHECK = pwqcheck.o passwdqc_memzero.o
 
 default: all
 
