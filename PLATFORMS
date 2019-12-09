@@ -24,8 +24,9 @@ and didn't use PAM for password changing.
 	OpenBSD.
 
 OpenBSD does not use PAM, however it is able to use passwdqc's pwqcheck
-program.  Insert the line ":passwordcheck=/usr/bin/pwqcheck -1:\" into
-the "default" section in /etc/login.conf.
+program.  Insert the line ":passwordcheck=/usr/bin/pwqcheck -1:\"
+(without the quotes, but with the trailing backslash) into the "default"
+section in /etc/login.conf.
 
 
 	Solaris, HP-UX 11.
@@ -53,4 +54,4 @@ There's a wiki page with detailed instructions specific to Solaris:
 
 https://openwall.info/wiki/passwdqc/solaris
 
-$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.16 2019/12/09 22:47:21 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.17 2019/12/09 23:04:53 solar Exp $
