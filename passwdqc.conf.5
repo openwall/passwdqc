@@ -1,4 +1,4 @@
-.\" Copyright (c) 2000-2003,2005,2008 Solar Designer
+.\" Copyright (c) 2000-2003,2005,2008,2019 Solar Designer
 .\" All rights reserved.
 .\" Copyright (c) 2001 Networks Associates Technology, Inc.
 .\" All rights reserved.
@@ -35,9 +35,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\" $FreeBSD: src/lib/libpam/modules/pam_passwdqc/pam_passwdqc.8,v 1.4 2002/05/30 14:49:57 ru Exp $
-.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.12 2019/12/09 22:47:21 solar Exp $
+.\" $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.conf.5,v 1.13 2019/12/09 23:29:52 solar Exp $
 .\"
-.Dd March 13, 2010
+.Dd December 9, 2019
 .Dt PASSWDQC.CONF 5
 .Os "Openwall Project"
 .Sh NAME
@@ -246,7 +246,10 @@ is that the former is incompatible with
 .Cm ask_oldauthtok .
 .El
 .Sh FILES
-.Pa /etc/passwdqc.conf .
+.Pa /etc/passwdqc.conf
+(not read unless this suggested file location is specified with the
+.Cm config=/etc/passwdqc.conf
+option).
 .Sh SEE ALSO
 .Xr getpwnam 3 ,
 .Xr pam_passwdqc 8 .
