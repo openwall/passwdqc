@@ -9,11 +9,6 @@
  *
  * Written by Solar Designer <solar at openwall.com> and placed in the
  * public domain.
- *
- * Originally written for and currently maintained as a part of popa3d,
- * a POP3 server:
- *
- *	https://www.openwall.com/popa3d/
  */
 
 #include <string.h>
