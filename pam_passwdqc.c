@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2003,2005,2012,2016 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2003,2005,2012,2016,2019 by Solar Designer.  See LICENSE.
  */
 
 #ifdef __FreeBSD__
@@ -9,6 +9,7 @@
 #define _XOPEN_SOURCE 500
 #define _XOPEN_SOURCE_EXTENDED
 #define _XOPEN_VERSION 500
+#define _DEFAULT_SOURCE
 #endif
 #include <stdio.h>
 #include <stdlib.h>
