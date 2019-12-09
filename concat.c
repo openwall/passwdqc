@@ -13,7 +13,7 @@
  * Originally written for and currently maintained as a part of popa3d,
  * a POP3 server:
  *
- *	http://www.openwall.com/popa3d/
+ *	https://www.openwall.com/popa3d/
  */
 
 #include <string.h>

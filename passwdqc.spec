@@ -1,4 +1,4 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.64 2016/07/20 20:55:40 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.65 2019/12/09 22:47:21 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
@@ -6,8 +6,8 @@ Version: 1.3.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
-URL: http://www.openwall.com/passwdqc/
-Source: http://www.openwall.com/passwdqc/%name-%version.tar.gz
+URL: https://www.openwall.com/passwdqc/
+Source: https://www.openwall.com/passwdqc/%name-%version.tar.gz
 Provides: pam_passwdqc = %version-%release
 Obsoletes: pam_passwdqc < %version-%release
 BuildRequires: pam-devel

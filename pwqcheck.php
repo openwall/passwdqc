@@ -8,12 +8,12 @@
  * PHP application's users and passwords" article submitted to "the Month of
  * PHP Security" (which was May 2010):
  *
- * http://www.openwall.com/articles/PHP-Users-Passwords#enforcing-password-policy
+ * https://www.openwall.com/articles/PHP-Users-Passwords#enforcing-password-policy
  *
  * The pwqcheck() function is a wrapper around the pwqcheck(1) program from
  * the passwdqc package:
  *
- * http://www.openwall.com/passwdqc/
+ * https://www.openwall.com/passwdqc/
  *
  * Returns 'OK' if the new password/passphrase passes the requirements.
  * Otherwise returns a message explaining one of the reasons why the

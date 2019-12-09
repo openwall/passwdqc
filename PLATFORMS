@@ -51,6 +51,6 @@ OpenBSD-style bcrypt (Blowfish-based) password hashing.
 
 There's a wiki page with detailed instructions specific to Solaris:
 
-http://openwall.info/wiki/passwdqc/solaris
+https://openwall.info/wiki/passwdqc/solaris
 
-$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.15 2010/06/22 23:07:24 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/PLATFORMS,v 1.16 2019/12/09 22:47:21 solar Exp $

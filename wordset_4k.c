@@ -16,7 +16,7 @@
  * At least two other sci.crypt postings by Dianelos Georgoudis also state
  * that the word list is in the public domain, and so did the web page at:
  *
- * http://web.archive.org/web/%2a/http://www.tecapro.com/makepass.html
+ * https://web.archive.org/web/%2a/http://www.tecapro.com/makepass.html
  *
  * which existed until 2006 and is available from the Wayback Machine as of
  * this writing (March 2010).  Specifically, the web page said:
@@ -28,7 +28,7 @@
  * "To download a copy click here" was a link to free/makepass.lst, which is
  * currently available via the Wayback Machine:
  *
- * http://web.archive.org/web/%2a/http://www.tecapro.com/free/makepass.lst
+ * https://web.archive.org/web/%2a/http://www.tecapro.com/free/makepass.lst
  *
  * Even though the original description of the list stated that "each word
  * must contain between 3 and 6 characters", there were two 7-character words:
