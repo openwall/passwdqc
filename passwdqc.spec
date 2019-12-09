@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.65 2019/12/09 22:47:21 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.66 2019/12/09 23:36:02 solar Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.3.1
+Version: 1.3.2
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,6 +73,16 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Mon Dec 09 2019 Solar Designer <solar-at-owl.openwall.com> 1.3.2-owl1
+- Define _DEFAULT_SOURCE for our use of crypt(3) on newer glibc.
+The problem was identified and this change tested by Dmitry V. Levin.
+- Clarified in the man pages that /etc/passwdqc.conf is not read unless this
+suggested file location is specified with the config= option.
+- Clarified the OpenBSD configuration example.
+- Escape the minus sign in the OpenBSD configuration example to make the
+manpage linter happy, patch by Jackson Doak via Unit 193:
+https://www.openwall.com/lists/passwdqc-users/2019/04/16/1
+
 * Wed Jul 20 2016 Solar Designer <solar-at-owl.openwall.com> 1.3.1-owl1
 - With "non-unix", initialize the pw_dir field in fake_pw now that (since
 passwdqc 1.1.3 in 2009) passwdqc_check.c uses that field.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2016 by Solar Designer
+ * Copyright (c) 2000-2002,2016,2019 by Solar Designer
  * Copyright (c) 2008,2009 by Dmitry V. Levin
  * See LICENSE
  */
@@ -49,7 +49,7 @@ extern void passwdqc_params_reset(passwdqc_params_t *params);
 #define F_USE_FIRST_PASS		0x00000100
 #define F_USE_AUTHTOK			0x00000200
 
-#define PASSWDQC_VERSION		"1.3.1"
+#define PASSWDQC_VERSION		"1.3.2"
 
 extern void (*_passwdqc_memzero)(void *, size_t);
 
