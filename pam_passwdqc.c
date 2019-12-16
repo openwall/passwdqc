@@ -155,6 +155,8 @@ static int logaudit(pam_handle_t *pamh, int status, int flags)
 		return status;
 	}
 #else /* !HAVE_LIBAUDIT */
+	(void) pamh;
+	(void) flags;
 	return status;
 #endif
 }
