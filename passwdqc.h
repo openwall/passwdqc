@@ -48,6 +48,7 @@ extern void passwdqc_params_reset(passwdqc_params_t *params);
 #define F_CHECK_OLDAUTHTOK		0x00000040
 #define F_USE_FIRST_PASS		0x00000100
 #define F_USE_AUTHTOK			0x00000200
+#define F_NO_AUDIT			0x00000400
 
 #define PASSWDQC_VERSION		"1.3.2"
 

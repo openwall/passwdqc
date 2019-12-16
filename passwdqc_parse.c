@@ -120,6 +120,8 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 		params->pam.flags |= F_USE_FIRST_PASS | F_USE_AUTHTOK;
 	} else if (!strcmp(option, "use_authtok")) {
 		params->pam.flags |= F_USE_AUTHTOK;
+	} else if (!strcmp(option, "noaudit")) {
+		params->pam.flags |= F_NO_AUDIT;
 	} else if ((p = skip_prefix(option, "config="))) {
 		if ((rc = passwdqc_params_load(params, reason, p)))
 			goto parse_error;

@@ -149,7 +149,13 @@ This disables user interaction within pam_passwdqc.  With this module,
 the only difference between "use_first_pass" and "use_authtok" is that
 the former is incompatible with "ask_oldauthtok".
 
+	noaudit				[]
+
+If audit is enabled at build time, the PAM module logs audit events once
+user tries to change their credentials.  This option disables that audit
+logging.
+
 -- 
 Solar Designer <solar at openwall.com>
 
-$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.16 2013/04/23 14:14:07 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/README,v 1.17 2019/12/16 00:43:25 ldv Exp $
