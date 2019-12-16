@@ -4,6 +4,7 @@
 # See LICENSE
 #
 
+PACKAGE = passwdqc
 TITLE = pam_passwdqc
 SHARED_LIB = libpasswdqc.so.0
 DEVEL_LIB = libpasswdqc.so
@@ -34,6 +35,10 @@ SECUREDIR_DARWIN = /usr/lib/pam
 INCLUDEDIR = /usr/include
 MANDIR = /usr/share/man
 DESTDIR =
+LOCALEDIR = /usr/share/locale
+LOCALEMODE = 644
+
+LANGUAGES = ru
 
 CC = gcc
 LD = $(CC)
@@ -47,6 +52,11 @@ INSTALL_SUN = /usr/ucb/install -c
 CFLAGS = -Wall -W -O2
 CFLAGS_lib = $(CFLAGS) -fPIC
 CFLAGS_bin = $(CFLAGS) -fomit-frame-pointer
+CPPFLAGS = -DPACKAGE=\\\"$(PACKAGE)\\\"
+MSGFMT = msgfmt
+XGETTEXT = xgettext
+XGETTEXT_OPTS = --keyword=_ --keyword=P2_:1,1 --keyword=P3_:1,2 --language=C --add-comments
+MSGMERGE = msgmerge
 
 LDFLAGS =
 LDFLAGS_shared = --shared
@@ -92,14 +102,14 @@ OBJS_CHECK = pwqcheck.o passwdqc_memzero.o
 
 default: all
 
-all pam utils install install_lib install_pam install_utils uninstall remove remove_lib remove_pam remove_utils:
+all locales pam utils install install_lib install_locales install_pam install_utils uninstall remove remove_lib remove_locales remove_pam remove_utils:
 	case "`uname -s`" in \
-	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
+	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) $(CPPFLAGS) -DHAVE_SHADOW" \
 			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_LINUX)" \
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
 			$@_wrapped;; \
-	SunOS)	$(MAKE) -e CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
+	SunOS)	$(MAKE) -e CFLAGS_lib="$(CFLAGS_lib) $(CPPFLAGS) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_SUN)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_SUN)" \
@@ -108,7 +118,7 @@ all pam utils install install_lib install_pam install_utils uninstall remove rem
 			SHARED_LIBDIR="$(SHARED_LIBDIR_SUN)" \
 			SECUREDIR="$(SECUREDIR_SUN)" \
 			$@_wrapped;; \
-	HP-UX)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) -DHAVE_SHADOW" \
+	HP-UX)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) $(CPPFLAGS) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_HP)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_HP)" \
@@ -195,7 +205,38 @@ install_pam_wrapped:
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man8
 	$(INSTALL) -m $(MANMODE) $(MAN8) $(DESTDIR)$(MANDIR)/man8/
 
-uninstall_wrapped remove_wrapped: remove_pam_wrapped remove_utils_wrapped remove_lib_wrapped
+POFILES = $(LANGUAGES:%=po/%.po)
+MOFILES = $(LANGUAGES:%=po/%.mo)
+POTFILE_DEPS = pam_passwdqc.c passwdqc_check.c
+POTFILE = po/$(PACKAGE).pot
+
+$(POTFILE): $(POTFILE_DEPS)
+	$(XGETTEXT) $(XGETTEXT_OPTS) -o $@-t $^ && mv $@-t $@
+
+$(POFILES): $(POTFILE)
+	$(MSGMERGE) -U $@ $<
+
+.SUFFIXES: .po .mo
+
+.po.mo:
+	$(MSGFMT) -c -o $@-t $< && mv $@-t $@
+
+update_pot: $(POTFILE)
+
+update_po: $(POFILES)
+
+update_mo: $(MOFILES)
+
+locales_wrapped: update_mo
+
+install_locales_wrapped:
+	for lang in $(LANGUAGES); do \
+		$(MKDIR) $(DESTDIR)$(LOCALEDIR)/$$lang/LC_MESSAGES && \
+		$(INSTALL) -m $(LOCALEMODE) po/$$lang.mo \
+			$(DESTDIR)$(LOCALEDIR)/$$lang/LC_MESSAGES/$(PACKAGE).mo || exit; \
+	done
+
+uninstall_wrapped remove_wrapped: remove_pam_wrapped remove_utils_wrapped remove_lib_wrapped remove_locales_wrapped
 
 remove_pam_wrapped:
 	$(RM) $(DESTDIR)$(MANDIR)/man8/$(MAN8)
@@ -212,13 +253,18 @@ remove_lib_wrapped:
 	for f in $(SHARED_LIB); do $(RM) $(DESTDIR)$(SHARED_LIBDIR)/$$f; done
 	for f in $(CONFIGS); do $(RM) $(DESTDIR)$(CONFDIR)/$$f; done
 
-clean:
-	$(RM) $(PROJ) *.o
+remove_locales_wrapped:
+	for f in $(LANGUAGES); do $(RM) $(DESTDIR)$(LOCALEDIR)/$$f/LC_MESSAGES/$(PACKAGE).mo; done
 
-.PHONY: all all_wrapped clean install install_lib install_pam install_utils \
+clean:
+	$(RM) $(PROJ) $(MOFILES) *.o
+
+.PHONY: all all_wrapped clean install install_lib install_locales install_pam install_utils \
 	pam pam_wrapped uninstall remove remove_lib remove_pam remove_utils \
 	utils utils_wrapped \
-	install_wrapped install_lib_wrapped install_pam_wrapped \
+	update_mo update_po update_pot \
+	locales locales_wrapped \
+	install_wrapped install_lib_wrapped install_locales_wrapped install_pam_wrapped \
 	install_utils_wrapped \
-	remove_wrapped remove_lib_wrapped remove_pam_wrapped \
+	remove_wrapped remove_lib_wrapped remove_locales_wrapped remove_pam_wrapped \
 	remove_utils_wrapped

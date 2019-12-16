@@ -1,0 +1,295 @@
+# A passphrase strength checking and policy enforcement toolset.
+# Copyright (c) 2000-2003,2005,2008,2010,2013,2016 by Solar Designer
+# Copyright (c) 2008,2009 by Dmitry V. Levin
+# This file is distributed under the same license as the passwdqc package.
+#
+# Oleg Solovyov <mcpain@altlinux.org>, 2017.
+# Andrey Cherepanov <cas@altlinux.org>, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: passwdqc 1.3.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-10 15:00+0300\n"
+"PO-Revision-Date: 2017-08-10 15:00+0300\n"
+"Last-Translator: Andrey Cherepanov <cas@altlinux.org>\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#: pam_passwdqc.c:60
+msgid "Enter current password: "
+msgstr "Введите старый пароль: "
+
+#: pam_passwdqc.c:62
+msgid "Enter new password: "
+msgstr "Введите новый пароль: "
+
+#: pam_passwdqc.c:64
+msgid "Re-type new password: "
+msgstr "Повторите новый пароль: "
+
+#: pam_passwdqc.c:67
+msgid "System configuration error.  Please contact your administrator."
+msgstr "Ошибка настройки системы.  Свяжитесь с вашим администратором."
+
+#: pam_passwdqc.c:71
+msgid ""
+"\n"
+"You can now choose the new password.\n"
+msgstr ""
+"\n"
+"Вы можете выбрать новый пароль.\n"
+
+#: pam_passwdqc.c:73
+msgid ""
+"\n"
+"You can now choose the new password or passphrase.\n"
+msgstr ""
+"\n"
+"Вы можете выбрать новый пароль или парольную фразу.\n"
+
+#: pam_passwdqc.c:76
+#, c-format
+msgid ""
+"A good password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters.\n"
+msgstr ""
+"В хорошем пароле приветствуется наличие заглавных и строчных букв,\n"
+"цифр и прочих символов.  Пароль должен содержать достаточное \n"
+"количество символов (не менее %d).\n"
+
+#: pam_passwdqc.c:81
+#, c-format
+msgid ""
+"A valid password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters from at least %d of these 4 classes.\n"
+"An upper case letter that begins the password and a digit that\n"
+"ends it do not count towards the number of character classes used.\n"
+msgid_plural ""
+"A valid password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters from at least %d of these 4 classes.\n"
+"An upper case letter that begins the password and a digit that\n"
+"ends it do not count towards the number of character classes used.\n"
+msgstr[0] ""
+"Пароль должен содержать заглавные, строчные буквы, цифры и другие\n"
+"символы и может содержать от %d символа, принадлежащего минимум %d классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра\n"
+"в конце.\n"
+msgstr[1] ""
+"Пароль должен содержать заглавные, строчные буквы, цифры и другие\n"
+"символы и может содержать от %d символов, принадлежащих минимум %d классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра\n"
+"в конце.\n"
+msgstr[2] ""
+"Пароль должен содержать заглавные, строчные буквы, цифры и другие\n"
+"символы и может содержать от %d символов, принадлежащих минимум %d классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра\n"
+"в конце.\n"
+
+#: pam_passwdqc.c:88
+#, c-format
+msgid ""
+"A valid password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters from all of these classes.  An upper\n"
+"case letter that begins the password and a digit that ends it do\n"
+"not count towards the number of character classes used.\n"
+msgid_plural ""
+"A valid password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters from all of these classes.  An upper\n"
+"case letter that begins the password and a digit that ends it do\n"
+"not count towards the number of character classes used.\n"
+msgstr[0] ""
+"Пароль должен содержать заглавные, строчные буквы, цифры, другие\n"
+"символы и может содержать от %d символа, принадлежащего всем классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра\n"
+"в конце.\n"
+msgstr[1] ""
+"Пароль должен содержать заглавные, строчные буквы, цифры, другие\n"
+"символы.  Ваш пароль может содержать от %d символов, принадлежащих всем "
+"классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра\n"
+"в конце.\n"
+msgstr[2] ""
+"Пароль должен содержать заглавные, строчные буквы, цифры, другие\n"
+"символы.  Ваш пароль может содержать от %d символов, принадлежащих всем "
+"классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра\n"
+"в конце.\n"
+
+#: pam_passwdqc.c:95
+#, c-format
+msgid ""
+"A valid password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters from at least 3 of these 4 classes, or\n"
+msgid_plural ""
+"A valid password should be a mix of upper and lower case letters,\n"
+"digits, and other characters.  You can use a password\n"
+"that consists of %d characters from at least 3 of these 4 classes, or\n"
+msgstr[0] ""
+"Пароль должен содержать заглавные, строчные буквы,\n"
+"цифры и другие символы и может содержать от %d символа, принадлежащего "
+"минимум 3 классам из 4, или \n"
+msgstr[1] ""
+"Пароль должен содержать заглавные, строчные буквы,\n"
+"цифры и другие символы и может содержать от %d символов, принадлежащих "
+"минимум 3 классам из 4, или \n"
+msgstr[2] ""
+"Пароль должен содержать заглавные, строчные буквы,\n"
+"цифры и другие символы и может содержать от %d символов, принадлежащих "
+"минимум 3 классам из 4, или \n"
+
+#: pam_passwdqc.c:100
+#, c-format
+msgid ""
+"a password containing %d characters from all the classes.\n"
+"An upper case letter that begins the password and a\n"
+"digit that ends it do not count towards the number of character\n"
+"classes used.\n"
+msgid_plural ""
+"a password containing %d characters from all the classes.\n"
+"An upper case letter that begins the password and a\n"
+"digit that ends it do not count towards the number of character\n"
+"classes used.\n"
+msgstr[0] ""
+"от %d символа, принадлежащего всем классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра в "
+"конце.\n"
+msgstr[1] ""
+"от %d символов, принадлежащих всем классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра в "
+"конце.\n"
+msgstr[2] ""
+"от %d символов, принадлежащих всем классам.\n"
+"При подсчете классов не учитываются заглавная буква в начале и цифра в "
+"конце.\n"
+
+#: pam_passwdqc.c:106
+#, c-format
+msgid ""
+"A passphrase should be of at least %d word, %d to %d characters\n"
+"long, and contain enough different characters.\n"
+msgid_plural ""
+"A passphrase should be of at least %d words, %d to %d characters\n"
+"long, and contain enough different characters.\n"
+msgstr[0] ""
+"Парольная фраза должна состоять как минимум из %d слова, и содержать\n"
+"от %d до %d символов, среди которых достаточно различных.\n"
+msgstr[1] ""
+"Парольная фраза должна состоять как минимум из %d слов, и содержать\n"
+"от %d до %d символов, среди которых достаточно различных.\n"
+msgstr[2] ""
+"Парольная фраза должна состоять как минимум из %d слов, и содержать\n"
+"от %d до %d символов, среди которых достаточно различных.\n"
+
+#: pam_passwdqc.c:113
+#, c-format
+msgid ""
+"Alternatively, if no one else can see your terminal now, you can\n"
+"pick this as your password: \"%s\".\n"
+msgstr ""
+"Если ваш терминал никто не видит, вы можете набрать предлагаемый пароль: \"%"
+"s\".\n"
+
+#: pam_passwdqc.c:116
+#, c-format
+msgid ""
+"This system is configured to permit randomly generated passwords\n"
+"only.  If no one else can see your terminal now, you can pick this\n"
+"as your password: \"%s\".  Otherwise come back later.\n"
+msgstr ""
+"Система настроена на использование только случайно генерированных паролей.\n"
+"Если ваш терминал никто не видит, вы можете набрать предлагаемый пароль: "
+"\"%s\".\n"
+"В противном случае попробуйте повторить попытку позже.\n"
+
+#: pam_passwdqc.c:120
+msgid ""
+"This system is configured to use randomly generated passwords\n"
+"only, but the attempt to generate a password has failed.  This\n"
+"could happen for a number of reasons: you could have requested\n"
+"an impossible password length, or the access to kernel random\n"
+"number pool could have failed."
+msgstr ""
+"Система настроена на использование только случайно генерированных паролей, "
+"но\n"
+"создать пароль не удалось.  Это могло произойти по нескольким\n"
+"причинам: вы запросили слишком длинный пароль, либо было отказано в доступе\n"
+"к пулу случайных чисел ядра."
+
+#: pam_passwdqc.c:126
+msgid "This password may be too long for some services.  Choose another."
+msgstr ""
+"Этот пароль может оказаться слишком длинным для некоторых служб. Выберите "
+"другой."
+
+#: pam_passwdqc.c:128
+msgid "Warning: your longer password will be truncated to 8 characters."
+msgstr "Внимание: ваш пароль будет усечён до 8 символов."
+
+#: pam_passwdqc.c:130
+#, c-format
+msgid "Weak password: %s."
+msgstr "Слабый пароль: %s."
+
+#: pam_passwdqc.c:132
+msgid "Sorry, you've mistyped the password that was generated for you."
+msgstr "Извините, вы ошиблись при вводе созданного для вас пароля."
+
+#: pam_passwdqc.c:134
+msgid "Sorry, passwords do not match."
+msgstr "Пароли не совпадают."
+
+#: pam_passwdqc.c:136
+msgid "Try again."
+msgstr "Попробуйте ещё раз."
+
+#: passwdqc_check.c:17
+msgid "check failed"
+msgstr "проверка не удалась"
+
+#: passwdqc_check.c:20
+msgid "is the same as the old one"
+msgstr "совпадает со старым"
+
+#: passwdqc_check.c:22
+msgid "is based on the old one"
+msgstr "основан на старом"
+
+#: passwdqc_check.c:25
+msgid "too short"
+msgstr "слишком короткий"
+
+#: passwdqc_check.c:27
+msgid "too long"
+msgstr "слишком длинный"
+
+#: passwdqc_check.c:30
+msgid "not enough different characters or classes for this length"
+msgstr "недостаточно символов или классов для заданной длины"
+
+#: passwdqc_check.c:32
+msgid "not enough different characters or classes"
+msgstr "недостаточно символов или классов"
+
+#: passwdqc_check.c:35
+msgid "based on personal login information"
+msgstr "основан на персональных данных"
+
+#: passwdqc_check.c:38
+msgid "based on a dictionary word and not a passphrase"
+msgstr "основан на слове из словаря и не является парольной фразой"
+
+#: passwdqc_check.c:41
+msgid "based on a common sequence of characters and not a passphrase"
+msgstr ""
+"основан на простой последовательности символов и не является парольной фразой"

@@ -11,32 +11,34 @@
 #include "passwdqc.h"
 #include "wordset_4k.h"
 
+#include "passwdqc_i18n.h"
+
 #define REASON_ERROR \
-	"check failed"
+	_("check failed")
 
 #define REASON_SAME \
-	"is the same as the old one"
+	_("is the same as the old one")
 #define REASON_SIMILAR \
-	"is based on the old one"
+	_("is based on the old one")
 
 #define REASON_SHORT \
-	"too short"
+	_("too short")
 #define REASON_LONG \
-	"too long"
+	_("too long")
 
 #define REASON_SIMPLESHORT \
-	"not enough different characters or classes for this length"
+	_("not enough different characters or classes for this length")
 #define REASON_SIMPLE \
-	"not enough different characters or classes"
+	_("not enough different characters or classes")
 
 #define REASON_PERSONAL \
-	"based on personal login information"
+	_("based on personal login information")
 
 #define REASON_WORD \
-	"based on a dictionary word and not a passphrase"
+	_("based on a dictionary word and not a passphrase")
 
 #define REASON_SEQ \
-	"based on a common sequence of characters and not a passphrase"
+	_("based on a common sequence of characters and not a passphrase")
 
 #define FIXED_BITS			15
 
