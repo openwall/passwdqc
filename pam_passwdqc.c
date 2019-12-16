@@ -1,5 +1,8 @@
 /*
- * Copyright (c) 2000-2003,2005,2012,2016,2019 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2003,2005,2012,2016,2019 by Solar Designer.
+ * Copyright (c) 2017,2018 by Dmitry V. Levin
+ * Copyright (c) 2017,2018 by Oleg Solovyov
+ * See LICENSE.
  */
 
 #ifdef __FreeBSD__

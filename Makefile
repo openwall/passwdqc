@@ -1,6 +1,7 @@
 #
 # Copyright (c) 2000-2003,2005,2009,2010 by Solar Designer
-# Copyright (c) 2008,2009 by Dmitry V. Levin
+# Copyright (c) 2008,2009,2017 by Dmitry V. Levin
+# Copyright (c) 2017 by Oleg Solovyov
 # See LICENSE
 #
 

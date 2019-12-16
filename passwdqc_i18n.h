@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2017 by Dmitry V. Levin
+ * Copyright (c) 2017 by Oleg Solovyov
+ * See LICENSE.
+ */
+
 #ifndef PASSWDQC_I18N_H__
 #define PASSWDQC_I18N_H__
 
