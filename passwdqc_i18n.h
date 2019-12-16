@@ -1,3 +1,6 @@
+#ifndef PASSWDQC_I18N_H__
+#define PASSWDQC_I18N_H__
+
 #ifdef ENABLE_NLS
 #include <libintl.h>
 #define _(msgid) dgettext(PACKAGE, msgid)
@@ -10,3 +13,5 @@
 #define P3_(msgid, msgid_plural, count) ((count) == 1 ? (msgid) : (msgid_plural))
 #define N_(msgid) msgid
 #endif
+
+#endif /* PASSWDQC_I18N_H__ */
