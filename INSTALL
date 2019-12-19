@@ -10,6 +10,15 @@ you may build all components of passwdqc (the library, the PAM module,
 and two command-line programs) by simply running "make".  To install,
 run "make install".  To uninstall, run "make uninstall".
 
+On a system with the PAM framework built with i18n support enabled
+you may also build pam_passwdqc with i18n support by adding
+-DENABLE_NLS=1 to CPPFLAGS.  To compile translation files, run
+"make locales".  To install them, run "make install_locales".
+
+On a system with the PAM framework built with Linux audit support
+enabled you may also build pam_passwdqc with audit support by adding
+-DHAVE_LIBAUDIT=1 to CPPFLAGS.
+
 On a system without PAM, you may build everything but the PAM module
 with "make utils".  To install, run "make install_lib install_utils".
 To uninstall, run "make remove_lib remove_utils".
@@ -37,4 +46,4 @@ and passwdqc.conf(5) manual pages.
 Please refer to the pwqcheck(1) and pwqgen(1) manual pages for
 information on using the command-line programs.
 
-$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.10 2019/12/09 23:36:02 solar Exp $
+$Owl: Owl/packages/passwdqc/passwdqc/INSTALL,v 1.11 2019/12/19 21:13:08 ldv Exp $
