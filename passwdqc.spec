@@ -1,8 +1,8 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.66 2019/12/09 23:36:02 solar Exp $
+# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.67 2019/12/25 11:42:06 ldv Exp $
 
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.3.2
+Version: 1.4.0
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -73,6 +73,14 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Wed Dec 25 2019 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.4.0-owl1
+- Implemented i18n support in pam_passwdqc, contributed by Oleg Solovyov,
+Andrey Cherepanov, and me.  The i18n support is off by default, it can be
+enabled if Linux-PAM is built using --enable-nls configure option.
+- Implemented audit support in pam_passwdqc, contributed by Oleg Solovyov
+and me.  The audit support is off by default, it can be enabled if Linux-PAM
+is built using --enable-audit configure option.
+
 * Mon Dec 09 2019 Solar Designer <solar-at-owl.openwall.com> 1.3.2-owl1
 - Define _DEFAULT_SOURCE for our use of crypt(3) on newer glibc.
 The problem was identified and this change tested by Dmitry V. Levin.
