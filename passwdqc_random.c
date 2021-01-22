@@ -3,11 +3,18 @@
  * See LICENSE
  */
 
+#ifdef _MSC_VER
+#define _CRT_NONSTDC_NO_WARNINGS /* we use POSIX function names */
+#include <windows.h>
+#include <wincrypt.h>
+#else
 #include <limits.h>
-#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#endif
+
+#include <string.h>
 
 #include "passwdqc.h"
 #include "wordset_4k.h"
@@ -57,6 +64,7 @@
 #define BITS_MAX \
 	(WORDS_MAX * SWORD_BITS)
 
+#ifndef _MSC_VER
 static ssize_t read_loop(int fd, void *buffer, size_t count)
 {
 	ssize_t offset, block;
@@ -80,6 +88,7 @@ static ssize_t read_loop(int fd, void *buffer, size_t count)
 
 	return offset;
 }
+#endif
 
 char *passwdqc_random(const passwdqc_params_qc_t *params)
 {
@@ -138,6 +147,17 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 
 	unsigned char rnd[WORDS_MAX * 3];
 
+#ifdef _MSC_VER
+	HCRYPTPROV hprov;
+	if (!CryptAcquireContextA(&hprov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_SILENT))
+		return NULL;
+	memset(rnd, 0, sizeof(rnd)); /* old Windows would use previous content as extra seed */
+	if (!CryptGenRandom(hprov, sizeof(rnd), rnd)) {
+		CryptReleaseContext(hprov, 0);
+		return NULL;
+	}
+	CryptReleaseContext(hprov, 0);
+#else
 	int fd;
 	if ((fd = open("/dev/urandom", O_RDONLY)) < 0)
 		return NULL;
@@ -146,8 +166,9 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 		return NULL;
 	}
 	close(fd);
+#endif
 
-	unsigned int length = 0;
+	size_t length = 0;
 	const unsigned char *rndptr;
 
 	for (rndptr = rnd; rndptr <= rnd + sizeof(rnd) - 3; rndptr += 3) {
@@ -163,7 +184,7 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
 		const char *end = memchr(start, '\0', WORDSET_4K_LENGTH_MAX);
 		if (!end)
 			end = start + WORDSET_4K_LENGTH_MAX;
-		unsigned int extra = end - start;
+		size_t extra = end - start;
 /* The ">=" leaves room for either one more separator or NUL */
 		if (length + extra >= sizeof(output))
 			break;

@@ -2,13 +2,16 @@
  * Copyright (c) 2000-2002,2010,2013,2016,2020 by Solar Designer.  See LICENSE.
  */
 
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS /* we use fopen(), sprintf(), strncat() */
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <pwd.h>
 
-#include "passwdqc.h"
+#include "passwdqc.h" /* also provides <pwd.h> or equivalent "struct passwd" */
 #include "passwdqc_filter.h"
 #include "wordset_4k.h"
 
@@ -280,7 +283,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 	scratch = NULL;
 	worst_bias = 0;
 
-	length = strlen(needle);
+	length = (int)strlen(needle);
 	for (i = 0; i <= length - params->match_length; i++)
 	for (j = params->match_length; i + j <= length; j++) {
 		int bias = 0, j1 = j - 1;
@@ -436,7 +439,7 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	if (params->match_length)
 	for (i = 0; _passwdqc_wordset_4k[i][0]; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], WORDSET_4K_LENGTH_MAX);
-		int length = strlen(word);
+		int length = (int)strlen(word);
 		if (length < params->match_length)
 			continue;
 		if (!memcmp(word, _passwdqc_wordset_4k[i + 1], length))

@@ -67,6 +67,10 @@ static char *extract_string(char **stringp)
 static struct passwd *parse_pwline(char *line, struct passwd *pw)
 {
 	if (!strchr(line, ':')) {
+#ifdef _MSC_VER
+		memset(pw, 0, sizeof(*pw));
+		pw->pw_name = line;
+#else
 		struct passwd *p = getpwnam(line);
 		endpwent();
 		if (!p) {
@@ -76,6 +80,7 @@ static struct passwd *parse_pwline(char *line, struct passwd *pw)
 		if (p->pw_passwd)
 			_passwdqc_memzero(p->pw_passwd, strlen(p->pw_passwd));
 		memcpy(pw, p, sizeof(*pw));
+#endif
 	} else {
 		memset(pw, 0, sizeof(*pw));
 		pw->pw_name = extract_string(&line);

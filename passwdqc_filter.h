@@ -34,7 +34,9 @@ extern int passwdqc_filter_close(passwdqc_filter_t *flt);
 /* Lower-level inlines for shared use by pwqfilter.c and passwdqc_filter.c */
 
 #include <string.h> /* for strcspn() */
+#ifndef _MSC_VER
 #include <endian.h>
+#endif
 
 #include "md4.h"
 
@@ -149,7 +151,7 @@ static force_inline passwdqc_filter_i_t passwdqc_filter_alti(passwdqc_filter_i_t
 #if 0
 	assert((passwdqc_filter_i_t)alti < m);
 #endif
-	return alti;
+	return (passwdqc_filter_i_t)alti;
 }
 
 static inline unsigned int passwdqc_filter_ssdecode(unsigned int src)

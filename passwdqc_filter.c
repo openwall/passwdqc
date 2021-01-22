@@ -8,8 +8,22 @@
 #define _LARGEFILE64_SOURCE 1
 #define _LARGE_FILES 1
 
-#include <limits.h>
+#ifdef _MSC_VER
+#define _CRT_NONSTDC_NO_WARNINGS /* we use POSIX function names */
+#define _CRT_SECURE_NO_WARNINGS /* we use open() */
+#include <stdio.h> /* for SEEK_SET and SEEK_END */
+#include <io.h>
+#define lseek _lseeki64
+#define ssize_t int /* MSVC's read() returns int and we don't need more here */
+#define SSIZE_MAX INT_MAX
+#define OPEN_FLAGS (O_RDONLY | _O_BINARY | _O_RANDOM)
+#else
 #include <unistd.h>
+#define OPEN_FLAGS O_RDONLY
+#endif
+
+#include <stdint.h>
+#include <limits.h>
 #include <fcntl.h>
 
 #include "passwdqc.h"
@@ -38,7 +52,7 @@ static ssize_t read_loop(int fd, void *buffer, size_t count)
 
 int passwdqc_filter_open(passwdqc_filter_t *flt, const char *filename)
 {
-	if ((flt->fd = open(filename, O_RDONLY)) < 0)
+	if ((flt->fd = open(filename, OPEN_FLAGS)) < 0)
 		return -1;
 
 	if (read_loop(flt->fd, &flt->header, sizeof(flt->header)) != sizeof(flt->header) ||
@@ -64,7 +78,7 @@ static int check(const passwdqc_filter_t *flt, passwdqc_filter_i_t i, passwdqc_f
 	int retval = -1;
 
 	passwdqc_filter_packed_t p;
-	if (lseek(flt->fd, sizeof(flt->header) + (off_t)i * sizeof(p), SEEK_SET) < 0 ||
+	if (lseek(flt->fd, sizeof(flt->header) + (uint64_t)i * sizeof(p), SEEK_SET) < 0 ||
 	    read_loop(flt->fd, &p, sizeof(p)) != sizeof(p))
 		goto out;
 
@@ -109,7 +123,7 @@ clean:
 		return -1;
 	}
 
-	uint32_t nbuckets = flt->header.capacity >> 2;
+	uint32_t nbuckets = (uint32_t)(flt->header.capacity >> 2);
 	passwdqc_filter_i_t i = passwdqc_filter_h2i(&h, nbuckets);
 	passwdqc_filter_f_t f = passwdqc_filter_h2f(&h);
 
