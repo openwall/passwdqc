@@ -111,6 +111,8 @@ print_help(void)
 	    "       set number of words required for a passphrase;\n"
 	    "  match=N\n"
 	    "       set length of common substring in substring check;\n"
+	    "  similar=permit|deny\n"
+	    "       whether a new passphrase is allowed to be similar to the old one;\n"
 	    "  config=FILE\n"
 	    "       load config FILE in passwdqc.conf format;\n"
 	    "  -1\n"
