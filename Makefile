@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000-2003,2005,2009,2010 by Solar Designer
+# Copyright (c) 2000-2003,2005,2009,2010,2020 by Solar Designer
 # Copyright (c) 2008,2009,2017 by Dmitry V. Levin
 # Copyright (c) 2017 by Oleg Solovyov
 # See LICENSE
@@ -7,7 +7,7 @@
 
 PACKAGE = passwdqc
 TITLE = pam_passwdqc
-SHARED_LIB = libpasswdqc.so.0
+SHARED_LIB = libpasswdqc.so.1
 DEVEL_LIB = libpasswdqc.so
 SHARED_LIB_DARWIN = libpasswdqc.0.dylib
 DEVEL_LIB_DARWIN = libpasswdqc.dylib
@@ -18,7 +18,7 @@ MAP_PAM = pam_passwdqc.map
 SHLIBMODE = 755
 HEADER = passwdqc.h
 INCMODE = 644
-MAN1 = pwqgen.1 pwqcheck.1
+MAN1 = pwqgen.1 pwqcheck.1 pwqfilter.1
 MAN5 = passwdqc.conf.5
 MAN8 = $(TITLE).8
 MANMODE = 644
@@ -94,12 +94,13 @@ LDLIBS_pam_DARWIN = -lpam -lSystem
 #CFLAGS_bin = $(CFLAGS)
 
 CONFIGS = passwdqc.conf
-BINS = pwqgen pwqcheck
+BINS = pwqgen pwqcheck pwqfilter
 PROJ = $(SHARED_LIB) $(DEVEL_LIB) $(SHARED_PAM) $(BINS)
-OBJS_LIB = concat.o passwdqc_check.o passwdqc_load.o passwdqc_memzero.o passwdqc_parse.o passwdqc_random.o wordset_4k.o
+OBJS_LIB = concat.o md4.o passwdqc_check.o passwdqc_filter.o passwdqc_load.o passwdqc_memzero.o passwdqc_parse.o passwdqc_random.o wordset_4k.o
 OBJS_PAM = pam_passwdqc.o passwdqc_memzero.o
 OBJS_GEN = pwqgen.o passwdqc_memzero.o
 OBJS_CHECK = pwqcheck.o passwdqc_memzero.o
+OBJS_FILTER = pwqfilter.o md4.o
 
 default: all
 
@@ -155,10 +156,16 @@ pwqgen: $(OBJS_GEN) $(DEVEL_LIB)
 pwqcheck: $(OBJS_CHECK) $(DEVEL_LIB)
 	$(LD) $(LDFLAGS) $(OBJS_CHECK) -L. -lpasswdqc -o $@
 
+pwqfilter: $(OBJS_FILTER)
+	$(LD) $(LDFLAGS) $(OBJS_FILTER) -o $@
+
 pwqgen.o: pwqgen.c passwdqc.h
 	$(CC) $(CFLAGS_bin) -c $*.c
 
 pwqcheck.o: pwqcheck.c passwdqc.h
+	$(CC) $(CFLAGS_bin) -c $*.c
+
+pwqfilter.o: pwqfilter.c passwdqc_filter.h passwdqc.h
 	$(CC) $(CFLAGS_bin) -c $*.c
 
 .c.o:
@@ -166,7 +173,8 @@ pwqcheck.o: pwqcheck.c passwdqc.h
 
 concat.o: concat.h
 pam_passwdqc.o: passwdqc.h pam_macros.h
-passwdqc_check.o: passwdqc.h wordset_4k.h
+passwdqc_check.o: passwdqc.h passwdqc_filter.h wordset_4k.h
+passwdqc_filter.o: passwdqc_filter.h
 passwdqc_load.o: passwdqc.h concat.h
 passwdqc_parse.o: passwdqc.h concat.h
 passwdqc_random.o: passwdqc.h wordset_4k.h

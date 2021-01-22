@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2016,2019 by Solar Designer
+ * Copyright (c) 2000-2002,2016,2019,2020 by Solar Designer
  * Copyright (c) 2008,2009 by Dmitry V. Levin
  * See LICENSE
  */
@@ -15,6 +15,9 @@ typedef struct {
 	int match_length;
 	int similar_deny;
 	int random_bits;
+	const char *wordlist;
+	const char *denylist;
+	const char *filter;
 } passwdqc_params_qc_t;
 
 typedef struct {

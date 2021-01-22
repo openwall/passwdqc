@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2010,2013,2016 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2002,2010,2013,2016,2020 by Solar Designer.  See LICENSE.
  */
 
 #include <stdio.h>
@@ -9,6 +9,7 @@
 #include <pwd.h>
 
 #include "passwdqc.h"
+#include "passwdqc_filter.h"
 #include "wordset_4k.h"
 
 #include "passwdqc_i18n.h"
@@ -39,6 +40,15 @@
 
 #define REASON_SEQ \
 	_("based on a common sequence of characters and not a passphrase")
+
+#define REASON_WORDLIST \
+	_("based on a word list entry")
+
+#define REASON_DENYLIST \
+	_("is in deny list")
+
+#define REASON_FILTER \
+	_("appears to be in a database")
 
 #define FIXED_BITS			15
 
@@ -344,6 +354,32 @@ next_match_length:
 	return 0;
 }
 
+#define READ_LINE_MAX 8192
+#define READ_LINE_SIZE (READ_LINE_MAX + 2)
+
+static char *read_line(FILE *f, char *buf)
+{
+	buf[READ_LINE_MAX] = '\n';
+
+	if (!fgets(buf, READ_LINE_SIZE, f))
+		return NULL;
+
+	if (buf[READ_LINE_MAX] != '\n') {
+		int c;
+		do {
+			c = getc(f);
+		} while (c != EOF && c != '\n');
+		if (ferror(f))
+			return NULL;
+	}
+
+	char *p;
+	if ((p = strpbrk(buf, "\r\n")))
+		*p = '\0';
+
+	return buf;
+}
+
 /*
  * Common sequences of characters.
  * We don't need to list any of the entire strings in reverse order because the
@@ -385,74 +421,120 @@ const char * const seq[] = {
  * special characters.  We (mis)use the same set of words that are used
  * to generate random passwords.  This list is much smaller than those
  * used for password crackers, and it doesn't contain common passwords
- * that aren't short English words.  Perhaps support for large wordlists
- * should still be added, even though this is now of little importance.
+ * that aren't short English words.  We also support optional external
+ * wordlist (for inexact matching) and deny list (for exact matching).
  */
 static const char *is_word_based(const passwdqc_params_qc_t *params,
-    const char *needle, const char *original, int is_reversed)
+    const char *unified, const char *reversed, const char *original)
 {
-	char word[WORDSET_4K_LENGTH_MAX + 1];
-	char *unified;
+	const char *reason = REASON_ERROR;
+	char word[WORDSET_4K_LENGTH_MAX + 1], *buf = NULL;
+	FILE *f = NULL;
 	unsigned int i;
-	int length;
-	int mode;
 
-	if (!params->match_length)	/* disabled */
-		return NULL;
-
-	mode = is_reversed | 1;
 	word[WORDSET_4K_LENGTH_MAX] = '\0';
+	if (params->match_length)
 	for (i = 0; _passwdqc_wordset_4k[i][0]; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], WORDSET_4K_LENGTH_MAX);
-		length = strlen(word);
+		int length = strlen(word);
 		if (length < params->match_length)
 			continue;
 		if (!memcmp(word, _passwdqc_wordset_4k[i + 1], length))
 			continue;
 		unify(word, word);
-		if (is_based(params, word, needle, original, mode))
-			return REASON_WORD;
-	}
-
-	mode = is_reversed | 2;
-	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
-		unified = unify(NULL, seq[i]);
-		if (!unified)
-			return REASON_ERROR;
-		if (is_based(params, unified, needle, original, mode)) {
-			free(unified);
-			return REASON_SEQ;
+		if (is_based(params, word, unified, original, 1) ||
+		    is_based(params, word, reversed, original, 0x101)) {
+			reason = REASON_WORD;
+			goto out;
 		}
-		free(unified);
 	}
 
-	if (params->match_length <= 4)
+	if (params->match_length)
+	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
+		char *seq_i = unify(NULL, seq[i]);
+		if (!seq_i)
+			goto out;
+		if (is_based(params, seq_i, unified, original, 2) ||
+		    is_based(params, seq_i, reversed, original, 0x102)) {
+			clean(seq_i);
+			reason = REASON_SEQ;
+			goto out;
+		}
+		clean(seq_i);
+	}
+
+	if (params->match_length && params->match_length <= 4)
 	for (i = 1900; i <= 2039; i++) {
 		sprintf(word, "%u", i);
-		if (is_based(params, word, needle, original, mode))
-			return REASON_SEQ;
+		if (is_based(params, word, unified, original, 2) ||
+		    is_based(params, word, reversed, original, 0x102)) {
+			reason = REASON_SEQ;
+			goto out;
+		}
 	}
 
-	return NULL;
+	if (params->wordlist || params->denylist)
+		if (!(buf = malloc(READ_LINE_SIZE)))
+			goto out;
+
+	if (params->wordlist) {
+		if (!(f = fopen(params->wordlist, "r")))
+			goto out;
+		while (read_line(f, buf)) {
+			unify(buf, buf);
+			if (!strcmp(buf, unified) || !strcmp(buf, reversed))
+				goto out_wordlist;
+			if (!params->match_length ||
+			    strlen(buf) < (size_t)params->match_length)
+				continue;
+			if (is_based(params, buf, unified, original, 1) ||
+			    is_based(params, buf, reversed, original, 0x101)) {
+out_wordlist:
+				reason = REASON_WORDLIST;
+				goto out;
+			}
+		}
+		if (ferror(f))
+			goto out;
+		fclose(f); f = NULL;
+	}
+
+	if (params->denylist) {
+		if (!(f = fopen(params->denylist, "r")))
+			goto out;
+		while (read_line(f, buf)) {
+			if (!strcmp(buf, original)) {
+				reason = REASON_DENYLIST;
+				goto out;
+			}
+		}
+		if (ferror(f))
+			goto out;
+	}
+
+	reason = NULL;
+
+out:
+	if (f)
+		fclose(f);
+	if (buf) {
+		_passwdqc_memzero(buf, READ_LINE_SIZE);
+		free(buf);
+	}
+	_passwdqc_memzero(word, sizeof(word));
+	return reason;
 }
 
 const char *passwdqc_check(const passwdqc_params_qc_t *params,
     const char *newpass, const char *oldpass, const struct passwd *pw)
 {
 	char truncated[9];
-	char *u_newpass, *u_reversed;
-	char *u_oldpass;
-	char *u_name, *u_gecos, *u_dir;
-	const char *reason;
-	size_t length;
+	char *u_newpass = NULL, *u_reversed = NULL;
+	char *u_oldpass = NULL;
+	char *u_name = NULL, *u_gecos = NULL, *u_dir = NULL;
+	const char *reason = REASON_ERROR;
 
-	u_newpass = u_reversed = NULL;
-	u_oldpass = NULL;
-	u_name = u_gecos = u_dir = NULL;
-
-	reason = REASON_ERROR;
-
-	length = strlen(newpass);
+	size_t length = strlen(newpass);
 
 	if (length < (size_t)params->min[4]) {
 		reason = REASON_SHORT;
@@ -524,9 +606,19 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 		goto out;
 	}
 
-	reason = is_word_based(params, u_newpass, newpass, 0);
-	if (!reason)
-		reason = is_word_based(params, u_reversed, newpass, 0x100);
+	reason = is_word_based(params, u_newpass, u_reversed, newpass);
+
+	if (!reason && params->filter) {
+		passwdqc_filter_t flt;
+		reason = REASON_ERROR;
+		if (passwdqc_filter_open(&flt, params->filter))
+			goto out;
+		int result = passwdqc_filter_lookup(&flt, newpass);
+		passwdqc_filter_close(&flt);
+		if (result < 0)
+			goto out;
+		reason = result ? REASON_FILTER : NULL;
+	}
 
 out:
 	_passwdqc_memzero(truncated, sizeof(truncated));

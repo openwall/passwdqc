@@ -1,0 +1,145 @@
+.\" Copyright (c) 2021 Solar Designer
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.Dd January 25, 2021
+.Dt PWQFILTER 1
+.Os "Openwall Project"
+.Sh NAME
+.Nm pwqfilter
+.Nd Manage binary passphrase filter files
+.Sh SYNOPSIS
+.Nm Op Ar options
+.Sh DESCRIPTION
+The
+.Nm
+program searches, creates, or updates binary passphrase filter files, which can also be used with
+.Xr pwqcheck 1 and
+.Xr pam_passwdqc 8 .
+Input and/or output binary filter files are specified via their corresponding command-line options,
+whereas passphrases to look up or add, or their hashes, are read from standard input.
+.Pp
+.Nm
+works on arbitrary plain text strings or hex-encoded hashes,
+and thus can also be reused in lieu of
+.Xr grep 1
+for many purposes unrelated to passphrases and security.
+.Pp
+For the binary filters,
+.Nm
+and thus the rest of passwdqc currently use an improved cuckoo filter, which is a probabilistic data structure.
+Occasional false positives are possible (fewer than 1 in a billion), but false negatives are not.
+.Sh MODE OPTIONS
+.Bl -tag -width Ds
+.It Cm --lookup
+Look up plaintexts or hashes on standard input against an existing filter.
+This is the default mode.
+.It Cm --status
+Report usage statistics for an existing filter.
+.It Cm --create=CAPACITY
+Create a new filter with CAPACITY entries, reading the initial set of plaintexts or hashes from standard input.
+.Pp
+The currently implemented cuckoo filter has a typical maximum load of around 98%
+(as long as there are no duplicate inputs and the hashes are unbiased, or less otherwise).
+The specified CAPACITY should thus be higher than the maximum expected number of entries by at least 2.04%.
+.It Cm --insert
+Insert (add) entries into an existing filter, reading the plaintexts or hashes from standard input.
+.It Cm --test-fp-rate
+Estimate the false positive rate (FP rate) of a filter.
+This option can be used on its own or along with another mode, in which case the test is performed after that other mode's action.
+.El
+.Sh OPTIMIZATION OPTIONS
+These can be used with
+.Cm --create
+or
+.Cm --insert .
+.Bl -tag -width Ds
+.It Cm --optimize-fp-rate
+Better than default FP rate at a cost of briefly slower inserts after a load of 30% to 40% and then again after 60% to 70%.
+.It Cm --optimize-fp-rate-at-high-load
+Better than default FP rate at load ~95% to 98%, a lot worse below ~90%.
+.El
+.Sh INPUT AND OUTPUT OPTIONS
+.Bl -tag -width Ds
+.It Cm -f FILE , --filter=FILE
+Read an existing filter from FILE
+.It Cm -o FILE , --output=FILE
+Write a new or modified filter to FILE
+.It Cm --pre-hashed
+Look up or insert by hex-encoded hashes, not plaintexts.
+.Pp
+This option is later implied for further actions on filters created with it specified and no
+.Cm --hash-* ,
+because
+.Nm
+has no way to know what hash type such filters use.
+.It Cm --hash-md4
+Hash plaintexts with MD4 prior to lookup or insert.
+This is the default for new filters.
+.Pp
+When used with
+.Cm --pre-hashed ,
+specify that the pre-hashing was done with MD4.
+.Pp
+Cuckoo filters' use of a hash function is non-cryptographic, hence MD4's otherwise inadequate cryptographic security is irrelevant.
+.It Cm --hash-ntlm-cp1252
+Hash assumed CP1252 encoding plaintexts with NTLM prior to lookup or insert, or specify that the pre-hashing was done that way
+(e.g., like it was in a HIBP v7 download).
+.El
+.Sh LOOKUP OUTPUT MODIFIER OPTIONS
+These are similar to those of
+.Xr grep 1 .
+.Bl -tag -width Ds
+.It Cm -c , --count
+Output a count of (non-)matching lines instead of the lines themselves.
+.It Cm -n , --line-number
+Prefix each line with its number in the input stream.
+.It Cm -v , --invert-match
+Output or count non-matching lines.
+.El
+.Sh GENERAL OPTIONS
+.Bl -tag -width Ds
+.It Cm --verbose
+Output additional information.
+.It Cm --version
+Output
+.Nm
+program version and exit.
+.It Cm -h , --help
+Output
+.Nm
+help text and exit.
+.El
+.Sh EXIT STATUS
+When looking up against an existing filter,
+.Nm
+exits with 0 if selected plaintexts or hashes are found, 1 if not found, or 2 on error.
+These exit codes are compatible with those of
+.Xr grep 1 .
+In other modes,
+.Nm
+exits with 0 on success and 2 on error.
+.Sh SEE ALSO
+.Xr grep 1 ,
+.Xr pwqcheck 1 ,
+.Xr passwdqc.conf 5 ,
+.Xr pam_passwdqc 8 .
+.Pp
+https://www.openwall.com/passwdqc/
+.Sh AUTHORS
+.Nm
+and this manual page were written by Solar Designer.
