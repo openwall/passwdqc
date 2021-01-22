@@ -95,6 +95,39 @@ passwords are considered to be similar when there is a sufficiently
 long common substring and the new password with the substring partially
 discounted would be weak.
 
+	wordlist=FILE			[]
+
+Deny passwords that are based on lines of a tiny external text file,
+which can reasonably be e.g. a list of a few thousand common passwords.
+Common dictionary words may also reasonably be included, especially in a
+local language other than English, or longer yet common English words.
+(passwdqc includes a list of a few thousand common English words of
+lengths from 3 to 6 built in.  Any word list possibly specified with
+this option is used in addition to the built-in word list.)
+
+Substring matching and discounting will be used if the "match" setting
+above is non-zero.  Please note that this is very inefficient, and isn't
+to be used with large wordlists.
+
+	denylist=FILE			[]
+
+Deny passwords or passphrases directly appearing in a tiny external text
+file.  That file can reasonably be e.g. a list of common passwords if
+only a relaxed policy is desired and stricter checks are thus disabled
+(using their separate options).  Such policy would only be somewhat
+effective against online/remote attacks, but not against offline attacks
+on hashed passwords.
+
+	filter=FILE			[]
+
+Deny passwords or passphrases directly appearing in a maybe huge binary
+filter file created with pwqfilter.  This is very efficient, needing at
+most two random disk reads per query.  A filter created from millions of
+leaked passwords can reasonably be used on top of passwdqc's other
+checks to further reduce the number of passing yet weak passwords
+without causing unreasonable inconvenience (as e.g. higher minimum
+lengths and character set requirements could).
+
 	random=N[,only]			[random=47]
 
 The size of randomly-generated passphrases in bits (24 to 85), or 0 to
