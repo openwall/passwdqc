@@ -4,11 +4,15 @@
  * See LICENSE
  */
 
+#ifdef _MSC_VER
+#define _CRT_NONSTDC_NO_WARNINGS /* we use POSIX function names */
+#define _CRT_SECURE_NO_WARNINGS /* we use fopen(), strerror(), sprintf() */
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
 

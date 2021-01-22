@@ -3,11 +3,18 @@
  * See LICENSE
  */
 
+#ifdef _MSC_VER
+#define _CRT_NONSTDC_NO_WARNINGS /* we use unlink() */
+#define _CRT_SECURE_NO_WARNINGS /* we use fopen() */
+#include <io.h>
+#else
+#include <unistd.h> /* for unlink() */
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> /* for unlink() */
 #include <assert.h>
 
 #include "md4.h"
@@ -191,7 +198,7 @@ static force_inline void pack(passwdqc_filter_packed_t *dst, const passwdqc_filt
 			SORT(b, c)
 		}
 		const unsigned int lobits = fbits - 4;
-		uint16_t ssd = a >> lobits;
+		uint16_t ssd = (uint16_t)(a >> lobits);
 		ssd |= (b >> (lobits - 4)) & 0x00f0;
 		ssd |= (c >> (lobits - 8)) & 0x0f00;
 		ssd |= (d >> (lobits - 12)) & 0xf000;
@@ -257,7 +264,7 @@ static force_inline unsigned int peek(const passwdqc_filter_packed_t *src)
 	uint64_t hi = src->hi;
 
 	if (hi <= 1)
-		return hi; /* 0 or 1 */
+		return (unsigned int)hi; /* 0 or 1 */
 
 	unsigned int ssi = hi >> (64 - 12); /* semi-sort index */
 
@@ -316,7 +323,7 @@ static force_inline int kick(passwdqc_filter_unpacked_t *u, passwdqc_filter_i_t 
  * Good randomness is crucial for the random walk.  This simple formula works
  * surprisingly well by mostly reusing variables that we maintain anyway.
  */
-			rnd = (rnd + fdiff) * header.kicks;
+			rnd = (rnd + (uint32_t)fdiff) * (uint32_t)header.kicks;
 			if (likely(size != 2)) { /* hopefully, compile-time */
 				bestj = rnd >> 30;
 				while (bestj >= size) /* only if size == 3 */
@@ -445,7 +452,7 @@ static void print_status(void)
 static int new_filter(void)
 {
 	header.capacity = (header.capacity + 3) & ~3ULL;
-	nbuckets = header.capacity >> 2;
+	nbuckets = (uint32_t)(header.capacity >> 2);
 	packed = calloc(nbuckets, sizeof(*packed));
 	if (!packed) {
 		perror("pwqfilter: calloc");
@@ -493,7 +500,7 @@ static int read_filter(const char *filename, int print_status_only)
 	if ((options & OPT_FP_RATE_AT_HIGH_LOAD) && header.threshold < 4)
 		fprintf(stderr, "pwqfilter: Warning: --optimize-fp-rate-at-high-load is too late for this filter.\n");
 
-	nbuckets = header.capacity >> 2;
+	nbuckets = (uint32_t)(header.capacity >> 2);
 	if (nbuckets > SIZE_MAX / sizeof(*packed)) {
 		fprintf(stderr, "pwqfilter: Input filter claims to be too large for this system.\n");
 		goto fail;

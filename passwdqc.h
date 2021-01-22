@@ -7,7 +7,24 @@
 #ifndef PASSWDQC_H__
 #define PASSWDQC_H__
 
+#ifndef _MSC_VER
 #include <pwd.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifdef _MSC_VER
+/* Partial struct passwd just to accommodate passwdqc code's expectations */
+struct passwd {
+	char *pw_name;
+	char *pw_passwd;
+	char *pw_gecos;
+	char *pw_dir;
+	char *pw_shell;
+};
+#endif
 
 typedef struct {
 	int min[5], max;
@@ -56,5 +73,9 @@ extern void passwdqc_params_reset(passwdqc_params_t *params);
 #define PASSWDQC_VERSION		"1.5.0"
 
 extern void (*_passwdqc_memzero)(void *, size_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PASSWDQC_H__ */

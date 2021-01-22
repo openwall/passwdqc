@@ -4,6 +4,10 @@
  * See LICENSE
  */
 
+#ifdef _MSC_VER
+#define _CRT_NONSTDC_NO_WARNINGS /* we use POSIX function names */
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
