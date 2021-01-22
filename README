@@ -56,7 +56,7 @@ In addition to being sufficiently long, passwords are required to
 contain enough different characters for the character classes and
 the minimum length they have been checked against.
 
-	max=N				[max=40]
+	max=N				[max=72]
 
 The maximum allowed password length.  This can be used to prevent
 users from setting passwords that may be too long for some system
