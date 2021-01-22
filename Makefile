@@ -174,7 +174,7 @@ pwqfilter.o: pwqfilter.c passwdqc_filter.h passwdqc.h
 concat.o: concat.h
 pam_passwdqc.o: passwdqc.h pam_macros.h
 passwdqc_check.o: passwdqc.h passwdqc_filter.h wordset_4k.h
-passwdqc_filter.o: passwdqc_filter.h
+passwdqc_filter.o: passwdqc.h passwdqc_filter.h
 passwdqc_load.o: passwdqc.h concat.h
 passwdqc_parse.o: passwdqc.h concat.h
 passwdqc_random.o: passwdqc.h wordset_4k.h
