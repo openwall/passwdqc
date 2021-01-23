@@ -1,5 +1,3 @@
-# $Owl: Owl/packages/passwdqc/passwdqc/passwdqc.spec,v 1.67 2019/12/25 11:42:06 ldv Exp $
-
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
 Version: 1.4.0
