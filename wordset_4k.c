@@ -37,6 +37,9 @@
  * must contain between 3 and 6 characters", there were two 7-character words.
  * These have been removed.
  *
+ * Many "inappropriate" words have then been moved to near the end of list, so
+ * that they're not used for generated passphrases.
+ *
  * The code in passwdqc_check.c and passwdqc_random.c makes the following
  * assumptions about this list:
  *
@@ -779,7 +782,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"buried",
 	"burly",
 	"burn",
-	"burnt",
 	"burrow",
 	"burst",
 	"bury",
@@ -1767,7 +1769,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"grave",
 	"gravel",
 	"gravy",
-	"gray",
 	"grease",
 	"greasy",
 	"great",
@@ -1776,7 +1777,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"green",
 	"greet",
 	"grew",
-	"grey",
 	"grid",
 	"grief",
 	"grill",
@@ -1815,7 +1815,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"guru",
 	"gut",
 	"guy",
-	"gypsy",
 	"habit",
 	"hack",
 	"had",
@@ -1915,7 +1914,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"him",
 	"hind",
 	"hint",
-	"hippy",
 	"hire",
 	"his",
 	"hiss",
@@ -6242,7 +6240,8 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"advise",
 	"armor", /* multiple spellings */
 	"armour",
-	"burned", /* or "burnt" */
+	"burned",
+	"burnt",
 	"center",
 	"centre",
 	"cheque", /* or "check", which is preserved above for different meaning */
@@ -6252,9 +6251,13 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"favor",
 	"favour",
 	"flavor", /* or "flavour" */
-	"gipsy", /* or "gypsy" */
+	"gipsy",
+	"gray",
+	"grey",
+	"gypsy",
 	"harbor", /* or "harbour" */
-	"hippie", /* or "hippy" */
+	"hippie",
+	"hippy",
 	"honor",
 	"honour",
 	"humor",
