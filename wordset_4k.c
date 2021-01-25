@@ -725,7 +725,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"burst",
 	"bury",
 	"bus",
-	"bush",
 	"bust",
 	"bustle",
 	"busy",
@@ -5066,7 +5065,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"thump",
 	"tiara",
 	"tint",
-	"trump",
 	"tug",
 	"tulip",
 	"tummy",
@@ -6106,6 +6104,8 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"wakeup",
 	"yuppie",
 	"zealot",
+	"bush", /* these two were merely words, now may be taken as referring to specific people */
+	"trump",
 	"church", /* religious references (more of these are among the capitalized words below) */
 	"devil",
 	"devils",
