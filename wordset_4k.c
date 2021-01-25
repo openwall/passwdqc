@@ -34,9 +34,8 @@
  * subsequent removal of "inappropriate" words from the initial list.
  *
  * Even though the original description of the list stated that "each word
- * must contain between 3 and 6 characters", there were two 7-character words:
- * "England" and "Germany".  For use in passwdqc, these have been replaced
- * with "erase" and "gag".
+ * must contain between 3 and 6 characters", there were two 7-character words.
+ * These have been removed.
  *
  * The code in passwdqc_check.c and passwdqc_random.c makes the following
  * assumptions about this list:
@@ -1392,7 +1391,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"equip",
 	"equity",
 	"era",
-	"erase",
 	"erect",
 	"erode",
 	"erotic",
@@ -1669,7 +1667,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"future",
 	"fuzzy",
 	"gadget",
-	"gag",
 	"gain",
 	"gala",
 	"galaxy",
@@ -4199,6 +4196,7 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"enact",
 	"enrich",
 	"enroll",
+	"erase",
 	"erupt",
 	"ethics",
 	"fiber",
@@ -4991,6 +4989,7 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"frisk",
 	"froth",
 	"froze",
+	"gag",
 	"gains",
 	"gecko",
 	"geek",
