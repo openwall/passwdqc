@@ -1,6 +1,6 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.4.1
+Version: 1.5.0
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -71,6 +71,13 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Mon Jan 25 2021 Solar Designer <solar-at-owl.openwall.com> 1.5.0-owl1
+- Updated the included wordlist to avoid some inappropriate words in randomly
+generated passphrases while not removing any words from the "word-based" check,
+and also to have plenty of extra words for subsequent removal of more words
+that might be considered inappropriate from the initial 4096 that are used for
+randomly generated passphrases.
+
 * Mon Jan 25 2021 Solar Designer <solar-at-owl.openwall.com> 1.4.1-owl1
 - Set default for "max" to 72 (was 40).
 - Document "similar" in pwqcheck print_help() and man page.
