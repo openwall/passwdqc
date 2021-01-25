@@ -38,15 +38,16 @@
  * The code in passwdqc_check.c and passwdqc_random.c makes the following
  * assumptions about this list:
  *
- * - there are exactly 4096 words;
+ * - the first 4096 words are for random passphrase generation, and there are
+ * at least this many words present;
  * - the words are of up to 6 characters long;
  * - although some words may contain capital letters, no two words differ by
  * the case of characters alone (e.g., converting the list to all-lowercase
- * would yield a list of 4096 unique words);
+ * would yield a list of as many unique words);
  * - the words contain alphabetical characters only;
  * - if an entire word on this list matches the initial substring of other
- * word(s) on the list, it is placed immediately before those words (e.g.,
- * "bake", "baker", "bakery").
+ * word(s) on the list, it is likely placed immediately before those words
+ * (e.g., "bake", "baker", "bakery"), which speeds up the "word-based" check.
  *
  * Additionally, the default minimum passphrase length of 11 characters
  * specified in passwdqc_parse.c has been chosen such that a passphrase
@@ -57,7 +58,7 @@
 
 #include "wordset_4k.h"
 
-const char _passwdqc_wordset_4k[0x1000][WORDSET_4K_LENGTH_MAX] = {
+const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"Adam",
 	"Afghan",
 	"Alaska",
@@ -4153,5 +4154,6 @@ const char _passwdqc_wordset_4k[0x1000][WORDSET_4K_LENGTH_MAX] = {
 	"zigzag",
 	"zinc",
 	"zombie",
-	"zone"
+	"zone",
+	"" /* end of list marker */
 };

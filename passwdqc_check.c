@@ -402,13 +402,12 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 
 	mode = is_reversed | 1;
 	word[WORDSET_4K_LENGTH_MAX] = '\0';
-	for (i = 0; i < 0x1000; i++) {
+	for (i = 0; _passwdqc_wordset_4k[i][0]; i++) {
 		memcpy(word, _passwdqc_wordset_4k[i], WORDSET_4K_LENGTH_MAX);
 		length = strlen(word);
 		if (length < params->match_length)
 			continue;
-		if (i < 0xfff &&
-		    !memcmp(word, _passwdqc_wordset_4k[i + 1], length))
+		if (!memcmp(word, _passwdqc_wordset_4k[i + 1], length))
 			continue;
 		unify(word, word);
 		if (is_based(params, word, needle, original, mode))

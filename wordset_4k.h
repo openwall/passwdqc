@@ -8,6 +8,6 @@
 
 #define WORDSET_4K_LENGTH_MAX		6
 
-extern const char _passwdqc_wordset_4k[0x1000][WORDSET_4K_LENGTH_MAX];
+extern const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX];
 
 #endif /* WORDSET_4K_H__ */
