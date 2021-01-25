@@ -588,7 +588,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"bit",
 	"bite",
 	"bitter",
-	"black",
 	"blade",
 	"blame",
 	"bland",
@@ -691,7 +690,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"bronze",
 	"brook",
 	"broom",
-	"brown",
 	"bruise",
 	"brush",
 	"brutal",
@@ -3945,7 +3943,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"whim",
 	"whip",
 	"whisky",
-	"white",
 	"who",
 	"whole",
 	"wholly",
@@ -4025,7 +4022,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"yeah",
 	"year",
 	"yeast",
-	"yellow",
 	"yet",
 	"yield",
 	"yogurt",
@@ -4425,7 +4421,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"begged",
 	"begins",
 	"beings",
-	"blacks",
 	"blank",
 	"boats",
 	"bored",
@@ -6117,6 +6112,11 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"wakeup",
 	"yuppie",
 	"zealot",
+	"black", /* races, skin colors, and ethnicities */
+	"blacks",
+	"brown",
+	"white",
+	"yellow",
 	"Afghan", /* assorted capitalized words undesirable in passphrases, including: */
 	"Allah", /* religious references */
 	"Anglo", /* ethnicities, nationalities (but country names stay), other categories of people */
