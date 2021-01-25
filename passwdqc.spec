@@ -1,6 +1,6 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.4.0
+Version: 1.4.1
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -71,6 +71,11 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Mon Jan 25 2021 Solar Designer <solar-at-owl.openwall.com> 1.4.1-owl1
+- Set default for "max" to 72 (was 40).
+- Document "similar" in pwqcheck print_help() and man page.
+- Drop the CVS Id tags (stale ones would be confusing with our move to git).
+
 * Wed Dec 25 2019 Dmitry V. Levin <ldv-at-owl.openwall.com> 1.4.0-owl1
 - Implemented i18n support in pam_passwdqc, contributed by Oleg Solovyov,
 Andrey Cherepanov, and me.  The i18n support is off by default, it can be
