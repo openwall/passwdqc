@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2000-2002,2005,2008,2010,2013,2016 by Solar Designer
+ * Copyright (c) 2000-2002,2005,2008,2010,2013,2016,2021 by Solar Designer
  * See LICENSE
  */
 
-#include <stdio.h>
+#include <limits.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
@@ -57,19 +57,20 @@
 #define BITS_MAX \
 	(WORDS_MAX * SWORD_BITS)
 
-static int read_loop(int fd, unsigned char *buffer, int count)
+static ssize_t read_loop(int fd, void *buffer, size_t count)
 {
-	int offset, block;
+	ssize_t offset, block;
 
 	offset = 0;
-	while (count > 0) {
-		block = read(fd, &buffer[offset], count);
+	while (count > 0 && count <= SSIZE_MAX) {
+		block = read(fd, (char *)buffer + offset, count);
 
 		if (block < 0) {
 			if (errno == EINTR)
 				continue;
 			return block;
 		}
+
 		if (!block)
 			return offset;
 
@@ -82,16 +83,7 @@ static int read_loop(int fd, unsigned char *buffer, int count)
 
 char *passwdqc_random(const passwdqc_params_qc_t *params)
 {
-	char output[0x100], *retval;
-	int bits;
-	int word_count, trailing_separator, use_separators, toggle_case;
-	int i;
-	unsigned int max_length, length, extra;
-	const char *start, *end;
-	int fd;
-	unsigned char bytes[3];
-
-	bits = params->random_bits;
+	int bits = params->random_bits; /* further code assumes signed type */
 	if (bits < BITS_MIN || bits > BITS_MAX)
 		return NULL;
 
@@ -102,13 +94,13 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  * calculating how many additional words to use.  We divide "bits - WORD_BITS"
  * by SWORD_BITS with rounding up (hence the addition of "SWORD_BITS - 1").
  */
-	word_count = 1 + (bits + (SWORD_BITS - 1 - WORD_BITS)) / SWORD_BITS;
+	int word_count = 1 + (bits + (SWORD_BITS - 1 - WORD_BITS)) / SWORD_BITS;
 
 /*
  * Special case: would we still encode enough bits if we omit the final word,
  * but keep the would-be-trailing separator?
  */
-	trailing_separator = (SWORD_BITS * (word_count - 1) >= bits);
+	int trailing_separator = (SWORD_BITS * (word_count - 1) >= bits);
 	word_count -= trailing_separator;
 
 /*
@@ -120,17 +112,18 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  * only if their use, in the word_count calculation above, has helped reduce
  * word_count.
  */
-	use_separators = ((bits + (WORD_BITS - 1)) / WORD_BITS != word_count);
+	int use_separators = ((bits + (WORD_BITS - 1)) / WORD_BITS != word_count);
 	trailing_separator &= use_separators;
 
 /*
  * Toggle case of the first character of each word only if we wouldn't achieve
  * sufficient entropy otherwise.
  */
-	toggle_case = (bits >
+	int toggle_case = (bits >
 	    ((WORD_BITS - 1) * word_count) +
-	    (use_separators ?
-	    (SEPARATOR_BITS * (word_count - !trailing_separator)) : 0));
+	    (use_separators ? (SEPARATOR_BITS * (word_count - !trailing_separator)) : 0));
+
+	char output[0x100];
 
 /*
  * Calculate and check the maximum possible length of a "passphrase" we may
@@ -139,38 +132,45 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  * trailing separator, we subtract 1.  The check against sizeof(output) uses
  * ">=" to account for NUL termination.
  */
-	max_length = word_count * (WORDSET_4K_LENGTH_MAX + 1) -
-	    !trailing_separator;
+	unsigned int max_length = word_count * (WORDSET_4K_LENGTH_MAX + 1) - !trailing_separator;
 	if (max_length >= sizeof(output) || (int)max_length > params->max)
 		return NULL;
 
+	unsigned char rnd[WORDS_MAX * 3];
+
+	int fd;
 	if ((fd = open("/dev/urandom", O_RDONLY)) < 0)
 		return NULL;
+	if (read_loop(fd, rnd, sizeof(rnd)) != sizeof(rnd)) {
+		close(fd);
+		return NULL;
+	}
+	close(fd);
 
-	retval = NULL;
-	length = 0;
-	do {
-		if (read_loop(fd, bytes, sizeof(bytes)) != sizeof(bytes))
-			goto out;
+	unsigned int length = 0;
+	const unsigned char *rndptr;
 
+	for (rndptr = rnd; rndptr <= rnd + sizeof(rnd) - 3; rndptr += 3) {
 /*
- * Append a word.  Treating bytes as little-endian, we use bits 0 to 11 for the
- * word index, and bit 13 for toggling the case of the first character.  Bits
- * 12, 14, and 15 are left unused.  Bits 16 to 23 are left for the separator.
+ * Append a word.
+ *
+ * Treating *rndptr as little-endian, we use bits 0 to 11 for the word index
+ * and bit 13 for toggling the case of the first character.  Bits 12, 14, and
+ * 15 are left unused.  Bits 16 to 23 are left for the separator.
  */
-		i = (((int)bytes[1] & 0x0f) << 8) | (int)bytes[0];
-		start = _passwdqc_wordset_4k[i];
-		end = memchr(start, '\0', WORDSET_4K_LENGTH_MAX);
+		unsigned int i = (((unsigned int)rndptr[1] & 0x0f) << 8) | rndptr[0];
+		const char *start = _passwdqc_wordset_4k[i];
+		const char *end = memchr(start, '\0', WORDSET_4K_LENGTH_MAX);
 		if (!end)
 			end = start + WORDSET_4K_LENGTH_MAX;
-		extra = end - start;
+		unsigned int extra = end - start;
 /* The ">=" leaves room for either one more separator or NUL */
 		if (length + extra >= sizeof(output))
-			goto out;
+			break;
 		memcpy(&output[length], start, extra);
 		if (toggle_case) {
 /* Toggle case if bit set (we assume ASCII) */
-			output[length] ^= bytes[1] & 0x20;
+			output[length] ^= rndptr[1] & 0x20;
 			bits--;
 		}
 		length += extra;
@@ -188,27 +188,26 @@ char *passwdqc_random(const passwdqc_params_qc_t *params)
  * happens e.g. for bits values from 31 to 34, 48 to 51, 65 to 68.
  */
 		if (use_separators) {
-			i = bytes[2] & 0x0f;
+			i = rndptr[2] & 0x0f;
 			output[length++] = SEPARATORS[i];
 			bits -= SEPARATOR_BITS;
-		} else
+		} else {
 			output[length++] = SEPARATORS[0];
-	} while (bits > 0);
+		}
 
-/*
- * Since we may have added a separator after the check in the loop above, we
- * must check again now.
- */
-	if (length < sizeof(output)) {
+		if (bits <= 0)
+			break;
+	}
+
+	char *retval = NULL;
+
+	if (bits <= 0 && length < sizeof(output)) {
 		output[length] = '\0';
 		retval = strdup(output);
 	}
 
-out:
-	_passwdqc_memzero(bytes, sizeof(bytes));
+	_passwdqc_memzero(rnd, sizeof(rnd));
 	_passwdqc_memzero(output, length);
-
-	close(fd);
 
 	return retval;
 }
