@@ -1,6 +1,6 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 1.5.0
+Version: 1.9.0
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -71,6 +71,11 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Fri Jan 29 2021 Solar Designer <solar-at-owl.openwall.com> 1.9.0-owl1
+- Add support for external wordlist, denylist, and binary filter.
+- passwdqc_random(): Obtain all of the random bytes before the loop.
+- Merge changes needed for building with Visual Studio on Windows.
+
 * Mon Jan 25 2021 Solar Designer <solar-at-owl.openwall.com> 1.5.0-owl1
 - Updated the included wordlist to avoid some inappropriate words in randomly
 generated passphrases while not removing any words from the "word-based" check,
