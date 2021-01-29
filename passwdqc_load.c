@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2008,2009 by Dmitry V. Levin.  See LICENSE.
+ * Copyright (c) 2008,2009 by Dmitry V. Levin
+ * Copyright (c) 2021 by Solar Designer
+ * See LICENSE
  */
 
 #include <stdio.h>
@@ -26,27 +28,6 @@ static char *mkreason(const char *what, const char *pathname,
 	    (why ? why : strerror(errno)), NULL);
 }
 
-static char *
-skip_whitespaces(char *str)
-{
-	char *p;
-
-	for (p = str; *p == ' ' || *p == '\t' || *p == '\r' || *p == '\n'; ++p)
-		;
-	return p;
-}
-
-static char *
-skip_nonwhitespaces(char *str)
-{
-	char *p;
-
-	for (p = str;
-	    *p && *p != ' ' && *p != '\t' && *p != '\r' && *p != '\n'; ++p)
-		;
-	return p;
-}
-
 static int
 parse_file(FILE *fp, passwdqc_params_t *params, char **reason,
     const char *pathname)
@@ -65,17 +46,17 @@ parse_file(FILE *fp, passwdqc_params_t *params, char **reason,
 			return -1;
 		}
 
-		str = skip_whitespaces(buf);
+		str = buf + strspn(buf, " \t\r\n");
 		if (!*str || *str == '#')
 			continue;
 
-		end = skip_nonwhitespaces(str);
-		if (*skip_whitespaces(end)) {
-			*reason = mkreason("Error loading", pathname,
-			    lineno, "Unexpected token");
-			return -1;
-		}
-		*end = '\0';
+		if ((end = strpbrk(str, "\r\n")))
+			*end = '\0';
+		else
+			end = str + strlen(str);
+
+		while (end > str && (*--end == ' ' || *end == '\t'))
+			*end = '\0';
 
 		cstr = str;
 		if ((rc = passwdqc_params_parse(params, &rt, 1, &cstr))) {
