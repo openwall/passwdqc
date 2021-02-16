@@ -4,6 +4,7 @@
     passwdqc_params_load;
     passwdqc_params_parse;
     passwdqc_params_reset;
+    passwdqc_params_free;
     passwdqc_random;
   local:
     *;

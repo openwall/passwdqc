@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2003,2005,2016,2020 by Solar Designer
+ * Copyright (c) 2000-2003,2005,2016,2020,2021 by Solar Designer
  * Copyright (c) 2008,2009 by Dmitry V. Levin
  * See LICENSE
  */
@@ -89,22 +89,21 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 			goto parse_error;
 		params->qc.random_bits = v;
 	} else if ((p = skip_prefix(option, "wordlist="))) {
-/*
- * The memory allocated here for wordlist, denylist, and/or filter (if any of
- * these are specified) is currently never freed.
- */
+		free(params->qc.wordlist);
 		params->qc.wordlist = NULL;
 		if (*p && !(params->qc.wordlist = strdup(p))) {
 			err = err_oom;
 			goto parse_error;
 		}
 	} else if ((p = skip_prefix(option, "denylist="))) {
+		free(params->qc.denylist);
 		params->qc.denylist = NULL;
 		if (*p && !(params->qc.denylist = strdup(p))) {
 			err = err_oom;
 			goto parse_error;
 		}
 	} else if ((p = skip_prefix(option, "filter="))) {
+		free(params->qc.filter);
 		params->qc.filter = NULL;
 		if (*p && !(params->qc.filter = strdup(p))) {
 			err = err_oom;
@@ -160,6 +159,7 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 	return 0;
 
 parse_error:
+	passwdqc_params_free(params);
 	e = concat("Error parsing parameter \"", option, "\": ",
 	    (rc ? (*reason ? *reason : err_oom) : err), NULL);
 	free(*reason);
@@ -204,4 +204,12 @@ static const passwdqc_params_t defaults = {
 void passwdqc_params_reset(passwdqc_params_t *params)
 {
 	*params = defaults;
+}
+
+void passwdqc_params_free(passwdqc_params_t *params)
+{
+	free(params->qc.wordlist);
+	free(params->qc.denylist);
+	free(params->qc.filter);
+	passwdqc_params_reset(params);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002,2016,2019,2020 by Solar Designer
+ * Copyright (c) 2000-2002,2016,2019,2020,2021 by Solar Designer
  * Copyright (c) 2008,2009 by Dmitry V. Levin
  * See LICENSE
  */
@@ -32,9 +32,9 @@ typedef struct {
 	int match_length;
 	int similar_deny;
 	int random_bits;
-	const char *wordlist;
-	const char *denylist;
-	const char *filter;
+	char *wordlist;
+	char *denylist;
+	char *filter;
 } passwdqc_params_qc_t;
 
 typedef struct {
@@ -56,6 +56,7 @@ extern int passwdqc_params_parse(passwdqc_params_t *params,
 extern int passwdqc_params_load(passwdqc_params_t *params,
     char **reason, const char *pathname);
 extern void passwdqc_params_reset(passwdqc_params_t *params);
+extern void passwdqc_params_free(passwdqc_params_t *params);
 
 #define F_ENFORCE_MASK			0x00000003
 #define F_ENFORCE_USERS			0x00000001
