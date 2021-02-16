@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2000-2003,2005,2012,2016,2019 by Solar Designer.
+ * Copyright (c) 2000-2003,2005,2012,2016,2019,2021 by Solar Designer
  * Copyright (c) 2017,2018 by Dmitry V. Levin
  * Copyright (c) 2017,2018 by Oleg Solovyov
- * See LICENSE.
+ * See LICENSE
  */
 
 #ifdef __FreeBSD__
@@ -143,25 +143,19 @@ typedef lo_const void *pam_item_t;
 #define MESSAGE_RETRY \
 	_("Try again.")
 
-static int logaudit(pam_handle_t *pamh, int status, int flags)
+static int logaudit(pam_handle_t *pamh, int status, passwdqc_params_t *params)
 {
 #ifdef HAVE_LIBAUDIT
-	if (!(flags & F_NO_AUDIT)) {
-		int rc;
-
-		rc = pam_modutil_audit_write(pamh, AUDIT_USER_CHAUTHTOK,
-			"pam_passwdqc", status);
-
-		return status != PAM_SUCCESS ? status : rc;
-	} else {
-		/* audit is disabled */
-		return status;
+	if (!(params->pam.flags & F_NO_AUDIT)) {
+		int rc = pam_modutil_audit_write(pamh, AUDIT_USER_CHAUTHTOK, "pam_passwdqc", status);
+		if (status == PAM_SUCCESS)
+		       status = rc;
 	}
 #else /* !HAVE_LIBAUDIT */
 	(void) pamh;
-	(void) flags;
-	return status;
 #endif
+	passwdqc_params_free(params);
+	return status;
 }
 
 static int converse(pam_handle_t *pamh, int style, l_const char *text,
@@ -310,8 +304,10 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	} else if (flags & PAM_UPDATE_AUTHTOK) {
 		if (params.pam.flags & F_ASK_OLDAUTHTOK_UPDATE)
 			ask_oldauthtok = 1;
-	} else
+	} else {
+		passwdqc_params_free(&params);
 		return PAM_SERVICE_ERR;
+	}
 
 	if (ask_oldauthtok && !am_root(pamh)) {
 		status = converse(pamh, PAM_PROMPT_ECHO_OFF,
@@ -327,20 +323,22 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		}
 
 		if (status != PAM_SUCCESS)
-			return logaudit(pamh, status, params.pam.flags);
+			return logaudit(pamh, status, &params);
 	}
 
-	if (flags & PAM_PRELIM_CHECK)
+	if (flags & PAM_PRELIM_CHECK) {
+		passwdqc_params_free(&params);
 		return status;
+	}
 
 	status = pam_get_item(pamh, PAM_USER, &item);
 	if (status != PAM_SUCCESS)
-		return logaudit(pamh, status, params.pam.flags);
+		return logaudit(pamh, status, &params);
 	user = item;
 
 	status = pam_get_item(pamh, PAM_OLDAUTHTOK, &item);
 	if (status != PAM_SUCCESS)
-		return logaudit(pamh, status, params.pam.flags);
+		return logaudit(pamh, status, &params);
 	oldpass = item;
 
 	if (params.pam.flags & F_NON_UNIX) {
@@ -357,13 +355,13 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 		pw = getpwnam(user);
 		endpwent();
 		if (!pw)
-			return logaudit(pamh, PAM_USER_UNKNOWN, params.pam.flags);
+			return logaudit(pamh, PAM_USER_UNKNOWN, &params);
 		if ((params.pam.flags & F_CHECK_OLDAUTHTOK) && !am_root(pamh)
 		    && (!oldpass || check_pass(pw, oldpass)))
 			status = PAM_AUTH_ERR;
 		_passwdqc_memzero(pw->pw_passwd, strlen(pw->pw_passwd));
 		if (status != PAM_SUCCESS)
-			return logaudit(pamh, status, params.pam.flags);
+			return logaudit(pamh, status, &params);
 	}
 
 	randomonly = params.qc.min[4] > params.qc.max;
@@ -376,11 +374,11 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 	if (params.pam.flags & F_USE_AUTHTOK) {
 		status = pam_get_item(pamh, PAM_AUTHTOK, &item);
 		if (status != PAM_SUCCESS)
-			return logaudit(pamh, status, params.pam.flags);
+			return logaudit(pamh, status, &params);
 		newpass = item;
 		if (!newpass ||
 		    (check_max(&params.qc, pamh, newpass) && enforce))
-			return logaudit(pamh, PAM_AUTHTOK_ERR, params.pam.flags);
+			return logaudit(pamh, PAM_AUTHTOK_ERR, &params);
 		check_reason =
 		    passwdqc_check(&params.qc, newpass, oldpass, pw);
 		if (check_reason) {
@@ -389,7 +387,7 @@ PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
 			if (enforce)
 				status = PAM_AUTHTOK_ERR;
 		}
-		return logaudit(pamh, status, params.pam.flags);
+		return logaudit(pamh, status, &params);
 	}
 
 	retries_left = params.pam.retry;
@@ -403,7 +401,7 @@ retry:
 	else
 		status = say(pamh, PAM_TEXT_INFO, MESSAGE_INTRO_PASSWORD);
 	if (status != PAM_SUCCESS)
-		return logaudit(pamh, status, params.pam.flags);
+		return logaudit(pamh, status, &params);
 
 	if (!randomonly && params.qc.min[0] == params.qc.min[4])
 		status = say(pamh, PAM_TEXT_INFO,
@@ -426,7 +424,7 @@ retry:
 		}
 	}
 	if (status != PAM_SUCCESS)
-		return logaudit(pamh, status, params.pam.flags);
+		return logaudit(pamh, status, &params);
 
 	if (!randomonly &&
 	    params.qc.passphrase_words && params.qc.min[2] <= params.qc.max) {
@@ -434,7 +432,7 @@ retry:
 		    MESSAGE_EXPLAIN_PASSPHRASE(params.qc.passphrase_words),
 		    params.qc.min[2], params.qc.max);
 		if (status != PAM_SUCCESS)
-			return logaudit(pamh, status, params.pam.flags);
+			return logaudit(pamh, status, &params);
 	}
 
 	randompass = passwdqc_random(&params.qc);
@@ -448,7 +446,7 @@ retry:
 	} else if (randomonly) {
 		say(pamh, PAM_ERROR_MSG, am_root(pamh) ?
 		    MESSAGE_RANDOMFAILED : MESSAGE_MISCONFIGURED);
-		return logaudit(pamh, PAM_AUTHTOK_ERR, params.pam.flags);
+		return logaudit(pamh, PAM_AUTHTOK_ERR, &params);
 	}
 
 	status = converse(pamh, PAM_PROMPT_ECHO_OFF, PROMPT_NEWPASS1, &resp);
@@ -458,7 +456,7 @@ retry:
 	if (status != PAM_SUCCESS) {
 		pwqc_overwrite_string(randompass);
 		pwqc_drop_mem(randompass);
-		return logaudit(pamh, status, params.pam.flags);
+		return logaudit(pamh, status, &params);
 	}
 
 	trypass = strdup(resp->resp);
@@ -468,7 +466,7 @@ retry:
 	if (!trypass) {
 		pwqc_overwrite_string(randompass);
 		pwqc_drop_mem(randompass);
-		return logaudit(pamh, PAM_AUTHTOK_ERR, params.pam.flags);
+		return logaudit(pamh, PAM_AUTHTOK_ERR, &params);
 	}
 
 	if (check_max(&params.qc, pamh, trypass) && enforce) {
@@ -525,7 +523,7 @@ retry:
 			goto retry;
 	}
 
-	return logaudit(pamh, status, params.pam.flags);
+	return logaudit(pamh, status, &params);
 }
 
 #ifdef PAM_MODULE_ENTRY
