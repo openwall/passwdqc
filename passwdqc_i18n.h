@@ -1,13 +1,16 @@
 /*
  * Copyright (c) 2017 by Dmitry V. Levin
  * Copyright (c) 2017 by Oleg Solovyov
- * See LICENSE.
+ * See LICENSE
  */
 
 #ifndef PASSWDQC_I18N_H__
 #define PASSWDQC_I18N_H__
 
 #ifdef ENABLE_NLS
+#ifndef PACKAGE
+#define PACKAGE "passwdqc"
+#endif
 #include <libintl.h>
 #define _(msgid) dgettext(PACKAGE, msgid)
 #define P2_(msgid, count) (dngettext(PACKAGE, (msgid), (msgid), (count)))
