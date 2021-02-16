@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008,2009 by Dmitry V. Levin
- * Copyright (c) 2016 by Solar Designer
+ * Copyright (c) 2016,2021 by Solar Designer
  * See LICENSE
  */
 
@@ -54,6 +54,7 @@ int main(int argc, const char **argv)
 	}
 
 	pass = passwdqc_random(&params.qc);
+	passwdqc_params_free(&params);
 	if (!pass) {
 		fprintf(stderr, "pwqgen: Failed to generate a passphrase.\n"
 		    "This could happen for a number of reasons: you could have requested\n"

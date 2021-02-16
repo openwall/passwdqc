@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008,2009 by Dmitry V. Levin
- * Copyright (c) 2010,2016 by Solar Designer
+ * Copyright (c) 2010,2016,2021 by Solar Designer
  * See LICENSE
  */
 
@@ -225,6 +225,8 @@ cleanup:
 
 	if (multi)
 		goto next_pass;
+
+	passwdqc_params_free(&params);
 
 	return rc;
 
