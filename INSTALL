@@ -43,5 +43,5 @@ Please refer to README and PLATFORMS for information on configuring your
 system to use the PAM module.  You may also refer to the pam_passwdqc(8)
 and passwdqc.conf(5) manual pages.
 
-Please refer to the pwqcheck(1) and pwqgen(1) manual pages for
-information on using the command-line programs.
+Please refer to the pwqcheck(1), pwqfilter(1), and pwqgen(1) manual
+pages for information on using the command-line programs.

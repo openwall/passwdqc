@@ -1,7 +1,7 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
 Version: 2.0.0
-Release: owl1
+Release: owl2
 License: BSD-compatible
 Group: System Environment/Base
 URL: https://www.openwall.com/passwdqc/
@@ -14,7 +14,7 @@ BuildRoot: /override/%name-%version
 %description
 passwdqc is a password/passphrase strength checking and policy
 enforcement toolset, including a PAM module (pam_passwdqc), command-line
-programs (pwqcheck and pwqgen), and a library (libpasswdqc).
+programs (pwqcheck, pwqfilter, and pwqgen), and a library (libpasswdqc).
 
 pam_passwdqc is normally invoked on password changes by programs such as
 passwd(1).  It is capable of checking password or passphrase strength,
@@ -24,6 +24,9 @@ all of these features being optional and easily (re-)configurable.
 pwqcheck and pwqgen are standalone password/passphrase strength checking
 and random passphrase generator programs, respectively, which are usable
 from scripts.
+
+The pwqfilter program searches, creates, or updates binary passphrase
+filter files, which can also be used with pwqcheck and pam_passwdqc.
 
 libpasswdqc is the underlying library, which may also be used from
 third-party programs.
@@ -71,6 +74,9 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Wed Feb 17 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.0-owl2
+- Update the package description to include pwqfilter.
+
 * Tue Feb 16 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.0-owl1
 - Introduce and use passwdqc_params_free().
 
