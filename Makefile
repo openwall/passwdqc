@@ -222,9 +222,6 @@ POTFILE = po/$(PACKAGE).pot
 $(POTFILE): $(POTFILE_DEPS)
 	$(XGETTEXT) $(XGETTEXT_OPTS) -o $@-t $^ && mv $@-t $@
 
-$(POFILES): $(POTFILE)
-	$(MSGMERGE) -U $@ $<
-
 .SUFFIXES: .po .mo
 
 .po.mo:
@@ -232,7 +229,8 @@ $(POFILES): $(POTFILE)
 
 update_pot: $(POTFILE)
 
-update_po: $(POFILES)
+update_po: $(POTFILE) $(POFILES)
+	for f in $(POFILES); do $(MSGMERGE) -U $$f $< || exit; done
 
 update_mo: $(MOFILES)
 
