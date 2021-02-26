@@ -227,8 +227,6 @@ $(POTFILE): $(POTFILE_DEPS)
 .po.mo:
 	$(MSGFMT) -c -o $@-t $< && mv $@-t $@
 
-update_pot: $(POTFILE)
-
 update_po: $(POTFILE) $(POFILES)
 	for f in $(POFILES); do $(MSGMERGE) -U $$f $< || exit; done
 
@@ -264,12 +262,12 @@ remove_locales_wrapped:
 	for f in $(LANGUAGES); do $(RM) $(DESTDIR)$(LOCALEDIR)/$$f/LC_MESSAGES/$(PACKAGE).mo; done
 
 clean:
-	$(RM) $(PROJ) $(MOFILES) *.o
+	$(RM) $(PROJ) $(POTFILE) $(MOFILES) *.o
 
 .PHONY: all all_wrapped clean install install_lib install_locales install_pam install_utils \
 	pam pam_wrapped uninstall remove remove_lib remove_pam remove_utils \
 	utils utils_wrapped \
-	update_mo update_po update_pot \
+	update_mo update_po \
 	locales locales_wrapped \
 	install_wrapped install_lib_wrapped install_locales_wrapped install_pam_wrapped \
 	install_utils_wrapped \
