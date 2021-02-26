@@ -296,12 +296,12 @@ msgstr ""
 
 #: passwdqc_check.c:48
 msgid "based on a word list entry"
-msgstr ""
+msgstr "основан на слове из списка"
 
 #: passwdqc_check.c:51
 msgid "is in deny list"
-msgstr ""
+msgstr "в списке запрещённых"
 
 #: passwdqc_check.c:54
 msgid "appears to be in a database"
-msgstr ""
+msgstr "обнаружен в базе данных"
