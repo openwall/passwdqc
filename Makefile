@@ -53,7 +53,9 @@ INSTALL_SUN = /usr/ucb/install -c
 CFLAGS = -Wall -W -O2
 CFLAGS_lib = $(CFLAGS) -fPIC
 CFLAGS_bin = $(CFLAGS) -fomit-frame-pointer
-CPPFLAGS = -DPACKAGE=\\\"$(PACKAGE)\\\"
+CPPFLAGS =
+CPPFLAGS_bin = $(CPPFLAGS)
+CPPFLAGS_lib = $(CPPFLAGS) -DPACKAGE=\\\"$(PACKAGE)\\\"
 MSGFMT = msgfmt
 XGETTEXT = xgettext
 XGETTEXT_OPTS = --keyword=_ --keyword=P2_:1,1 --keyword=P3_:1,2 --language=C --add-comments
@@ -106,12 +108,12 @@ default: all
 
 all locales pam utils install install_lib install_locales install_pam install_utils uninstall remove remove_lib remove_locales remove_pam remove_utils:
 	case "`uname -s`" in \
-	Linux)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) $(CPPFLAGS) -DHAVE_SHADOW" \
+	Linux)	$(MAKE) CPPFLAGS_lib="$(CPPFLAGS_lib) -DHAVE_SHADOW" \
 			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_LINUX)" \
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
 			$@_wrapped;; \
-	SunOS)	$(MAKE) -e CFLAGS_lib="$(CFLAGS_lib) $(CPPFLAGS) -DHAVE_SHADOW" \
+	SunOS)	$(MAKE) -e CPPFLAGS_lib="$(CPPFLAGS_lib) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_SUN)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_SUN)" \
@@ -120,7 +122,7 @@ all locales pam utils install install_lib install_locales install_pam install_ut
 			SHARED_LIBDIR="$(SHARED_LIBDIR_SUN)" \
 			SECUREDIR="$(SECUREDIR_SUN)" \
 			$@_wrapped;; \
-	HP-UX)	$(MAKE) CFLAGS_lib="$(CFLAGS_lib) $(CPPFLAGS) -DHAVE_SHADOW" \
+	HP-UX)	$(MAKE) CPPFLAGS_lib="$(CPPFLAGS_lib) -DHAVE_SHADOW" \
 			LD_lib=ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_HP)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_HP)" \
@@ -160,16 +162,16 @@ pwqfilter: $(OBJS_FILTER)
 	$(LD) $(LDFLAGS) $(OBJS_FILTER) -o $@
 
 pwqgen.o: pwqgen.c passwdqc.h
-	$(CC) $(CFLAGS_bin) -c $*.c
+	$(CC) $(CPPFLAGS_bin) $(CFLAGS_bin) -c $*.c
 
 pwqcheck.o: pwqcheck.c passwdqc.h
-	$(CC) $(CFLAGS_bin) -c $*.c
+	$(CC) $(CPPFLAGS_bin) $(CFLAGS_bin) -c $*.c
 
 pwqfilter.o: pwqfilter.c passwdqc_filter.h passwdqc.h
-	$(CC) $(CFLAGS_bin) -c $*.c
+	$(CC) $(CPPFLAGS_bin) $(CFLAGS_bin) -c $*.c
 
 .c.o:
-	$(CC) $(CFLAGS_lib) -c $*.c
+	$(CC) $(CPPFLAGS_lib) $(CFLAGS_lib) -c $*.c
 
 concat.o: concat.h
 pam_passwdqc.o: passwdqc.h pam_macros.h
