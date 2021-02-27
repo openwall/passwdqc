@@ -60,10 +60,10 @@ XGETTEXT_OPTS = --keyword=_ --keyword=P2_:1,1 --keyword=P3_:1,2 --language=C --a
 MSGMERGE = msgmerge
 
 LDFLAGS =
-LDFLAGS_shared = --shared
-LDFLAGS_shared_LINUX = --shared
-LDFLAGS_shared_SUN = -G
-LDFLAGS_shared_HP = -b
+LDFLAGS_shared = $(LDFLAGS) --shared
+LDFLAGS_shared_LINUX = $(LDFLAGS) --shared
+LDFLAGS_shared_SUN = $(LDFLAGS) -G
+LDFLAGS_shared_HP = $(LDFLAGS) -b
 LDFLAGS_lib = $(LDFLAGS_shared)
 LDFLAGS_lib_LINUX = $(LDFLAGS_shared_LINUX) \
 	-Wl,--soname,$(SHARED_LIB),--version-script,$(MAP_LIB)
