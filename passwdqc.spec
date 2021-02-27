@@ -47,8 +47,9 @@ building passwdqc-aware applications.
 
 %build
 %__make \
-	CFLAGS_lib="-Wall -W -fPIC -DLINUX_PAM %optflags_lib" \
-	CFLAGS_bin="-Wall -W %optflags"
+	CPPFLAGS='-DLINUX_PAM' \
+	CFLAGS_bin='-Wall -W %optflags' \
+	CFLAGS_lib='-Wall -W -fPIC %optflags_lib'
 
 %install
 rm -rf %buildroot
