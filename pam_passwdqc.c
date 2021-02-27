@@ -80,56 +80,83 @@ typedef lo_const void *pam_item_t;
 #define MESSAGE_INTRO_BOTH \
 	_("\nYou can now choose the new password or passphrase.\n")
 
-#define MESSAGE_EXPLAIN_PASSWORD_1CLASS \
-	_("A good password should be a mix of upper and lower case letters,\n" \
-	"digits, and other characters.  You can use a password\n" \
-	"that consists of %d characters.\n")
+#define MESSAGE_EXPLAIN_PASSWORD_1_CLASS(count) \
+	P3_( \
+	"A good password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d character.\n", \
+	\
+	"A good password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d characters.\n", \
+	count), (count)
 
-#define MESSAGE_EXPLAIN_PASSWORD_CLASSES(count) \
-	P2_("A valid password should be a mix of upper and lower case letters,\n" \
-	"digits, and other characters.  You can use a password\n" \
-	"that consists of %d characters from at least %d of these 4 classes.\n" \
-	"An upper case letter that begins the password and a digit that\n" \
-	"ends it do not count towards the number of character classes used.\n", \
+#define MESSAGE_EXPLAIN_PASSWORD_N_CLASSES(count) \
+	P3_( \
+	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d character\n" \
+	"from at least %d of these 4 classes.\n" \
+	"An upper case letter that begins the password and a digit that ends it\n" \
+	"do not count towards the number of character classes used.\n", \
+	\
+	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d characters\n" \
+	"from at least %d of these 4 classes.\n" \
+	"An upper case letter that begins the password and a digit that ends it\n" \
+	"do not count towards the number of character classes used.\n", \
 	count), (count)
+
 #define MESSAGE_EXPLAIN_PASSWORD_ALL_CLASSES(count) \
-	P2_("A valid password should be a mix of upper and lower case letters,\n" \
-	"digits, and other characters.  You can use a password\n" \
-	"that consists of %d characters from all of these classes.  An upper\n" \
-	"case letter that begins the password and a digit that ends it do\n" \
-	"not count towards the number of character classes used.\n", \
+	P3_( \
+	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d character\n" \
+	"from all of these classes.\n" \
+	"An upper case letter that begins the password and a digit that ends it\n" \
+	"do not count towards the number of character classes used.\n", \
+	\
+	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d characters\n" \
+	"from all of these classes.\n" \
+	"An upper case letter that begins the password and a digit that ends it\n" \
+	"do not count towards the number of character classes used.\n", \
 	count), (count)
-#define MESSAGE_EXPLAIN_PASSWORD_ALT_1(count) \
-	P2_("A valid password should be a mix of upper and lower case letters,\n" \
-	"digits, and other characters.  You can use a password\n" \
-	"that consists of %d characters from at least 3 of these 4 classes, or\n", \
+
+#define MESSAGE_EXPLAIN_PASSWORD_ALL_OR_3_CLASSES(count) \
+	P3_( \
+	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d character\n" \
+	"from all of these classes, or a password containing at least %d characters\n" \
+	"from just 3 of these 4 classes.\n" \
+	"An upper case letter that begins the password and a digit that ends it\n" \
+	"do not count towards the number of character classes used.\n", \
+	\
+	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
+	"other characters.  You can use a password containing at least %d characters\n" \
+	"from all of these classes, or a password containing at least %d characters\n" \
+	"from just 3 of these 4 classes.\n" \
+	"An upper case letter that begins the password and a digit that ends it\n" \
+	"do not count towards the number of character classes used.\n", \
 	count), (count)
-#define MESSAGE_EXPLAIN_PASSWORD_ALT_2(count) \
-	P2_("a password containing %d characters from all the classes.\n" \
-	"An upper case letter that begins the password and a\n" \
-	"digit that ends it do not count towards the number of character\n" \
-	"classes used.\n", \
-	count), (count)
+
 #define MESSAGE_EXPLAIN_PASSPHRASE(count) \
-	P3_("A passphrase should be of at least %d word, %d to %d characters\n" \
-	"long, and contain enough different characters.\n", \
-	"A passphrase should be of at least %d words, %d to %d characters\n" \
-	"long, and contain enough different characters.\n", \
+	P3_(\
+	"A passphrase should be of at least %d word, %d to %d characters long, and\n" \
+	"contain enough different characters.\n", \
+	\
+	"A passphrase should be of at least %d words, %d to %d characters long, and\n" \
+	"contain enough different characters.\n", \
 	count), (count)
 
 #define MESSAGE_RANDOM \
-	_("Alternatively, if no one else can see your terminal now, you can\n" \
-	"pick this as your password: \"%s\".\n")
+	_("Alternatively, if no one else can see your terminal now, you can pick this\n" \
+	"as your password: \"%s\".\n")
 #define MESSAGE_RANDOMONLY \
-	_("This system is configured to permit randomly generated passwords\n" \
-	"only.  If no one else can see your terminal now, you can pick this\n" \
-	"as your password: \"%s\".  Otherwise come back later.\n")
+	_("This system is configured to permit randomly generated passwords only.\n" \
+	"If no one else can see your terminal now, you can pick this as your\n" \
+	"password: \"%s\".  Otherwise come back later.\n")
 #define MESSAGE_RANDOMFAILED \
-	_("This system is configured to use randomly generated passwords\n" \
-	"only, but the attempt to generate a password has failed.  This\n" \
-	"could happen for a number of reasons: you could have requested\n" \
-	"an impossible password length, or the access to kernel random\n" \
-	"number pool could have failed.")
+	_("This system is configured to use randomly generated passwords only,\n" \
+	"but the attempt to generate a password has failed.  This could happen\n" \
+	"for a number of reasons: you could have requested an impossible password\n" \
+	"length, or the access to kernel random number pool could have failed.")
 #define MESSAGE_TOOLONG \
 	_("This password may be too long for some services.  Choose another.")
 #define MESSAGE_TRUNCATED \
@@ -405,23 +432,19 @@ retry:
 
 	if (!randomonly && params.qc.min[0] == params.qc.min[4])
 		status = say(pamh, PAM_TEXT_INFO,
-		    MESSAGE_EXPLAIN_PASSWORD_1CLASS,
-		    params.qc.min[4]);
+		    MESSAGE_EXPLAIN_PASSWORD_1_CLASS(params.qc.min[4]));
 
 	else if (!randomonly && params.qc.min[3] == params.qc.min[4])
 		status = say(pamh, PAM_TEXT_INFO,
-		    MESSAGE_EXPLAIN_PASSWORD_CLASSES(params.qc.min[4]),
+		    MESSAGE_EXPLAIN_PASSWORD_N_CLASSES(params.qc.min[4]),
 		    params.qc.min[1] != params.qc.min[3] ? 3 : 2);
 	else if (!randomonly && params.qc.min[3] == INT_MAX)
 		status = say(pamh, PAM_TEXT_INFO,
 		    MESSAGE_EXPLAIN_PASSWORD_ALL_CLASSES(params.qc.min[4]));
 	else if (!randomonly) {
 		status = say(pamh, PAM_TEXT_INFO,
-		    MESSAGE_EXPLAIN_PASSWORD_ALT_1(params.qc.min[3]));
-		if (status == PAM_SUCCESS) {
-			status = say(pamh, PAM_TEXT_INFO,
-			    MESSAGE_EXPLAIN_PASSWORD_ALT_2(params.qc.min[4]));
-		}
+		    MESSAGE_EXPLAIN_PASSWORD_ALL_OR_3_CLASSES(params.qc.min[4]),
+		    params.qc.min[3]);
 	}
 	if (status != PAM_SUCCESS)
 		return logaudit(pamh, status, &params);
