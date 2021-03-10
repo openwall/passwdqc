@@ -1,0 +1,80 @@
+	Significant changes between 1.9.0 and 2.0.0.
+
+Introduce and use passwdqc_params_free().  This is a minor addition to
+the libpasswdqc API related to the addition of external files support.
+
+
+	Significant changes between 1.5.0 and 1.9.0.
+
+Added support for external wordlist, denylist, and binary filter.  With
+these, passwdqc can be configured to deny passwords and passphrases that
+are based on lines of a tiny external text file (the "wordlist" option),
+directly appear in a tiny external text file (the "denylist" option),
+or/and directly appear in a maybe huge binary filter file (the "filter"
+option).  While usage of larger external text files is inefficient, the
+binary filters are very efficient.
+
+The binary filters can be created and otherwise managed with the newly
+added pwqfilter(1) program.  It can create a binary filter from a list
+of plaintexts or from MD4 or NTLM hashes.  The latter are supported in a
+way that enables importing of HIBP (Pwned Passwords) database revisions
+into passwdqc binary filters.  pwqfilter works on arbitrary plain text
+strings or hex-encoded hashes, and it can also be reused in lieu of
+grep(1) for many purposes, even unrelated to passphrases and security.
+
+Merged changes needed for building with Visual Studio on Windows.  This
+includes a refactoring of the random passphrase generator code to make
+it shared between platforms.
+
+
+	Significant changes between 1.4.1 and 1.5.0.
+
+Updated the included wordlist to avoid some inappropriate words in
+randomly generated passphrases while not removing any words from the
+"word-based" check, and also to have plenty of extra words for
+subsequent removal of more words that might be considered inappropriate
+from the initial 4096 that are used for randomly generated passphrases.
+Most of the added words came from EFF Diceware, BIP-0039, and our own
+processing of Project Gutenberg Australia books.
+
+
+	Significant changes between 1.4.0 and 1.4.1.
+
+Set default for "max" to 72 (was 40).  The previous setting was based on
+a reading of RFC 1939, which in practice did not matter.  The new one is
+based on bcrypt's truncation at 72, which actually still matters.
+
+Documented "similar" in pwqcheck(1) help message and manual page.  This
+is a setting that was supported before and documented for other passwdqc
+components before, but was apparently erroneously omitted from here.
+
+
+	Significant changes between 1.3.2 and 1.4.0.
+
+Implemented i18n support in pam_passwdqc, contributed by Oleg Solovyov,
+Andrey Cherepanov, and Dmitry V. Levin.  The i18n support is off by
+default, it can be enabled if Linux-PAM is built using --enable-nls
+configure option.
+
+Implemented audit support in pam_passwdqc, contributed by Oleg Solovyov
+and Dmitry V. Levin.  The audit support is off by default, it can be
+enabled if Linux-PAM is built using --enable-audit configure option.
+
+Both of these optional new features had been introduced and are enabled
+in ALT Linux distributions, so this version is effectively upstreaming
+the changes from there.
+
+
+	Significant changes between 1.3.1 and 1.3.2.
+
+Compatibility for building with newer versions of glibc, where we now
+have to define _DEFAULT_SOURCE for our use of crypt(3).  The problem was
+identified and this change tested by Dmitry V. Levin.
+
+Clarified in the man pages that /etc/passwdqc.conf is not read unless
+this suggested file location is specified with the config= option.
+
+Clarified the OpenBSD configuration example.
+
+Escape the minus sign in the OpenBSD configuration example to make the
+man page linter happy, patch by Jackson Doak via Unit 193.
