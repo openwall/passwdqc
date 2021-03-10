@@ -1,7 +1,7 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 2.0.0
-Release: owl2
+Version: 2.0.1
+Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
 URL: https://www.openwall.com/passwdqc/
@@ -62,7 +62,7 @@ rm -rf %buildroot
 
 %files
 %defattr(-,root,root)
-%doc LICENSE README pwqcheck.php
+%doc CHANGES LICENSE README pwqcheck.php
 %config(noreplace) /etc/passwdqc.conf
 /%_lib/lib*.so*
 %_bindir/*
@@ -75,6 +75,18 @@ rm -rf %buildroot
 %_libdir/lib*.so
 
 %changelog
+* Wed Mar 10 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.1-owl1
+- Changes by Dmitry V. Levin:
+  - pam_passwdqc: enhance auto-generated policy descriptions
+  - Makefile: use CPPFLAGS and LDFLAGS consistently
+  - Makefile: remove *.po dependence on passwdqc.pot
+  - Remove generated passwdqc.pot from the repository
+  - po/ru.po: regenerate using "make update_po"
+  - po/ru.po: translate new messages added in 1.9.0+
+- wordset_4k: Move "whisky" to the multiple spellings list
+- Increase maximum size of randomly-generated passphrases to 136 bits
+- Add CHANGES based on two latest release announcements, start to maintain it
+
 * Wed Feb 17 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.0-owl2
 - Update the package description to include pwqfilter.
 

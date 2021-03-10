@@ -1,3 +1,25 @@
+	Significant changes between 2.0.0 and 2.0.1.
+
+Improved pam_passwdqc's auto-generated policy descriptions, which were
+slightly misformatted since the introduction of i18n support in 1.4.0.
+Now they not only look prettier, but also make it clearer that the
+mentioned lengths are merely the minimums and not the recommended ones.
+
+Updated Russian translation for consistency with the above and to cover
+messages added in 1.9.0+.
+
+Increased maximum size of randomly-generated passphrases to 136 bits.
+This was already the limit in the underlying API, but the tools' limit
+was set to 85.  This increase is to allow for a wider variety of use
+cases for the tools.
+
+In the Makefile, use CPPFLAGS and LDFLAGS consistently to be friendlier
+to packaging by distros.
+
+Added this file CHANGES based on two latest release announcements, and
+started to maintain it.
+
+
 	Significant changes between 1.9.0 and 2.0.0.
 
 Introduce and use passwdqc_params_free().  This is a minor addition to
