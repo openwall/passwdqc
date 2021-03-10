@@ -85,7 +85,7 @@ parse_option(passwdqc_params_t *params, char **reason, const char *option)
 			e += 5;
 			params->qc.min[4] = INT_MAX;
 		}
-		if (*e || (v && v < 24) || v > 85)
+		if (*e || (v && v < 24) || v > 136)
 			goto parse_error;
 		params->qc.random_bits = v;
 	} else if ((p = skip_prefix(option, "wordlist="))) {

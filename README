@@ -130,7 +130,7 @@ lengths and character set requirements could).
 
 	random=N[,only]			[random=47]
 
-The size of randomly-generated passphrases in bits (24 to 85), or 0 to
+The size of randomly-generated passphrases in bits (24 to 136), or 0 to
 disable this feature.  Any passphrase that contains the offered
 randomly-generated string will be allowed regardless of other possible
 restrictions.
