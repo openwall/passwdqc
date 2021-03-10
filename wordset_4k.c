@@ -3936,7 +3936,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"while",
 	"whim",
 	"whip",
-	"whisky",
 	"who",
 	"whole",
 	"wholly",
@@ -6273,6 +6272,7 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"tyre",
 	"vapor",
 	"vapour",
+	"whisky", /* or "whiskey" */
 	"yoyo", /* or "yo-yo" */
 	"etc", /* Latin, not English */
 #if 0 /* obsolete, dialectal, and non-words from gutenberg-19xx-lowercase-words-1000plus.txt */
