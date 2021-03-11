@@ -501,7 +501,7 @@ static int read_filter(const char *filename, int print_status_only)
 		fprintf(stderr, "pwqfilter: Warning: --optimize-fp-rate-at-high-load is too late for this filter.\n");
 
 	nbuckets = (uint32_t)(header.capacity >> 2);
-	if (nbuckets > SIZE_MAX / sizeof(*packed)) {
+	if (SIZE_MAX <= 0xffffffffU && nbuckets > SIZE_MAX / sizeof(*packed)) {
 		fprintf(stderr, "pwqfilter: Input filter claims to be too large for this system.\n");
 		goto fail;
 	}
