@@ -188,5 +188,5 @@ If audit is enabled at build time, the PAM module logs audit events once
 user tries to change their credentials.  This option disables that audit
 logging.
 
--- 
+--
 Solar Designer <solar at openwall.com>
