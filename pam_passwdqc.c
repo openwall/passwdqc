@@ -94,14 +94,14 @@ typedef lo_const void *pam_item_t;
 	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
 	"other characters.  You can use a password containing at least %d character\n" \
 	"from at least %d of these 4 classes.\n" \
-	"An upper case letter that begins the password and a digit that ends it\n" \
-	"do not count towards the number of character classes used.\n", \
+	"An upper case letter that begins the password and a digit that ends it do not\n" \
+	"count towards the number of character classes used.\n", \
 	\
 	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
 	"other characters.  You can use a password containing at least %d characters\n" \
 	"from at least %d of these 4 classes.\n" \
-	"An upper case letter that begins the password and a digit that ends it\n" \
-	"do not count towards the number of character classes used.\n", \
+	"An upper case letter that begins the password and a digit that ends it do not\n" \
+	"count towards the number of character classes used.\n", \
 	count), (count)
 
 #define MESSAGE_EXPLAIN_PASSWORD_ALL_CLASSES(count) \
@@ -109,14 +109,14 @@ typedef lo_const void *pam_item_t;
 	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
 	"other characters.  You can use a password containing at least %d character\n" \
 	"from all of these classes.\n" \
-	"An upper case letter that begins the password and a digit that ends it\n" \
-	"do not count towards the number of character classes used.\n", \
+	"An upper case letter that begins the password and a digit that ends it do not\n" \
+	"count towards the number of character classes used.\n", \
 	\
 	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
 	"other characters.  You can use a password containing at least %d characters\n" \
 	"from all of these classes.\n" \
-	"An upper case letter that begins the password and a digit that ends it\n" \
-	"do not count towards the number of character classes used.\n", \
+	"An upper case letter that begins the password and a digit that ends it do not\n" \
+	"count towards the number of character classes used.\n", \
 	count), (count)
 
 #define MESSAGE_EXPLAIN_PASSWORD_ALL_OR_3_CLASSES(count) \
@@ -125,15 +125,15 @@ typedef lo_const void *pam_item_t;
 	"other characters.  You can use a password containing at least %d character\n" \
 	"from all of these classes, or a password containing at least %d characters\n" \
 	"from just 3 of these 4 classes.\n" \
-	"An upper case letter that begins the password and a digit that ends it\n" \
-	"do not count towards the number of character classes used.\n", \
+	"An upper case letter that begins the password and a digit that ends it do not\n" \
+	"count towards the number of character classes used.\n", \
 	\
 	"A valid password should be a mix of upper and lower case letters, digits, and\n" \
 	"other characters.  You can use a password containing at least %d characters\n" \
 	"from all of these classes, or a password containing at least %d characters\n" \
 	"from just 3 of these 4 classes.\n" \
-	"An upper case letter that begins the password and a digit that ends it\n" \
-	"do not count towards the number of character classes used.\n", \
+	"An upper case letter that begins the password and a digit that ends it do not\n" \
+	"count towards the number of character classes used.\n", \
 	count), (count)
 
 #define MESSAGE_EXPLAIN_PASSPHRASE(count) \
@@ -146,8 +146,8 @@ typedef lo_const void *pam_item_t;
 	count), (count)
 
 #define MESSAGE_RANDOM \
-	_("Alternatively, if no one else can see your terminal now, you can pick this\n" \
-	"as your password: \"%s\".\n")
+	_("Alternatively, if no one else can see your terminal now, you can pick this as\n" \
+	"your password: \"%s\".\n")
 #define MESSAGE_RANDOMONLY \
 	_("This system is configured to permit randomly generated passwords only.\n" \
 	"If no one else can see your terminal now, you can pick this as your\n" \
