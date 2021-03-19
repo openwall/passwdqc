@@ -19,6 +19,7 @@ SHLIBMODE = 755
 HEADER = passwdqc.h
 INCMODE = 644
 MAN1 = pwqgen.1 pwqcheck.1 pwqfilter.1
+MAN3 = libpasswdqc.3
 MAN5 = passwdqc.conf.5
 MAN8 = $(TITLE).8
 MANMODE = 644
@@ -199,6 +200,9 @@ install_lib_wrapped:
 	$(MKDIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL) -m $(INCMODE) $(HEADER) $(DESTDIR)$(INCLUDEDIR)/
 
+	$(MKDIR) $(DESTDIR)$(MANDIR)/man3
+	$(INSTALL) -m $(MANMODE) $(MAN3) $(DESTDIR)$(MANDIR)/man3/
+
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man5
 	$(INSTALL) -m $(MANMODE) $(MAN5) $(DESTDIR)$(MANDIR)/man5/
 
@@ -255,6 +259,7 @@ remove_utils_wrapped:
 
 remove_lib_wrapped:
 	for f in $(MAN5); do $(RM) $(DESTDIR)$(MANDIR)/man5/$$f; done
+	for f in $(MAN3); do $(RM) $(DESTDIR)$(MANDIR)/man3/$$f; done
 	for f in $(HEADER); do $(RM) $(DESTDIR)$(INCLUDEDIR)/$$f; done
 	for f in $(DEVEL_LIB); do $(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$$f; done
 	for f in $(SHARED_LIB); do $(RM) $(DESTDIR)$(SHARED_LIBDIR)/$$f; done
