@@ -19,7 +19,13 @@ SHLIBMODE = 755
 HEADER = passwdqc.h
 INCMODE = 644
 MAN1 = pwqgen.1 pwqcheck.1 pwqfilter.1
-MAN3 = libpasswdqc.3
+MAN3 = libpasswdqc.3 \
+       passwdqc_params_reset.3 \
+       passwdqc_params_load.3 \
+       passwdqc_params_parse.3 \
+       passwdqc_params_free.3 \
+       passwdqc_check.3 \
+       passwdqc_random.3
 MAN5 = passwdqc.conf.5
 MAN8 = $(TITLE).8
 MANMODE = 644
