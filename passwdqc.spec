@@ -67,12 +67,13 @@ rm -rf %buildroot
 /%_lib/lib*.so*
 %_bindir/*
 /%_lib/security/pam_passwdqc.so
-%_mandir/man*/*
+%_mandir/man[158]/*
 
 %files devel
 %defattr(-,root,root)
 %_includedir/*.h
 %_libdir/lib*.so
+%_mandir/man3/*
 
 %changelog
 * Wed Mar 10 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.1-owl1
