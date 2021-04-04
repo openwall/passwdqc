@@ -1,6 +1,6 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 2.0.1
+Version: 2.0.2
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -76,6 +76,15 @@ rm -rf %buildroot
 %_mandir/man3/*
 
 %changelog
+* Sun Apr 04 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.2-owl1
+- Changes by Dmitry V. Levin:
+  - pam_passwdqc: enhance formatting of auto-generated policy descriptions
+  - Add libpasswdqc(3) manual page
+  - Add manual page links for all functions documented in libpasswdqc(3)
+  - Package section 3 manual pages into devel subpackage
+  - LICENSE: mention the license of CI scripts (which are not packaged)
+- Update CHANGES
+
 * Wed Mar 10 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.1-owl1
 - Changes by Dmitry V. Levin:
   - pam_passwdqc: enhance auto-generated policy descriptions

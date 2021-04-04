@@ -35,8 +35,8 @@ ldconfig(8) program to update the dynamic linker cache.
 Alternatively, on a Red Hat'ish Linux system and under an account
 configured to build RPM packages (perhaps with ~/.rpmmacros specifying
 the proper pathnames for %_topdir, %_tmppath, and %buildroot), you may
-build RPM packages by running "rpmbuild -tb passwdqc-2.0.1.tar.gz", then
-install the two binary subpackages with "rpm -Uvh passwdqc*-2.0.1*.rpm".
+build RPM packages by running "rpmbuild -tb passwdqc-2.0.2.tar.gz", then
+install the two binary subpackages with "rpm -Uvh passwdqc*-2.0.2*.rpm".
 This works due to the RPM spec file included in the tarball.
 
 Please refer to README and PLATFORMS for information on configuring your

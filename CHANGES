@@ -1,3 +1,15 @@
+	Significant changes between 2.0.1 and 2.0.2.
+
+Improved pam_passwdqc's auto-generated policy descriptions further, so
+that lines are wrapped at a more consistent length.
+
+Added the libpasswdqc(3) manual page and links to it for all functions
+documented in there.
+
+Added scripts to support Continuous Integration on GitHub (included in
+the git repository, but excluded from release tarballs).
+
+
 	Significant changes between 2.0.0 and 2.0.1.
 
 Improved pam_passwdqc's auto-generated policy descriptions, which were
