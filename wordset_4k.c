@@ -4070,7 +4070,6 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"embody",
 	"enact",
 	"enrich",
-	"enroll",
 	"erase",
 	"erupt",
 	"ethics",
@@ -6247,6 +6246,7 @@ const char _passwdqc_wordset_4k[][WORDSET_4K_LENGTH_MAX] = {
 	"color",
 	"colour",
 	"email", /* or "e-mail" */
+	"enroll", /* or "enrol" */
 	"favor",
 	"favour",
 	"flavor", /* or "flavour" */
