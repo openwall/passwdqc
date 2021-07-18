@@ -34,7 +34,7 @@ extern int passwdqc_filter_close(passwdqc_filter_t *flt);
 /* Lower-level inlines for shared use by pwqfilter.c and passwdqc_filter.c */
 
 #include <string.h> /* for strcspn() */
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) && !defined(__APPLE__)
 #include <endian.h>
 #endif
 
