@@ -1,6 +1,7 @@
 *.o
 *.so
 *.so.*
+/passwdqc.pc
 /pwqcheck
 /pwqfilter
 /pwqgen

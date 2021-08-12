@@ -6,6 +6,7 @@
 #
 
 PACKAGE = passwdqc
+VERSION = 2.0.2
 TITLE = pam_passwdqc
 SHARED_LIB = libpasswdqc.so.1
 DEVEL_LIB = libpasswdqc.so
@@ -18,6 +19,8 @@ MAP_PAM = pam_passwdqc.map
 SHLIBMODE = 755
 HEADER = passwdqc.h
 INCMODE = 644
+PKGCONFIG = passwdqc.pc
+PKGCONFMODE = 644
 MAN1 = pwqgen.1 pwqcheck.1 pwqfilter.1
 MAN3 = libpasswdqc.3 \
        passwdqc_params_reset.3 \
@@ -41,6 +44,7 @@ SECUREDIR = /lib/security
 SECUREDIR_SUN = /usr/lib/security
 SECUREDIR_DARWIN = /usr/lib/pam
 INCLUDEDIR = /usr/include
+PKGCONFIGDIR = $(DEVEL_LIBDIR)/pkgconfig
 MANDIR = /usr/share/man
 DESTDIR =
 LOCALEDIR = /usr/share/locale
@@ -104,7 +108,7 @@ LDLIBS_pam_DARWIN = -lpam -lSystem
 
 CONFIGS = passwdqc.conf
 BINS = pwqgen pwqcheck pwqfilter
-PROJ = $(SHARED_LIB) $(DEVEL_LIB) $(SHARED_PAM) $(BINS)
+PROJ = $(SHARED_LIB) $(DEVEL_LIB) $(SHARED_PAM) $(BINS) $(PKGCONFIG)
 OBJS_LIB = concat.o md4.o passwdqc_check.o passwdqc_filter.o passwdqc_load.o passwdqc_memzero.o passwdqc_parse.o passwdqc_random.o wordset_4k.o
 OBJS_PAM = pam_passwdqc.o passwdqc_memzero.o
 OBJS_GEN = pwqgen.o passwdqc_memzero.o
@@ -144,7 +148,7 @@ all locales pam utils install install_lib install_locales install_pam install_ut
 	*)	$(MAKE) $@_wrapped;; \
 	esac
 
-all_wrapped: pam_wrapped utils_wrapped
+all_wrapped: pam_wrapped utils_wrapped $(PKGCONFIG)
 
 pam_wrapped: $(SHARED_PAM)
 
@@ -180,6 +184,9 @@ pwqfilter.o: pwqfilter.c passwdqc_filter.h passwdqc.h
 .c.o:
 	$(CC) $(CPPFLAGS_lib) $(CFLAGS_lib) -c $*.c
 
+$(PKGCONFIG): $(PKGCONFIG).in
+	sed -e "s|@VERSION@|$(VERSION)|g" $< > $@
+
 concat.o: concat.h
 pam_passwdqc.o: passwdqc.h pam_macros.h
 passwdqc_check.o: passwdqc.h passwdqc_filter.h wordset_4k.h
@@ -205,6 +212,9 @@ install_lib_wrapped:
 
 	$(MKDIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL) -m $(INCMODE) $(HEADER) $(DESTDIR)$(INCLUDEDIR)/
+
+	$(MKDIR) $(DESTDIR)$(PKGCONFIGDIR)
+	$(INSTALL) -m $(PKGCONFMODE) $(PKGCONFIG) $(DESTDIR)$(PKGCONFIGDIR)/
 
 	$(MKDIR) $(DESTDIR)$(MANDIR)/man3
 	$(INSTALL) -m $(MANMODE) $(MAN3) $(DESTDIR)$(MANDIR)/man3/
@@ -267,6 +277,7 @@ remove_lib_wrapped:
 	for f in $(MAN5); do $(RM) $(DESTDIR)$(MANDIR)/man5/$$f; done
 	for f in $(MAN3); do $(RM) $(DESTDIR)$(MANDIR)/man3/$$f; done
 	for f in $(HEADER); do $(RM) $(DESTDIR)$(INCLUDEDIR)/$$f; done
+	for f in $(PKGCONFIG); do $(RM) $(DESTDIR)$(PKGCONFIGDIR)/$$f; done
 	for f in $(DEVEL_LIB); do $(RM) $(DESTDIR)$(DEVEL_LIBDIR)/$$f; done
 	for f in $(SHARED_LIB); do $(RM) $(DESTDIR)$(SHARED_LIBDIR)/$$f; done
 	for f in $(CONFIGS); do $(RM) $(DESTDIR)$(CONFDIR)/$$f; done

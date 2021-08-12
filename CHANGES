@@ -1,3 +1,8 @@
+	Significant changes since 2.0.2.
+
+Added pkg-config file.
+
+
 	Significant changes between 2.0.1 and 2.0.2.
 
 Improved pam_passwdqc's auto-generated policy descriptions further, so

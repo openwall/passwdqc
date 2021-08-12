@@ -1,0 +1,5 @@
+Name: passwdqc
+Description: Password/passphrase strength checking and policy enforcement
+Version: @VERSION@
+Libs: -lpasswdqc
+Cflags:
