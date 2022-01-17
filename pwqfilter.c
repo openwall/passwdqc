@@ -1062,7 +1062,7 @@ int main(int argc, char **argv)
 		}
 
 		if (!strcmp("--pre-hashed", opt)) {
-			if ((options & OPT_HASH_ALL) || mode == MODE_STATUS)
+			if (mode == MODE_STATUS)
 				goto fail_conflict;
 			options |= OPT_PRE_HASHED;
 			continue;
