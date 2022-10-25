@@ -11,7 +11,9 @@ TITLE = pam_passwdqc
 SHARED_LIB = libpasswdqc.so.1
 DEVEL_LIB = libpasswdqc.so
 SHARED_LIB_DARWIN = libpasswdqc.0.dylib
+SHARED_LIB_CYGWIN = cygpasswdqc-0.dll
 DEVEL_LIB_DARWIN = libpasswdqc.dylib
+DEVEL_LIB_CYGWIN = libpasswdqc.dll.a
 MAP_LIB = libpasswdqc.map
 PAM_SO_SUFFIX =
 SHARED_PAM = $(TITLE).so$(PAM_SO_SUFFIX)
@@ -37,6 +39,7 @@ BINMODE = 755
 CONFDIR = /etc
 CONFMODE = 644
 SHARED_LIBDIR = /lib
+SHARED_LIBDIR_CYGWIN = /usr/bin
 SHARED_LIBDIR_SUN = /usr/lib
 SHARED_LIBDIR_REL = ../..$(SHARED_LIBDIR)
 DEVEL_LIBDIR = /usr/lib
@@ -82,6 +85,10 @@ LDFLAGS_lib_LINUX = $(LDFLAGS_shared_LINUX) \
 	-Wl,--soname,$(SHARED_LIB),--version-script,$(MAP_LIB)
 LDFLAGS_lib_SUN = $(LDFLAGS_shared_SUN)
 LDFLAGS_lib_HP = $(LDFLAGS_shared_HP)
+LDFLAGS_lib_CYGWIN = $(LDFLAGS_shared) \
+	-Wl,--out-implib=$(DEVEL_LIB_CYGWIN) \
+	-Wl,--export-all-symbols \
+	-Wl,--enable-auto-import
 LDFLAGS_pam = $(LDFLAGS_shared)
 LDFLAGS_pam_LINUX = $(LDFLAGS_shared_LINUX) \
 	-Wl,--version-script,$(MAP_PAM)
@@ -108,6 +115,7 @@ LDLIBS_pam_DARWIN = -lpam -lSystem
 
 CONFIGS = passwdqc.conf
 BINS = pwqgen pwqcheck pwqfilter
+BINS_CYGWIN = $(BINS) $(SHARED_LIB_CYGWIN)
 PROJ = $(SHARED_LIB) $(DEVEL_LIB) $(SHARED_PAM) $(BINS) $(PKGCONFIG)
 OBJS_LIB = concat.o md4.o passwdqc_check.o passwdqc_filter.o passwdqc_load.o passwdqc_memzero.o passwdqc_parse.o passwdqc_random.o wordset_4k.o
 OBJS_PAM = pam_passwdqc.o passwdqc_memzero.o
@@ -145,6 +153,14 @@ all locales pam utils install install_lib install_locales install_pam install_ut
 			SECUREDIR="$(SECUREDIR_DARWIN)" \
 			LDLIBS_pam="$(LDLIBS_pam_DARWIN)" \
 			$@_wrapped;; \
+    CYGWIN_NT*)	$(MAKE) CPPFLAGS_lib="$(CPPFLAGS_lib)" \
+            SHARED_LIB="$(SHARED_LIB_CYGWIN)" \
+            SHARED_LIBDIR="$(SHARED_LIBDIR_CYGWIN)" \
+            DEVEL_LIB="$(DEVEL_LIB_CYGWIN)" \
+            LDFLAGS_lib="$(LDFLAGS_lib_CYGWIN)" \
+            BINS="$(BINS_CYGWIN)" \
+            CYGWIN=true \
+            $@_wrapped;; \
 	*)	$(MAKE) $@_wrapped;; \
 	esac
 
@@ -158,7 +174,9 @@ $(SHARED_LIB): $(OBJS_LIB) $(MAP_LIB)
 	$(LD_lib) $(LDFLAGS_lib) $(OBJS_LIB) $(LDLIBS_lib) -o $(SHARED_LIB)
 
 $(DEVEL_LIB): $(SHARED_LIB)
+ifndef CYGWIN
 	$(LN_s) $(SHARED_LIB) $(DEVEL_LIB)
+endif
 
 $(SHARED_PAM): $(OBJS_PAM) $(MAP_PAM) $(DEVEL_LIB)
 	$(LD_lib) $(LDFLAGS_pam) $(OBJS_PAM) $(LDLIBS_pam) -L. -lpasswdqc -o $(SHARED_PAM)
@@ -207,8 +225,12 @@ install_lib_wrapped:
 	$(INSTALL) -m $(SHLIBMODE) $(SHARED_LIB) $(DESTDIR)$(SHARED_LIBDIR)/
 
 	$(MKDIR) $(DESTDIR)$(DEVEL_LIBDIR)
+ifndef CYGWIN
 	$(LN_s) $(SHARED_LIBDIR_REL)/$(SHARED_LIB) \
 		$(DESTDIR)$(DEVEL_LIBDIR)/$(DEVEL_LIB)
+else
+	$(INSTALL) -m $(SHLIBMODE) $(DEVEL_LIB) $(DESTDIR)$(DEVEL_LIBDIR)/
+endif
 
 	$(MKDIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL) -m $(INCMODE) $(HEADER) $(DESTDIR)$(INCLUDEDIR)/
