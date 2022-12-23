@@ -1,0 +1,308 @@
+# A passphrase strength checking and policy enforcement toolset.
+# Copyright (c) 2000-2003,2005,2008,2010,2013,2016 by Solar Designer
+# Copyright (c) 2008,2009 by Dmitry V. Levin
+# This file is distributed under the same license as the passwdqc package.
+#
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2022.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: passwdqc 2.0.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-11 20:00+0000\n"
+"PO-Revision-Date: 2022-12-23 20:41+0100\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <(nothing)\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: pam_passwdqc.c:68
+msgid "Enter current password: "
+msgstr "შეიყვანეთ მიმდინარე პაროლი: "
+
+#: pam_passwdqc.c:70
+msgid "Enter new password: "
+msgstr "შეიყვანეთ ახალი პაროლი: "
+
+#: pam_passwdqc.c:72
+msgid "Re-type new password: "
+msgstr "ხელახლა შეიყვანეთ ახალი პაროლი: "
+
+#: pam_passwdqc.c:75
+msgid "System configuration error.  Please contact your administrator."
+msgstr ""
+"სისტემის კონფიგურაციის შეცდომა.  გთხოვთ, დაუკავშირდეთ თქვენს ადმინისტრატორს."
+
+#: pam_passwdqc.c:79
+msgid ""
+"\n"
+"You can now choose the new password.\n"
+msgstr ""
+"\n"
+"ახლა შეგიძლიათ აირჩიოთ ახალი პაროლი.\n"
+
+#: pam_passwdqc.c:81
+msgid ""
+"\n"
+"You can now choose the new password or passphrase.\n"
+msgstr ""
+"\n"
+"ახლა შეგიძლიათ აირჩიოთ ახალი პაროლი ან საკვანძო ფრაზა.\n"
+
+#: pam_passwdqc.c:85
+#, c-format
+msgid ""
+"A good password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d "
+"character.\n"
+msgid_plural ""
+"A good password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d "
+"characters.\n"
+msgstr[0] ""
+"კარგი პაროლი უნდა იყოს შედგენილი ზედა და ქვედა რეგისტრის ასოების, ციფრების "
+"და\n"
+"სხვა სიმბოლოებისგან.  შეგიძლიათ გამოიყენოთ პაროლი, რომელიც შეიცავს მინიმუმ "
+"%d სიმბოლოს.\n"
+msgstr[1] ""
+"კარგი პაროლი უნდა იყოს შედგენილი ზედა და ქვედა რეგისტრის ასოების, ციფრების "
+"და\n"
+"სხვა სიმბოლოებისგან.  შეგიძლიათ გამოიყენოთ პაროლი, რომელიც შეიცავს მინიმუმ "
+"%d სიმბოლოს.\n"
+
+#: pam_passwdqc.c:94
+#, c-format
+msgid ""
+"A valid password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d character\n"
+"from at least %d of these 4 classes.\n"
+"An upper case letter that begins the password and a digit that ends it do "
+"not\n"
+"count towards the number of character classes used.\n"
+msgid_plural ""
+"A valid password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d "
+"characters\n"
+"from at least %d of these 4 classes.\n"
+"An upper case letter that begins the password and a digit that ends it do "
+"not\n"
+"count towards the number of character classes used.\n"
+msgstr[0] ""
+"სწორი პაროლი უნდა წარმოადგენდეს დიდი და პატარა რეგისტრის ასოების, ციფრებისა "
+"და\n"
+"სხვა სიმბოლოების ნარევს.  შეგიძლიათ გამოიყენოთ მაქსიმუმ %d სიმბოლო, %d "
+"კლასიდან.\n"
+"დიდი რეგისტრის სიმბოლო და დამამთავრებელი ციფრი არ\n"
+"ითვლება გამოყენებული კლასების რაოდენობაში.\n"
+msgstr[1] ""
+"სწორი პაროლი უნდა წარმოადგენდეს დიდი და პატარა რეგისტრის ასოების, ციფრებისა "
+"და\n"
+"სხვა სიმბოლოების ნარევს.  შეგიძლიათ გამოიყენოთ მაქსიმუმ %d სიმბლოს, %d "
+"კლასიდან.\n"
+"დიდი რეგისტრის სიმბოლო და დამამთავრებელი ციფრი არ\n"
+"ითვლება გამოყენებული კლასების რაოდენობაში.\n"
+
+#: pam_passwdqc.c:109
+#, c-format
+msgid ""
+"A valid password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d character\n"
+"from all of these classes.\n"
+"An upper case letter that begins the password and a digit that ends it do "
+"not\n"
+"count towards the number of character classes used.\n"
+msgid_plural ""
+"A valid password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d "
+"characters\n"
+"from all of these classes.\n"
+"An upper case letter that begins the password and a digit that ends it do "
+"not\n"
+"count towards the number of character classes used.\n"
+msgstr[0] ""
+"სწორი პაროლი უნდა წარმოადგენდეს დიდი და პატარა რეგისტრის ასოების, ციფრებისა "
+"და\n"
+"სხვა სიმბოლოების ნარევს.  შეგიძლიათ გამოიყენოთ სულ ცოტა %d სიმბოლო, ყველა "
+"კლასიდან.\n"
+"დიდი რეგისტრის სიმბოლო და დამამთავრებელი ციფრი არ\n"
+"ითვლება გამოყენებული კლასების რაოდენობაში.\n"
+msgstr[1] ""
+"სწორი პაროლი უნდა წარმოადგენდეს დიდი და პატარა რეგისტრის ასოების, ციფრებისა "
+"და\n"
+"სხვა სიმბოლოების ნარევს.  შეგიძლიათ გამოიყენოთ სულ ცოტა %d სიმბოლო, ყველა "
+"კლასიდან.\n"
+"დიდი რეგისტრის სიმბოლო და დამამთავრებელი ციფრი არ\n"
+"ითვლება გამოყენებული კლასების რაოდენობაში.\n"
+
+#: pam_passwdqc.c:124
+#, c-format
+msgid ""
+"A valid password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d character\n"
+"from all of these classes, or a password containing at least %d characters\n"
+"from just 3 of these 4 classes.\n"
+"An upper case letter that begins the password and a digit that ends it do "
+"not\n"
+"count towards the number of character classes used.\n"
+msgid_plural ""
+"A valid password should be a mix of upper and lower case letters, digits, "
+"and\n"
+"other characters.  You can use a password containing at least %d "
+"characters\n"
+"from all of these classes, or a password containing at least %d characters\n"
+"from just 3 of these 4 classes.\n"
+"An upper case letter that begins the password and a digit that ends it do "
+"not\n"
+"count towards the number of character classes used.\n"
+msgstr[0] ""
+"სწორი პაროლი უნდა წარმოადგენდეს დიდი და პატარა რეგისტრის ასოების, ციფრებისა "
+"და\n"
+"სხვა სიმბოლოების ნარევს.  შეგიძლიათ გამოიყენოთ მაქსიმუმ %d სიმბლოს, %d "
+"კლასიდან.\n"
+"დიდი რეგისტრის სიმბოლო და დამამთავრებელი ციფრი არ\n"
+"ითვლება გამოყენებული კლასების რაოდენობაში.\n"
+msgstr[1] ""
+"სწორი პაროლი უნდა წარმოადგენდეს დიდი და პატარა რეგისტრის ასოების, ციფრებისა "
+"და\n"
+"სხვა სიმბოლოების ნარევს.  შეგიძლიათ გამოიყენოთ მაქსიმუმ %d სიმბლოს, %d (სულ "
+"3) კლასიდან.\n"
+"დიდი რეგისტრის სიმბოლო და დამამთავრებელი ციფრი არ\n"
+"ითვლება გამოყენებული კლასების რაოდენობაში.\n"
+
+#: pam_passwdqc.c:141
+#, c-format
+msgid ""
+"A passphrase should be of at least %d word, %d to %d characters long, and\n"
+"contain enough different characters.\n"
+msgid_plural ""
+"A passphrase should be of at least %d words, %d to %d characters long, and\n"
+"contain enough different characters.\n"
+msgstr[0] ""
+"საკვანძო სიტყვა მინიმუმ %d სიტყვას უნდა შეიცავდეს, იყოს %d-%d\n"
+"სიმბოლოს სიგრძის და შეიცავდეს საკმარის განსხვავებულ სიმბოლოებს.\n"
+msgstr[1] ""
+"საკვანძო სიტყვა მინიმუმ %d სიტყვას უნდა შეიცავდეს, იყოს %d-%d\n"
+"სიმბოლოს სიგრძის და შეიცავდეს საკმარის განსხვავებულ სიმბოლოებს.\n"
+
+#: pam_passwdqc.c:149
+#, c-format
+msgid ""
+"Alternatively, if no one else can see your terminal now, you can pick this "
+"as\n"
+"your password: \"%s\".\n"
+msgstr ""
+"ან, თუ თქვენს ტერმინალს ამ წამს არავინ უყურებს, პაროლად \n"
+"\"%s\" შეგიძლიათ აიღოთ.\n"
+
+#: pam_passwdqc.c:152
+#, c-format
+msgid ""
+"This system is configured to permit randomly generated passwords only.\n"
+"If no one else can see your terminal now, you can pick this as your\n"
+"password: \"%s\".  Otherwise come back later.\n"
+msgstr ""
+"სისტემა მორგებულია, რომ მხოლოდ შემთხვევითი პაროლებით შეგიშვათ.\n"
+"თუ თქვენს ტერმინალს ამ წამს არავინ უყურებს, პაროლად შეგიძლიათ\n"
+"\"%s\" აიღოთ.  წინააღმდეგ შემთხვევაში, მოგვიანებით დაბრუნდით.\n"
+
+#: pam_passwdqc.c:156
+msgid ""
+"This system is configured to use randomly generated passwords only,\n"
+"but the attempt to generate a password has failed.  This could happen\n"
+"for a number of reasons: you could have requested an impossible password\n"
+"length, or the access to kernel random number pool could have failed."
+msgstr ""
+"სისტემა მხოლოდ შემთხევითი პაროლების გამოყენებაზეა მორგებული,\n"
+"მაგრამ პაროლის გენერაციის მცდელობა წარუმატებლად დასრულდა.  ეს რამდენიმე "
+"მიზეზით\n"
+"შეიძლება მოხდეს: ან მოთხოვნილი პაროლის სიგრძე მიუღებელია, ან\n"
+"შემთხვევითი რიცხვების გენერატორთან წვდომა წარუმატებლად დასრულდა."
+
+#: pam_passwdqc.c:161
+msgid "This password may be too long for some services.  Choose another."
+msgstr ""
+"ეს პაროლი ზოგიერთი სერვისისთვის შეიძლება ძალიან გრძელია.  სხვა აირჩიეთ."
+
+#: pam_passwdqc.c:163
+msgid "Warning: your longer password will be truncated to 8 characters."
+msgstr "გაფრთხილება: თქვენი გრძელი პაროლი 8 სიმბოლომდე შეიკვეცება."
+
+#: pam_passwdqc.c:165
+#, c-format
+msgid "Weak password: %s."
+msgstr "სუსტი პაროლი: %s."
+
+#: pam_passwdqc.c:167
+msgid "Sorry, you've mistyped the password that was generated for you."
+msgstr "უკაცრავად, თქვენთვის დაგენერირებული პაროლი არასწორად აკრიფეთ."
+
+#: pam_passwdqc.c:169
+msgid "Sorry, passwords do not match."
+msgstr "პაროლები არ ემთხვევა."
+
+#: pam_passwdqc.c:171
+msgid "Try again."
+msgstr "კიდევ სცადეთ."
+
+#: passwdqc_check.c:21
+msgid "check failed"
+msgstr "შემოწმების შეცდომა"
+
+#: passwdqc_check.c:24
+msgid "is the same as the old one"
+msgstr "პაროლი იგივეა, რაც მანამდე იყო"
+
+#: passwdqc_check.c:26
+msgid "is based on the old one"
+msgstr "დაფუძნებულია ძველზე"
+
+#: passwdqc_check.c:29
+msgid "too short"
+msgstr "ძალიან მოკლეა"
+
+#: passwdqc_check.c:31
+msgid "too long"
+msgstr "ძალიან გრძელია"
+
+#: passwdqc_check.c:34
+msgid "not enough different characters or classes for this length"
+msgstr "არასაკმარისი განსხვავებული სიმბოლოები ან კლასები ამ სიგრძისთვის"
+
+#: passwdqc_check.c:36
+msgid "not enough different characters or classes"
+msgstr "არასაკმარისი განსხვავებული სიმბოლოები ან კლასები"
+
+#: passwdqc_check.c:39
+msgid "based on personal login information"
+msgstr "დაფუძნებულია შესვლის ინფორმაციაზე"
+
+#: passwdqc_check.c:42
+msgid "based on a dictionary word and not a passphrase"
+msgstr "ეყრდნობა ლექსიკონის სიტყვას და არა საკვანძო ფრაზას"
+
+#: passwdqc_check.c:45
+msgid "based on a common sequence of characters and not a passphrase"
+msgstr "ეყრდნობა სიმბოლოების მიღებულ მიმდევრობას და არა საკვანძო ფრაზას"
+
+#: passwdqc_check.c:48
+msgid "based on a word list entry"
+msgstr "დაფუძნებულია სიტყვების სიის  ჩანაწერზე"
+
+#: passwdqc_check.c:51
+msgid "is in deny list"
+msgstr "აკრძალულ სიაშია"
+
+#: passwdqc_check.c:54
+msgid "appears to be in a database"
+msgstr "როგორც ჩანს, მონაცემთა ბაზაშია"
