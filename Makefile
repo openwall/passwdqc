@@ -53,7 +53,7 @@ DESTDIR =
 LOCALEDIR = /usr/share/locale
 LOCALEMODE = 644
 
-LANGUAGES = ru
+LANGUAGES = ka ru
 
 CC = gcc
 LD = $(CC)
