@@ -297,7 +297,7 @@ msgstr "ეყრდნობა სიმბოლოების მიღე�
 
 #: passwdqc_check.c:48
 msgid "based on a word list entry"
-msgstr "დაფუძნებულია სიტყვების სიის  ჩანაწერზე"
+msgstr "დაფუძნებულია სიტყვების სიის ჩანაწერზე"
 
 #: passwdqc_check.c:51
 msgid "is in deny list"
