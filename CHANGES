@@ -2,6 +2,9 @@
 
 Added pkg-config file.
 
+Changed enforce=users to support "chpasswd" PAM service in addition to
+traditionally supported "passwd".
+
 
 	Significant changes between 2.0.1 and 2.0.2.
 

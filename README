@@ -140,8 +140,10 @@ The "only" modifier can be used to disallow user-chosen passwords.
 	enforce=none|users|everyone	[enforce=everyone]
 
 The module can be configured to warn of weak passwords only, but not
-actually enforce strong passwords.  The "users" setting will enforce
-strong passwords for invocations by non-root users only.
+actually enforce strong passwords.  The "users" setting is like
+"everyone" for all PAM services except "chpasswd" and "passwd".
+For these two PAM services "users" will enforce strong passwords
+for invocations by non-root users only.
 
 	non-unix			[]
 
