@@ -228,7 +228,15 @@ The PAM module can be configured to warn of weak passwords only, but not
 actually enforce strong passwords.
 The
 .Cm users
-setting will enforce strong passwords for invocations by non-root users only.
+setting is like
+.Cm everyone
+for all PAM services except
+.Cm chpasswd
+and
+.Cm passwd .
+For these two PAM services
+.Cm users
+will enforce strong passwords for invocations by non-root users only.
 .It Cm non-unix
 Normally, the PAM module uses
 .Xr getpwnam 3

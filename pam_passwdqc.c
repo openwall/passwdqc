@@ -296,7 +296,7 @@ static int am_root(pam_handle_t *pamh)
 		return 0;
 	service = item;
 
-	return !strcmp(service, "passwd");
+	return !strcmp(service, "passwd") || !strcmp(service, "chpasswd");
 }
 
 PAM_EXTERN int pam_sm_chauthtok(pam_handle_t *pamh, int flags,
