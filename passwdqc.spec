@@ -72,6 +72,7 @@ rm -rf %buildroot
 %files devel
 %defattr(-,root,root)
 %_includedir/*.h
+%_libdir/pkgconfig/passwdqc.pc
 %_libdir/lib*.so
 %_mandir/man3/*
 
