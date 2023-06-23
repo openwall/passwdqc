@@ -71,7 +71,7 @@ extern void passwdqc_params_free(passwdqc_params_t *params);
 #define F_USE_AUTHTOK			0x00000200
 #define F_NO_AUDIT			0x00000400
 
-#define PASSWDQC_VERSION		"2.0.2"
+#define PASSWDQC_VERSION		"2.0.3"
 
 extern void (*_passwdqc_memzero)(void *, size_t);
 

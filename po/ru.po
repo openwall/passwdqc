@@ -8,7 +8,7 @@
 # Dmitry V. Levin <ldv@altlinux.org>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: passwdqc 2.0.2\n"
+"Project-Id-Version: passwdqc 2.0.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-11 20:00+0000\n"
 "PO-Revision-Date: 2021-03-11 20:00+0000\n"
