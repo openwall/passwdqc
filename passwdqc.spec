@@ -1,6 +1,6 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset.
 Name: passwdqc
-Version: 2.0.2
+Version: 2.0.3
 Release: owl1
 License: BSD-compatible
 Group: System Environment/Base
@@ -77,6 +77,17 @@ rm -rf %buildroot
 %_mandir/man3/*
 
 %changelog
+* Fri Jun 23 2023 Dmitry V. Levin <ldv-at-owl.openwall.com> 2.0.3-owl1
+- wordset_4k: Move "enroll" to the multiple spellings list (by Solar Designer)
+- Don't #include <endian.h> on macOS (by Solar Designer)
+- pwqfilter: Allow --pre-hashed after --hash* (by Solar Designer)
+- Add pkg-config file (by Egor Ignatov)
+- Makefile: add Cygwin support (by Chad Dougherty)
+- Remove non-existent symbols from the linker version script
+to fix -Wl,--no-undefined-version (by Fangrui Song)
+- pam_passwdqc: extend enforce=users to support chpasswd PAM service
+in addition to traditionally supported passwd
+
 * Sun Apr 04 2021 Solar Designer <solar-at-owl.openwall.com> 2.0.2-owl1
 - Changes by Dmitry V. Levin:
   - pam_passwdqc: enhance formatting of auto-generated policy descriptions
