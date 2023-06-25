@@ -153,14 +153,14 @@ all locales pam utils install install_lib install_locales install_pam install_ut
 			SECUREDIR="$(SECUREDIR_DARWIN)" \
 			LDLIBS_pam="$(LDLIBS_pam_DARWIN)" \
 			$@_wrapped;; \
-    CYGWIN_NT*)	$(MAKE) CPPFLAGS_lib="$(CPPFLAGS_lib)" \
-            SHARED_LIB="$(SHARED_LIB_CYGWIN)" \
-            SHARED_LIBDIR="$(SHARED_LIBDIR_CYGWIN)" \
-            DEVEL_LIB="$(DEVEL_LIB_CYGWIN)" \
-            LDFLAGS_lib="$(LDFLAGS_lib_CYGWIN)" \
-            BINS="$(BINS_CYGWIN)" \
-            CYGWIN=true \
-            $@_wrapped;; \
+	CYGWIN_NT*) $(MAKE) CPPFLAGS_lib="$(CPPFLAGS_lib)" \
+			SHARED_LIB="$(SHARED_LIB_CYGWIN)" \
+			SHARED_LIBDIR="$(SHARED_LIBDIR_CYGWIN)" \
+			DEVEL_LIB="$(DEVEL_LIB_CYGWIN)" \
+			LDFLAGS_lib="$(LDFLAGS_lib_CYGWIN)" \
+			BINS="$(BINS_CYGWIN)" \
+			CYGWIN=true \
+			$@_wrapped;; \
 	*)	$(MAKE) $@_wrapped;; \
 	esac
 
