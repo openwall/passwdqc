@@ -5,15 +5,9 @@
  * See LICENSE
  */
 
-#ifdef __FreeBSD__
-/* For vsnprintf(3) */
 #define _XOPEN_SOURCE 600
-#else
-#define _XOPEN_SOURCE 500
 #define _XOPEN_SOURCE_EXTENDED
-#define _XOPEN_VERSION 500
 #define _DEFAULT_SOURCE
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -45,7 +39,7 @@
 #define PAM_AUTHTOK_RECOVERY_ERR	PAM_AUTHTOK_RECOVER_ERR
 #endif
 
-#if (defined(__sun) || defined(__hpux)) && \
+#if (defined(__sun) || defined(__hpux) || defined(_AIX)) && \
     !defined(LINUX_PAM) && !defined(_OPENPAM)
 /* Sun's PAM doesn't use const here, while Linux-PAM and OpenPAM do */
 #define lo_const

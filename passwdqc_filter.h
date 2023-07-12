@@ -34,8 +34,15 @@ extern int passwdqc_filter_close(passwdqc_filter_t *flt);
 /* Lower-level inlines for shared use by pwqfilter.c and passwdqc_filter.c */
 
 #include <string.h> /* for strcspn() */
-#if !defined(_MSC_VER) && !defined(__APPLE__)
+
+/* We assume little-endian if this leaves __BYTE_ORDER undefined */
+#if !defined(_MSC_VER) && !defined(__APPLE__) && !defined(__sun) && !defined(_AIX)
 #include <endian.h>
+#elif (defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__) || \
+    defined(__sparc) || defined(_POWER)
+#define __LITTLE_ENDIAN 1234
+#define __BIG_ENDIAN 4321
+#define __BYTE_ORDER __BIG_ENDIAN
 #endif
 
 #include "md4.h"

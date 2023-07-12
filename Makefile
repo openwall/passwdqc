@@ -133,7 +133,7 @@ all locales pam utils install install_lib install_locales install_pam install_ut
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
 			$@_wrapped;; \
 	SunOS)	$(MAKE) -e CPPFLAGS_lib="$(CPPFLAGS_lib) -DHAVE_SHADOW" \
-			LD_lib=ld \
+			LD_lib=/usr/ccs/bin/ld \
 			LDFLAGS_lib="$(LDFLAGS_lib_SUN)" \
 			LDFLAGS_pam="$(LDFLAGS_pam_SUN)" \
 			LDLIBS_pam="$(LDLIBS_pam_SUN)" \
@@ -174,9 +174,9 @@ $(SHARED_LIB): $(OBJS_LIB) $(MAP_LIB)
 	$(LD_lib) $(LDFLAGS_lib) $(OBJS_LIB) $(LDLIBS_lib) -o $(SHARED_LIB)
 
 $(DEVEL_LIB): $(SHARED_LIB)
-ifndef CYGWIN
-	$(LN_s) $(SHARED_LIB) $(DEVEL_LIB)
-endif
+	if [ "$(CYGWIN)" != true ]; then \
+		$(LN_s) $(SHARED_LIB) $(DEVEL_LIB); \
+	fi
 
 $(SHARED_PAM): $(OBJS_PAM) $(MAP_PAM) $(DEVEL_LIB)
 	$(LD_lib) $(LDFLAGS_pam) $(OBJS_PAM) $(LDLIBS_pam) -L. -lpasswdqc -o $(SHARED_PAM)
@@ -203,7 +203,7 @@ pwqfilter.o: pwqfilter.c passwdqc_filter.h passwdqc.h
 	$(CC) $(CPPFLAGS_lib) $(CFLAGS_lib) -c $*.c
 
 $(PKGCONFIG): $(PKGCONFIG).in
-	sed -e "s|@VERSION@|$(VERSION)|g" $< > $@
+	sed -e "s|@VERSION@|$(VERSION)|g" $(PKGCONFIG).in > $@
 
 concat.o: concat.h
 pam_passwdqc.o: passwdqc.h pam_macros.h
@@ -225,12 +225,12 @@ install_lib_wrapped:
 	$(INSTALL) -m $(SHLIBMODE) $(SHARED_LIB) $(DESTDIR)$(SHARED_LIBDIR)/
 
 	$(MKDIR) $(DESTDIR)$(DEVEL_LIBDIR)
-ifndef CYGWIN
-	$(LN_s) $(SHARED_LIBDIR_REL)/$(SHARED_LIB) \
-		$(DESTDIR)$(DEVEL_LIBDIR)/$(DEVEL_LIB)
-else
-	$(INSTALL) -m $(SHLIBMODE) $(DEVEL_LIB) $(DESTDIR)$(DEVEL_LIBDIR)/
-endif
+	if [ "$(CYGWIN)" != true ]; then \
+		$(LN_s) $(SHARED_LIBDIR_REL)/$(SHARED_LIB) \
+			$(DESTDIR)$(DEVEL_LIBDIR)/$(DEVEL_LIB); \
+	else \
+		$(INSTALL) -m $(SHLIBMODE) $(DEVEL_LIB) $(DESTDIR)$(DEVEL_LIBDIR)/; \
+	fi
 
 	$(MKDIR) $(DESTDIR)$(INCLUDEDIR)
 	$(INSTALL) -m $(INCMODE) $(HEADER) $(DESTDIR)$(INCLUDEDIR)/
