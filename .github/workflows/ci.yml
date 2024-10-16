@@ -39,7 +39,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   gcc11-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CC: gcc-11
       TARGET: x86_64
@@ -53,7 +53,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   gcc10-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CC: gcc-10
       TARGET: x86_64
@@ -67,7 +67,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   gcc9-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CC: gcc
       TARGET: x86_64
@@ -137,7 +137,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang12-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CC: clang-12
       TARGET: x86_64
@@ -151,7 +151,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang11-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CC: clang-11
       TARGET: x86_64
@@ -165,7 +165,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang10-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CC: clang
       TARGET: x86_64
