@@ -179,7 +179,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang13-x86_64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CC: clang-13
       TARGET: x86_64
@@ -193,7 +193,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang12-x86_64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CC: clang-12
       TARGET: x86_64
@@ -207,7 +207,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang11-x86_64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       CC: clang-11
       TARGET: x86_64
