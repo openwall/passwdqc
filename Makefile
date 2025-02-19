@@ -307,6 +307,17 @@ remove_lib_wrapped:
 remove_locales_wrapped:
 	for f in $(LANGUAGES); do $(RM) $(DESTDIR)$(LOCALEDIR)/$$f/LC_MESSAGES/$(PACKAGE).mo; done
 
+check:
+	@echo "Running tests..."
+	# Set LD_LIBRARY_PATH to include the current directory
+	@export LDFLAGS="-Wl,-rpath,$(CURDIR)"; \
+	export LD_LIBRARY_PATH=$(CURDIR):$$LD_LIBRARY_PATH; \
+		for test in tests/*.sh; do \
+			echo "Executing $$test..."; \
+			bash $$test || echo "$$test failed"; \
+		done
+	@echo "Tests completed!"
+
 clean:
 	$(RM) $(PROJ) $(POTFILE) $(MOFILES) *.o
 
