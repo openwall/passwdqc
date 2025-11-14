@@ -36,6 +36,8 @@ make -k $j \
 	CFLAGS_lib='-Wall -W -Werror -fPIC' \
 	all locales
 
+make check
+
 if git status --porcelain |grep ^.; then
 	echo >&2 'git status reported uncleanness'
 	exit 1

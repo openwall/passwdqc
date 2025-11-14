@@ -4,6 +4,10 @@
 #
 #
 
+set -o pipefail
+
+PWQCHECK_BIN="$(dirname "$0")/../pwqcheck"
+
 if [ -t 1 ]; then
 # Colors for better visibility
 	GREEN='\033[0;32m'
@@ -21,14 +25,11 @@ test_multiple_passwords() {
 	local passwords="$2"
 	local expected_results="$3"
 
-	echo -e "\nRunning Test: ${test_name}"
-	echo "------------------------"
+	printf "%-40s" "$test_name"
 
 	# Create a temporary file for test output
 	local temp_output
-	temp_output=$(mktemp)
-
-	PWQCHECK_BIN="$(dirname "$0")/../pwqcheck"
+	temp_output=$(mktemp) || exit
 
 	# Run pwqcheck with multiple passwords
 	echo -e "$passwords" | "$PWQCHECK_BIN" --multi -1 > "$temp_output" 2>&1
@@ -38,13 +39,15 @@ test_multiple_passwords() {
 	actual_results=$(cat "$temp_output")
 	if echo "$actual_results" | grep -q "$expected_results"; then
 		echo -e "${GREEN}PASS${NC}"
-		echo "Test output matches expected results"
+#		echo "Test output matches expected results"
 	else
 		echo -e "${RED}FAIL${NC}"
 		echo "Expected:"
 		echo "$expected_results"
 		echo "Got:"
 		cat "$temp_output"
+		rm -f "$temp_output"
+		exit 1
 	fi
 
 	rm -f "$temp_output"
@@ -107,18 +110,20 @@ VeryLongP@ssword123!" \
 OK: medium12345
 OK: VeryLongP@ssword123!"
 
-echo -e "\nAll multiple password tests completed!"
+echo -e "\nMultiple password tests completed\n"
+
+exit 0
 
 # Test 6: Large number of passwords
 echo -e "\nTesting large batch of passwords..."
 {
-    for i in {1..50}; do
-        if [ $((i % 2)) -eq 0 ]; then
-            echo "StrongP@ss${i}!"
-        else
-            echo "weak${i}"
-        fi
-    done
-} | "$PWQCHECK_BIN"  --multi -1
+	for i in {1..50}; do
+		if [ $((i % 2)) -eq 0 ]; then
+			echo "StrongP@ss${i}!"
+		else
+			echo "weak${i}"
+		fi
+	done
+} | "$PWQCHECK_BIN" --multi -1
 
 echo "Large batch test completed!"

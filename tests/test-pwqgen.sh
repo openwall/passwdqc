@@ -1,10 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (c) 2025 by Zaiba Sanglikar.  See LICENSE.
-# This script tests the password generation utility pwqgen for
-# basic password generation , uniqueness, error handling ,password entropy
-# and config file parsing .
+# This script tests pwqgen for basic password generation, uniqueness, error
+# handling, password entropy, and config file parsing.
 
+set -o pipefail
+
+PWQGEN_BIN="$(dirname "$0")/../pwqgen"
 
 if [ -t 1 ]; then
 	# Colors for better visibility
@@ -23,9 +25,8 @@ test_password_generation() {
 	expected="$2"
 	description="$3"
 
-	PWQGEN_BIN="$(dirname "$0")/../pwqgen"
+	printf "%-40s" "$description"
 
-	printf "Testing %s: " "$description"q
 	if [ -z "$params" ]; then
 		result=$("$PWQGEN_BIN" 2>&1)
 	else
@@ -36,8 +37,8 @@ test_password_generation() {
 	if [ "$expected" = "pass" -a "$exit_code" -eq 0 ] || \
 	[ "$expected" = "fail" -a "$exit_code" -ne 0 ]; then
 		printf "%sPASS%s\n" "$GREEN" "$NC"
-		printf "  Parameters: %s\n" "${params:-'(none)'}"
-		printf "  Result: %s\n\n" "$result"
+#		printf "  Parameters: %s\n" "${params:-'(none)'}"
+#		printf "  Result: %s\n\n" "$result"
 		return 0
 	else
 		printf "%sFAIL%s\n" "$RED" "$NC"
@@ -45,7 +46,7 @@ test_password_generation() {
 		printf "  Expected: %s\n" "$expected"
 		printf "  Got exit code: %d\n" "$exit_code"
 		printf "  Output: %s\n\n" "$result"
-		return 1
+		exit 1
 	fi
 }
 
@@ -54,9 +55,8 @@ test_password_uniqueness() {
 	params="$1"
 	description="$2"
 
-	PWQGEN_BIN="$(dirname "$0")/../pwqgen"
+	printf "%-40s" "$description"
 
-	printf "Testing %s: " "$description"
 	pass1=$("$PWQGEN_BIN" $params 2>&1)
 	exit_code1=$?
 	pass2=$("$PWQGEN_BIN" $params 2>&1)
@@ -64,9 +64,9 @@ test_password_uniqueness() {
 
 	if [ $exit_code1 -eq 0 ] && [ $exit_code2 -eq 0 ] && [ "$pass1" != "$pass2" ]; then
 		printf "%sPASS%s\n" "$GREEN" "$NC"
-		printf "  Parameters: %s\n" "${params:-'(none)'}"
-		printf "  Password 1: %s\n" "$pass1"
-		printf "  Password 2: %s\n\n" "$pass2"
+#		printf "  Parameters: %s\n" "${params:-'(none)'}"
+#		printf "  Password 1: %s\n" "$pass1"
+#		printf "  Password 2: %s\n\n" "$pass2"
 		return 0
 	else
 		printf "%sFAIL%s\n" "$RED" "$NC"
@@ -74,14 +74,14 @@ test_password_uniqueness() {
 		printf "  Passwords are identical or generation failed\n"
 		printf "  Password 1: %s\n" "$pass1"
 		printf "  Password 2: %s\n\n" "$pass2"
-		return 1
+		exit 1
 	fi
 }
 
 # Function to test passphrase uniqueness for multiple iterations
 test_uniqueness() {
 	i=0
-	iterations=30
+	iterations=100
 	duplicates=0
 
 	while [ $i -lt $iterations ]; do
@@ -89,13 +89,13 @@ test_uniqueness() {
 
 		# Store passwords in a temporary file
 		if [ $i -eq 0 ]; then
-		echo "$pass" > temp_passes.txt
+			echo "$pass" > temp_passes.txt
 		else
-		# Check for duplicates
-		if grep -Fxq "$pass" temp_passes.txt; then
-			duplicates=$((duplicates + 1))
-		fi
-		echo "$pass" >> temp_passes.txt
+			# Check for duplicates
+			if grep -Fxq "$pass" temp_passes.txt; then
+				duplicates=$((duplicates + 1))
+			fi
+			echo "$pass" >> temp_passes.txt
 		fi
 
 		i=$((i + 1))
@@ -103,13 +103,12 @@ test_uniqueness() {
 
 	rm -f temp_passes.txt
 
-	#check for the duplicate count
-	if [ $duplicates -le 1 ]; then
+	# Check for the duplicate count
+	if [ $duplicates -eq 0 ]; then
 		return 0
 	else
 		return 1
 	fi
-
 }
 
 # Function to test if password contains different character classes
@@ -117,8 +116,8 @@ test_password_entropy() {
 	params="$1"
 	description="$2"
 
-	printf "Testing %s: " "$description"
-	PWQGEN_BIN="$(dirname "$0")/../pwqgen"
+	printf "%-40s" "$description"
+
 	password=$("$PWQGEN_BIN" $params 2>&1)
 	exit_code=$?
 
@@ -129,16 +128,16 @@ test_password_entropy() {
 	has_special=$(printf "%s" "$password" | grep -q '[^a-zA-Z0-9]'; echo $?)
 
 	if [ "$has_lower" -eq 0 ] && [ "$has_upper" -eq 0 ] && \
-	[ "$has_digit" -eq 0 ] && [ "$has_special" -eq 0 ]; then
+	   [ "$has_digit" -eq 0 ] && [ "$has_special" -eq 0 ]; then
 		printf "%sPASS%s\n" "$GREEN" "$NC"
-		printf "  Parameters: %s\n" "${params:-'(none)'}"
-		printf "  Password: %s\n\n" "$password"
+#		printf "  Parameters: %s\n" "${params:-'(none)'}"
+#		printf "  Password: %s\n\n" "$password"
 		return 0
 	else
 		printf "%sFAIL%s\n" "$RED" "$NC"
 		printf "  Parameters: %s\n" "${params:-'(none)'}"
 		printf "  Password doesn't contain all required character classes\n"
-		printf "  Password: %s\n\n" "$password"
+		printf "  Password: %s\n" "$password"
 		return 1
 	fi
 }
@@ -173,18 +172,19 @@ test_password_generation "random=64 max=40" "pass" "Multiple valid parameters"
 test_password_generation "random=64 invalid=parameter" "fail" "Valid and invalid parameters"
 
 # Test Suite 5: Password uniqueness over multiple iterations
-printf "\nPassword uniqueness over multiple iterations\n"
+printf "\n%-40s" "Password uniqueness"
 if test_uniqueness; then
 	printf "%sPASS%s\n" "$GREEN" "$NC"
 else
 	printf "%sFAIL%s\n" "$RED" "$NC"
 	printf "Too many duplicate passphrases generated\n"
+	exit 1
 fi
 
 # Test Suite 6: Test configuration files
 printf "\nTesting config files:\n"
 
-tmp_dir=$(mktemp -d)
+tmp_dir=$(mktemp -d) || exit
 trap 'rm -rf "${tmp_dir}"' EXIT
 
 # Valid config file
@@ -217,5 +217,20 @@ test_password_generation "config=${tmp_dir}/valid.conf" "pass" "Valid configurat
 test_password_generation "config=${tmp_dir}/invalid.conf" "fail" "Invalid configuration file"
 test_password_generation "config=${tmp_dir}/empty.conf" "pass" "Empty configuration file"
 
+echo
+
 # Test Suite 7: Test password entropy
-test_password_entropy "random=128" "Password should contain various character classes"
+pass=0
+for n in `seq 0 9`; do
+	if [ $n -gt 0 ]; then
+		echo "That's OK, retrying"
+	fi
+	if test_password_entropy "random=128" "Contains various character classes"; then
+		pass=1
+		break
+	fi
+done
+
+test $pass -eq 1 || exit 1
+
+echo -e "\npwqgen tests completed\n"
