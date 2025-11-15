@@ -80,31 +80,13 @@ test_password_uniqueness() {
 
 # Function to test passphrase uniqueness for multiple iterations
 test_uniqueness() {
-	i=0
-	iterations=100
-	duplicates=0
+	iterations=1000
 
-	while [ $i -lt $iterations ]; do
-		pass=$($PWQGEN_BIN)
+	uniques=$(for i in `seq 1 $iterations`; do
+		$PWQGEN_BIN
+	done | sort -u | wc -l)
 
-		# Store passwords in a temporary file
-		if [ $i -eq 0 ]; then
-			echo "$pass" > temp_passes.txt
-		else
-			# Check for duplicates
-			if grep -Fxq "$pass" temp_passes.txt; then
-				duplicates=$((duplicates + 1))
-			fi
-			echo "$pass" >> temp_passes.txt
-		fi
-
-		i=$((i + 1))
-	done
-
-	rm -f temp_passes.txt
-
-	# Check for the duplicate count
-	if [ $duplicates -eq 0 ]; then
+	if [ $iterations -eq "$uniques" ]; then
 		return 0
 	else
 		return 1
@@ -221,7 +203,7 @@ echo
 
 # Test Suite 7: Test password entropy
 pass=0
-for n in `seq 0 9`; do
+for n in `seq 0 4`; do
 	if [ $n -gt 0 ]; then
 		echo "That's OK, retrying"
 	fi
