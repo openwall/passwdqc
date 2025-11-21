@@ -171,7 +171,7 @@ trap 'rm -rf "${tmp_dir}"' EXIT
 
 # Valid config file
 cat > "${tmp_dir}/valid.conf" << EOF
-min=disabled,24,11,8,7
+min=disabled,24,11,8,8
 max=72
 passphrase=3
 match=4

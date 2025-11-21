@@ -185,7 +185,7 @@ passwdqc_params_parse(passwdqc_params_t *params, char **reason,
 
 static const passwdqc_params_t defaults = {
 	{
-		{INT_MAX, 24, 11, 8, 7},	/* min */
+		{INT_MAX, 24, 11, 8, 8},	/* min */
 		72,				/* max */
 		3,				/* passphrase_words */
 		4,				/* match_length */
