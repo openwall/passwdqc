@@ -65,14 +65,19 @@ test_password "P@ssw0rd!" "8,8,8,8,8" "pass" "Complex password"
 
 # Test 4: Edge cases
 test_password "YakMeas1" "8,8,8,8,8" "pass" "Exactly minimum length"
-test_password "7chars" "8,8,8,8,8" "fail" "Below minimum length"
+test_password "7 chars" "8,8,8,8,8" "fail" "Below minimum length"
 
 # Test 5: Different complexity classes
 echo "Testing complexity classes..."
-test_password "FigRatMatBatSatWatPatCat" "24,12,8,7,6" "pass" "N0: 24-char basic password"
-test_password "Complex12Pass" "24,12,8,7,6" "pass" "N1: 12-char mixed password"
-test_password "P@ss8chr" "24,12,8,7,6" "pass" "N2: 8-char complex password"
-test_password "P@s7chr" "24,12,8,7,6" "pass" "N3: 7-char complex password"
-test_password "B!rd5#K" "24,12,8,7,6" "pass" "N4: 6-char highly complex password"
+test_password "rkshnwkuvsgisjbybsifyvubaxukqizqpxyc" "36,24,11,8,7" "pass" "N0: 36-char 1-class random"
+test_password "figratmatbatsatwatpatcatgdpjrgvapduc" "36,24,11,8,7" "fail" "N0: 36-char 1-class word-based"
+test_password "rkshnwkuvsgisjbybsifyv24" "36,24,11,8,7" "pass" "N1: 24-char 2-class random"
+test_password "rkshnwkuvsgisjbybsifyvu4" "36,24,11,8,7" "fail" "N1: 24-char effectively 1-class random"
+test_password "min pas phr" "36,24,11,8,7" "pass" "N2: 11-char 3-word passphrase"
+test_password "min passphr" "36,24,11,8,7" "fail" "N2: 11-char 2-word non-passphrase"
+test_password "p@s58chr" "36,24,11,8,7" "pass" "N3: 8-char barely complex"
+test_password "pas58chr" "36,24,11,8,7" "fail" "N3: 8-char insufficiently complex"
+test_password "B!re5#K" "36,24,11,8,7" "pass" "N4: 7-char highly complex"
+test_password "B!rd5#K" "36,24,11,8,7" "fail" "N4: 7-char insufficiently complex"
 
 echo -e "\nPassword length tests completed\n"
