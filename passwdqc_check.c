@@ -258,6 +258,13 @@ static void clean(char *dst)
 	free(dst);
 }
 
+static int is_word_by_length(const char *s, int n)
+{
+	while (n && isalpha((int)(unsigned char)*s++))
+		n--;
+	return !n;
+}
+
 #define F_MODE 0xff  /* mode flags mask */
 #define F_RM   0     /* remove & credit */
 #define F_WORD 1     /* discount word */
@@ -294,19 +301,15 @@ static int is_based(const passwdqc_params_qc_t *params,
 		int bias = 0;
 		for (p = haystack; *p; p++)
 		if (*p == needle[i] && !strncmp(p + 1, &needle[i + 1], j - 1)) {
+			int pos = (flags & F_REV) /* reversed */ ? length - (i + j) : i;
 			if ((flags & F_MODE) == F_RM) { /* remove & credit */
 				if (!scratch) {
 					if (!(scratch = malloc(length + 1)))
 						return 1;
 				}
 				/* remove j chars */
-				{
-					int pos = length - (i + j);
-					if (!(flags & F_REV)) /* not reversed */
-						pos = i;
-					memcpy(scratch, original, pos);
-					memcpy(&scratch[pos], &original[pos + j], length + 1 - (pos + j));
-				}
+				memcpy(scratch, original, pos);
+				memcpy(&scratch[pos], &original[pos + j], length + 1 - (pos + j));
 				/* add credit for match_length - 1 chars */
 				bias = params->match_length - 1;
 				if (is_simple(params, scratch, bias, bias)) {
@@ -314,29 +317,24 @@ static int is_based(const passwdqc_params_qc_t *params,
 					return 1;
 				}
 			} else { /* discount */
-/* Require a 1 character longer match for substrings containing leetspeak
- * when matching against dictionary words */
-				bias = -1;
+				int passphrase_bias = 0;
+				/* discount j - (match_length - 1) chars */
+				bias = (int)params->match_length - 1 - j;
 				if ((flags & F_MODE) == F_WORD) { /* words */
-					int pos = i, end = i + j;
-					if (flags & F_REV) { /* reversed */
-						pos = length - end;
-						end = length - i;
+					if (!is_word_by_length(&original[pos], j)) {
+/* Require a 1 character longer match for substrings containing leetspeak */
+						if (!++bias) {
+/* The zero bias optimization further below would be wrong, so skip it */
+							bias--;
+							break;
+						}
 					}
-					for (; pos < end; pos++)
-					if (!isalpha((int)(unsigned char)original[pos])) {
-						if (j == params->match_length)
-							goto next_match_length;
-						bias = 0;
-						break;
-					}
+				} else {
+					passphrase_bias = bias;
 				}
-
-				/* discount j - (match_length + bias) chars */
-				bias += (int)params->match_length - j;
 				/* bias <= -1 */
 				if (bias < worst_bias) {
-					if (is_simple(params, original, bias, (flags & F_MODE) == F_WORD ? 0 : bias))
+					if (is_simple(params, original, bias, passphrase_bias))
 						return 1;
 					worst_bias = bias;
 				}
@@ -348,8 +346,6 @@ static int is_based(const passwdqc_params_qc_t *params,
  * proceed with all substring lengths for the next position in needle. */
 		if (!bias)
 			break;
-next_match_length:
-		;
 	}
 
 	clean(scratch);
