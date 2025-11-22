@@ -394,24 +394,21 @@ static char *read_line(FILE *f, char *buf)
  * characters.
  */
 const char * const seq[] = {
-	"0123456789",
-	"`1234567890-=",
-	"~!@#$%^&*()_+",
-	"abcdefghijklmnopqrstuvwxyz",
-	"a1b2c3d4e5f6g7h8i9j0",
+	"abcd1234abc1234567890-=",
+	"0123qweasd123abcdefghijklmnopqrstuvwxyz123",
+	"0a1b2c3d4e5f6g7h8i9j0",
 	"1a2b3c4d5e6f7g8h9i0j",
-	"abc123",
-	"qwertyuiop[]\\asdfghjkl;'zxcvbnm,./",
-	"qwertyuiop{}|asdfghjkl:\"zxcvbnm<>?",
-	"qwertyuiopasdfghjklzxcvbnm",
+	"zaqwertyuiop[]\\",
+	"qasdfghjkl;'",
+	"@123qazxcvbnm,./",
 	"1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik,9ol.0p;/-['=]\\",
-	"!qaz@wsx#edc$rfv%tgb^yhn&ujm*ik<(ol>)p:?_{\"+}|",
 	"qazwsxedcrfvtgbyhnujmikolp",
 	"1q2w3e4r5t6y7u8i9o0p-[=]",
-	"q1w2e3r4t5y6u7i8o9p0[-]=\\",
+	"qwe123q1w2e3r4t5y6u7i8o9p0[-]=\\",
+	"12qw34er56ty78ui90op-=[]",
+	"zaq1xsw2cde3vfr4bgt5nhy6mju7,ki8.lo9/;p0",
+	"1qa2ws3ed4rf5tg6yh7uj8ik9ol0p;",
 	"1qaz1qaz",
-	"1qaz!qaz", /* can't unify '1' and '!' - see comment in unify() */
-	"1qazzaq1",
 	"zaq!1qaz",
 	"zaq!2wsx"
 };
