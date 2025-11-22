@@ -284,7 +284,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 	int length;
 	int i, j;
 	const char *p;
-	int worst_bias;
+	int worst_bias, worst_passphrase_bias;
 
 	if (!params->match_length)	/* disabled */
 		return 0;
@@ -293,7 +293,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 		return 1;
 
 	scratch = NULL;
-	worst_bias = 0;
+	worst_bias = worst_passphrase_bias = 0;
 
 	length = (int)strlen(needle);
 	for (i = 0; i <= length - params->match_length; i++)
@@ -328,15 +328,20 @@ static int is_based(const passwdqc_params_qc_t *params,
 							bias--;
 							break;
 						}
+/* Do discount non-words or leetspeak from passphrases */
+						passphrase_bias = bias;
 					}
 				} else {
 					passphrase_bias = bias;
 				}
 				/* bias <= -1 */
-				if (bias < worst_bias) {
+				if (bias < worst_bias || passphrase_bias < worst_passphrase_bias) {
 					if (is_simple(params, original, bias, passphrase_bias))
 						return 1;
-					worst_bias = bias;
+					if (bias < worst_bias)
+						worst_bias = bias;
+					if (passphrase_bias < worst_passphrase_bias)
+						worst_passphrase_bias = passphrase_bias;
 				}
 			}
 		}
