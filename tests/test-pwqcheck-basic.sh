@@ -51,21 +51,21 @@ echo "Running Basic Password Validation Tests..."
 
 # Test Suite 1: Strong Passwords
 echo -e "\nTesting Strong Passwords:"
-test_basic_password "P@ssw0rd123!" "pass" "Standard strong password"
+test_basic_password "R4rew0rd123!" "pass" "Standard strong password"
 test_basic_password "Tr0ub4dor&3" "pass" "Complex password"
 test_basic_password "iStayInloreAtHomeb7&street111" "pass" "Long passphrase"
 test_basic_password "H3llo@W0rld2024" "pass" "Strong password with year"
 
 # Test Suite 2: Common Weak Patterns
 echo -e "\nTesting Weak Patterns:"
-test_basic_password "password123" "fail" "Common password with numbers"
-test_basic_password "qwerty" "fail" "Keyboard pattern"
-test_basic_password "admin123" "fail" "Common admin password"
+test_basic_password "P@ssw0rd123!" "fail" "Common password with numbers"
+test_basic_password "qweRTYuiop!" "fail" "Keyboard pattern"
+test_basic_password "Admin123" "fail" "Common admin password"
 test_basic_password "letmein" "fail" "Common weak password"
 
 # Test Suite 3: Mixed Complexity
 echo -e "\nTesting Mixed Complexity:"
-test_basic_password "MyP@ssw0rd" "pass" "Mixed case with symbols and numbers"
+test_basic_password "MyR4rew0rd" "pass" "Mixed case with symbols and numbers"
 test_basic_password "Str0ng!P@ssphrase" "pass" "Strong with multiple special chars"
 test_basic_password "C0mpl3x1ty!" "pass" "Complex but reasonable length"
 

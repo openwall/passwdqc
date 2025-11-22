@@ -385,7 +385,7 @@ static char *read_line(FILE *f, char *buf)
 }
 
 /*
- * Common sequences of characters.
+ * Common sequences of characters and variations on the word "password".
  * We don't need to list any of the entire strings in reverse order because the
  * code checks the new password in both "unified" and "unified and reversed"
  * form against these strings (unifying them first indeed).  We also don't have
@@ -410,7 +410,9 @@ const char * const seq[] = {
 	"1qa2ws3ed4rf5tg6yh7uj8ik9ol0p;",
 	"1qaz1qaz",
 	"zaq!1qaz",
-	"zaq!2wsx"
+	"zaq!2wsx",
+	"1password1234567890", /* these must be after the sequences */
+	"123pass1234567890"
 };
 
 /*
