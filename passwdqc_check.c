@@ -278,7 +278,8 @@ static int is_word_by_length(const char *s, int n)
  * or partially discounted for the purpose of the length check.
  */
 static int is_based(const passwdqc_params_qc_t *params,
-    const char *haystack, const char *needle, const char *original, unsigned int flags)
+    const char *haystack, const char *haystack_original,
+    const char *needle, const char *needle_original, unsigned int flags)
 {
 	char *scratch;
 	int length;
@@ -308,8 +309,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 						return 1;
 				}
 				/* remove j chars */
-				memcpy(scratch, original, pos);
-				memcpy(&scratch[pos], &original[pos + j], length + 1 - (pos + j));
+				memcpy(scratch, needle_original, pos);
+				memcpy(&scratch[pos], &needle_original[pos + j], length + 1 - (pos + j));
 				/* add credit for match_length - 1 chars */
 				bias = params->match_length - 1;
 				if (is_simple(params, scratch, bias, bias)) {
@@ -321,7 +322,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 				/* discount j - (match_length - 1) chars */
 				bias = (int)params->match_length - 1 - j;
 				if ((flags & F_MODE) == F_WORD) { /* words */
-					if (!is_word_by_length(&original[pos], j)) {
+					if (!is_word_by_length(&needle_original[pos], j)) {
 /* Require a 1 character longer match for substrings containing leetspeak */
 						if (!++bias) {
 /* The zero bias optimization further below would be wrong, so skip it */
@@ -336,7 +337,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 				}
 				/* bias <= -1 */
 				if (bias < worst_bias || passphrase_bias < worst_passphrase_bias) {
-					if (is_simple(params, original, bias, passphrase_bias))
+					if (is_simple(params, needle_original, bias, passphrase_bias))
 						return 1;
 					if (bias < worst_bias)
 						worst_bias = bias;
@@ -439,15 +440,16 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	word[WORDSET_4K_LENGTH_MAX] = '\0';
 	if (params->match_length)
 	for (i = 0; _passwdqc_wordset_4k[i][0]; i++) {
+		char word_unified[WORDSET_4K_LENGTH_MAX + 1];
 		memcpy(word, _passwdqc_wordset_4k[i], WORDSET_4K_LENGTH_MAX);
 		int length = (int)strlen(word);
 		if (length < params->match_length)
 			continue;
 		if (!memcmp(word, _passwdqc_wordset_4k[i + 1], length))
 			continue;
-		unify(word, word);
-		if (is_based(params, word, unified, original, F_WORD) ||
-		    is_based(params, word, reversed, original, F_WORD|F_REV)) {
+		unify(word_unified, word);
+		if (is_based(params, word_unified, word, unified, original, F_WORD) ||
+		    is_based(params, word_unified, word, reversed, original, F_WORD|F_REV)) {
 			reason = REASON_WORD;
 			goto out;
 		}
@@ -458,8 +460,8 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 		char *seq_i = unify(NULL, seq[i]);
 		if (!seq_i)
 			goto out;
-		if (is_based(params, seq_i, unified, original, F_SEQ) ||
-		    is_based(params, seq_i, reversed, original, F_SEQ|F_REV)) {
+		if (is_based(params, seq_i, seq[i], unified, original, F_SEQ) ||
+		    is_based(params, seq_i, seq[i], reversed, original, F_SEQ|F_REV)) {
 			clean(seq_i);
 			reason = REASON_SEQ;
 			goto out;
@@ -470,29 +472,30 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 	if (params->match_length && params->match_length <= 4)
 	for (i = 1900; i <= 2039; i++) {
 		sprintf(word, "%u", i);
-		if (is_based(params, word, unified, original, F_SEQ) ||
-		    is_based(params, word, reversed, original, F_SEQ|F_REV)) {
+		if (is_based(params, word, word, unified, original, F_SEQ) ||
+		    is_based(params, word, word, reversed, original, F_SEQ|F_REV)) {
 			reason = REASON_SEQ;
 			goto out;
 		}
 	}
 
 	if (params->wordlist || params->denylist)
-		if (!(buf = malloc(READ_LINE_SIZE)))
+		if (!(buf = malloc(READ_LINE_SIZE * 2)))
 			goto out;
 
 	if (params->wordlist) {
 		if (!(f = fopen(params->wordlist, "r")))
 			goto out;
 		while (read_line(f, buf)) {
-			unify(buf, buf);
-			if (!strcmp(buf, unified) || !strcmp(buf, reversed))
+			char *buf_unified = buf + READ_LINE_SIZE;
+			unify(buf_unified, buf);
+			if (!strcmp(buf_unified, unified) || !strcmp(buf_unified, reversed))
 				goto out_wordlist;
 			if (!params->match_length ||
-			    strlen(buf) < (size_t)params->match_length)
+			    strlen(buf_unified) < (size_t)params->match_length)
 				continue;
-			if (is_based(params, buf, unified, original, F_WORD) ||
-			    is_based(params, buf, reversed, original, F_WORD|F_REV)) {
+			if (is_based(params, buf_unified, buf, unified, original, F_WORD) ||
+			    is_based(params, buf_unified, buf, reversed, original, F_WORD|F_REV)) {
 out_wordlist:
 				reason = REASON_WORDLIST;
 				goto out;
@@ -522,7 +525,7 @@ out:
 	if (f)
 		fclose(f);
 	if (buf) {
-		_passwdqc_memzero(buf, READ_LINE_SIZE);
+		_passwdqc_memzero(buf, READ_LINE_SIZE * 2);
 		free(buf);
 	}
 	_passwdqc_memzero(word, sizeof(word));
@@ -593,19 +596,19 @@ const char *passwdqc_check(const passwdqc_params_qc_t *params,
 	}
 
 	if (oldpass && params->similar_deny &&
-	    (is_based(params, u_oldpass, u_newpass, newpass, F_RM) ||
-	     is_based(params, u_oldpass, u_reversed, newpass, F_RM|F_REV))) {
+	    (is_based(params, u_oldpass, NULL, u_newpass, newpass, F_RM) ||
+	     is_based(params, u_oldpass, NULL, u_reversed, newpass, F_RM|F_REV))) {
 		reason = REASON_SIMILAR;
 		goto out;
 	}
 
 	if (pw &&
-	    (is_based(params, u_name, u_newpass, newpass, F_RM) ||
-	     is_based(params, u_name, u_reversed, newpass, F_RM|F_REV) ||
-	     is_based(params, u_gecos, u_newpass, newpass, F_RM) ||
-	     is_based(params, u_gecos, u_reversed, newpass, F_RM|F_REV) ||
-	     is_based(params, u_dir, u_newpass, newpass, F_RM) ||
-	     is_based(params, u_dir, u_reversed, newpass, F_RM|F_REV))) {
+	    (is_based(params, u_name, NULL, u_newpass, newpass, F_RM) ||
+	     is_based(params, u_name, NULL, u_reversed, newpass, F_RM|F_REV) ||
+	     is_based(params, u_gecos, NULL, u_newpass, newpass, F_RM) ||
+	     is_based(params, u_gecos, NULL, u_reversed, newpass, F_RM|F_REV) ||
+	     is_based(params, u_dir, NULL, u_newpass, newpass, F_RM) ||
+	     is_based(params, u_dir, NULL, u_reversed, newpass, F_RM|F_REV))) {
 		reason = REASON_PERSONAL;
 		goto out;
 	}
