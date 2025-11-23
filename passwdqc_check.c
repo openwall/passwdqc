@@ -14,6 +14,7 @@
 #include "passwdqc.h" /* also provides <pwd.h> or equivalent "struct passwd" */
 #include "passwdqc_filter.h"
 #include "wordset_4k.h"
+#include "wordlist.h"
 
 #include "passwdqc_i18n.h"
 
@@ -430,21 +431,29 @@ const char * const seq[] = {
  * special characters.  We (mis)use the same set of words that are used
  * to generate random passwords.  This list is much smaller than those
  * used for password crackers, and it doesn't contain common passwords
- * that aren't short English words.  We also support optional external
- * wordlist (for inexact matching) and deny list (for exact matching).
+ * that aren't short English words.  We compensate by also having the
+ * list of common sequences above, and a tiny built-in list of common
+ * passwords.  We also support optional external wordlist (for inexact
+ * matching) and deny list (for exact matching).
  */
 static const char *is_word_based(const passwdqc_params_qc_t *params,
     const char *unified, const char *reversed, const char *original)
 {
 	const char *reason = REASON_ERROR;
-	char word[WORDSET_4K_LENGTH_MAX + 1], *buf = NULL;
+#if WORDLIST_LENGTH_MAX > WORDSET_4K_LENGTH_MAX
+	char word[WORDLIST_LENGTH_MAX + 1];
+	char word_unified[WORDLIST_LENGTH_MAX + 1];
+#else
+	char word[WORDSET_4K_LENGTH_MAX + 1];
+	char word_unified[WORDSET_4K_LENGTH_MAX + 1];
+#endif
+	char *buf = NULL;
 	FILE *f = NULL;
 	unsigned int i;
 
 	word[WORDSET_4K_LENGTH_MAX] = '\0';
 	if (params->match_length)
 	for (i = 0; _passwdqc_wordset_4k[i][0]; i++) {
-		char word_unified[WORDSET_4K_LENGTH_MAX + 1];
 		memcpy(word, _passwdqc_wordset_4k[i], WORDSET_4K_LENGTH_MAX);
 		int length = (int)strlen(word);
 		if (length < params->match_length)
@@ -482,6 +491,26 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 			reason = REASON_SEQ;
 			goto out;
 		}
+	}
+
+	if (params->match_length && !params->wordlist) {
+		const char *p = _passwdqc_wordlist;
+		char *q = word;
+		unsigned int reuse = 1;
+		do {
+			if (--reuse > q - word) /* shouldn't happen */
+				reuse = 0;
+			q = word + reuse;
+			while ((unsigned char)*p >= WORDLIST_LENGTH_MAX && q < word + WORDLIST_LENGTH_MAX)
+				*q++ = *p++;
+			*q = 0;
+			if (q - word < params->match_length)
+				continue;
+			unify(word_unified, word);
+			if (is_based(params, word_unified, word, unified, original, F_WORD) ||
+			    is_based(params, word_unified, word, reversed, original, F_WORD|F_REV))
+				goto out_wordlist;
+		} while ((reuse = *p++));
 	}
 
 	if (params->wordlist || params->denylist)

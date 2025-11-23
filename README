@@ -98,16 +98,19 @@ discounted would be weak.
         wordlist=FILE                   []
 
 Deny passwords that are based on lines of a tiny external text file,
-which can reasonably be e.g. a list of a few thousand common passwords.
-Common dictionary words may also reasonably be included, especially in a
-local language other than English, or longer yet common English words.
-(passwdqc includes a list of a few thousand common English words of
-lengths from 3 to 6 built in.  Any word list possibly specified with
-this option is used in addition to the built-in word list.)
+which can reasonably include common passwords, dictionary words in a
+local language other than English, and longer English words.
+
+passwdqc includes built-in lists of a few thousand common English words
+mostly of lengths from 3 to 6, a handful of common character sequences
+such as keyboard walks, and many common passwords of length 7 and above.
+Any word list possibly specified with this option is used in addition to
+the lists of English words and character sequences, but replaces the
+list of common passwords.
 
 Substring matching and discounting will be used if the "match" setting
-above is non-zero.  Please note that this is very inefficient, and isn't
-to be used with large wordlists.
+above is non-zero.  Please note that this isn't to be used with large
+wordlists for performance reasons.
 
         denylist=FILE                   []
 
