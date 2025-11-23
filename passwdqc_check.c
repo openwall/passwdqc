@@ -385,7 +385,7 @@ static char *read_line(FILE *f, char *buf)
 }
 
 /*
- * Common sequences of characters and variations on the word "password".
+ * Common sequences of characters, variations on the word "password", months.
  * We don't need to list any of the entire strings in reverse order because the
  * code checks the new password in both "unified" and "unified and reversed"
  * form against these strings (unifying them first indeed).  We also don't have
@@ -412,7 +412,13 @@ const char * const seq[] = {
 	"zaq!1qaz",
 	"zaq!2wsx",
 	"1password1234567890", /* these must be after the sequences */
-	"123pass1234567890"
+	"123pass1234567890",
+	"January", /* shorter month names are in wordset_4k */
+	"February",
+	"September",
+	"October",
+	"November",
+	"December"
 };
 
 /*
@@ -455,13 +461,14 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 
 	if (params->match_length)
 	for (i = 0; i < sizeof(seq) / sizeof(seq[0]); i++) {
+		unsigned int flags = (seq[i][0] >= 'A' && seq[i][0] <= 'Z') ? F_WORD : F_SEQ;
 		char *seq_i = unify(NULL, seq[i]);
 		if (!seq_i)
 			goto out;
-		if (is_based(params, seq_i, seq[i], unified, original, F_SEQ) ||
-		    is_based(params, seq_i, seq[i], reversed, original, F_SEQ|F_REV)) {
+		if (is_based(params, seq_i, seq[i], unified, original, flags) ||
+		    is_based(params, seq_i, seq[i], reversed, original, flags | F_REV)) {
 			clean(seq_i);
-			reason = REASON_SEQ;
+			reason = (flags == F_WORD) ? REASON_WORD : REASON_SEQ;
 			goto out;
 		}
 		clean(seq_i);
