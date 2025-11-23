@@ -329,8 +329,10 @@ static int is_based(const passwdqc_params_qc_t *params,
 							bias--;
 							break;
 						}
-/* Do discount non-words or leetspeak from passphrases */
-						passphrase_bias = bias;
+/* Do discount non-words from passphrases */
+						if (length >= params->min[2] && /* optimization */
+						    !is_word_by_length(haystack_original + (p - haystack), j))
+							passphrase_bias = bias;
 					}
 				} else {
 					passphrase_bias = bias;

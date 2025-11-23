@@ -76,5 +76,7 @@ test_basic_password "" "fail" "Empty password"
 test_basic_password "$(printf 'a%.0s' {1..71})" "fail" "Very long password"
 test_basic_password "ljy8zk9aBJ3hA3TXAAMAQe61ytFohJM4SuPFbA4L1xDqV2JDE1n8BCnLN96evcJMWyTkr9y3" "pass" "Max length password"
 test_basic_password "ljy8zk9aBJ3hA3TXAAMAQe61ytFohJM4SuPFbA4L1xDqV2JDE1n8BCnLN96evcJMWyTkr9y312345" "fail" "Max length exceed password"
+test_basic_password "is4a4phrase" "pass" "A minimal passphrase" # if this is accepted ...
+test_basic_password "is4a4phra5e" "pass" "Passphrase with leetspeak in a word" # ... then so should be this
 
 echo -e "\nBasic password validation tests completed\n"
