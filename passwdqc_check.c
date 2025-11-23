@@ -216,16 +216,12 @@ static char *unify(char *dst, const char *src)
  * associate these two letters with each other - e.g., "mile" would
  * match "MLLE", which is undesired.  To solve this, we'd need to test
  * different translations separately, which is not implemented yet. */
-		case 'i': case '|':
-			c = '!'; break;
-		case 'l':
+		case 'i':
 			c = '1'; break;
 		case 'o':
 			c = '0'; break;
 		case 's': case '$':
 			c = '5'; break;
-		case 't': case '+':
-			c = '7'; break;
 		}
 		*dptr++ = c;
 	} while (*sptr++);

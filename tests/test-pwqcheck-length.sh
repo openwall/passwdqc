@@ -78,6 +78,6 @@ test_password "min passphr" "36,24,11,8,7" "fail" "N2: 11-char 2-word non-passph
 test_password "p@s58chr" "36,24,11,8,7" "pass" "N3: 8-char barely complex"
 test_password "pas58chr" "36,24,11,8,7" "fail" "N3: 8-char insufficiently complex"
 test_password "B!re5#K" "36,24,11,8,7" "pass" "N4: 7-char highly complex"
-test_password "B!rd5#K" "36,24,11,8,7" "fail" "N4: 7-char insufficiently complex"
+test_password "B1rd5#K" "36,24,11,8,7" "fail" "N4: 7-char insufficiently complex"
 
 echo -e "\nPassword length tests completed\n"
