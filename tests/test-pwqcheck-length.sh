@@ -56,7 +56,7 @@ test_password "short" "24,12,8,7,6" "fail" "Short password"
 test_password "ThisIsAVeryLongPasswordThatShouldPass123!" "24,12,8,7,6" "pass" "Long complex password"
 
 # Test 2: Custom minimum lengths
-test_password "rare123" "6,6,6,6,6" "pass" "Password with relaxed mins"
+test_password "rar623" "6,6,6,6,6" "pass" "Password with relaxed mins"
 test_password "a" "6,6,6,6,6" "fail" "Single character password"
 
 # Test 3: Different complexity levels
@@ -64,15 +64,15 @@ test_password "BearD&Tach" "8,8,8,8,8" "pass" "Simple but long password"
 test_password "Ar4rew0rd!" "8,8,8,8,8" "pass" "Complex password"
 
 # Test 4: Edge cases
-test_password "YakMeas1" "8,8,8,8,8" "pass" "Exactly minimum length"
-test_password "7 chars" "8,8,8,8,8" "fail" "Below minimum length"
+test_password "YakM90o1" "8,8,8,8,8" "pass" "Exactly minimum length"
+test_password "YakM90o" "8,8,8,8,8" "fail" "Below minimum length"
 
 # Test 5: Different complexity classes
 echo "Testing complexity classes..."
-test_password "rkshnwkuvsgisjbybsifyvubaxukqizqpxyc" "36,24,11,8,7" "pass" "N0: 36-char 1-class random"
+test_password "dhwbcbwxmtbljrlqjhzjnwpgzfqhvwkphvvj" "36,24,11,8,7" "pass" "N0: 36-char 1-class random"
 test_password "figratmatbatsatwatpatcatgdpjrgvapduc" "36,24,11,8,7" "fail" "N0: 36-char 1-class word-based"
-test_password "rkshnwkuvsgisjbybsifyv24" "36,24,11,8,7" "pass" "N1: 24-char 2-class random"
-test_password "rkshnwkuvsgisjbybsifyvu4" "36,24,11,8,7" "fail" "N1: 24-char effectively 1-class random"
+test_password "gkdhrqlqjffmxshvlcgpzq24" "36,24,11,8,7" "pass" "N1: 24-char 2-class random"
+test_password "gkdhrqlqjffmxshvlcgpzqd4" "36,24,11,8,7" "fail" "N1: 24-char effectively 1-class random"
 test_password "min one phr" "36,24,11,8,7" "pass" "N2: 11-char 3-word passphrase"
 test_password "min onesphr" "36,24,11,8,7" "fail" "N2: 11-char 2-word non-passphrase"
 test_password "m@s58chr" "36,24,11,8,7" "pass" "N3: 8-char barely complex"
