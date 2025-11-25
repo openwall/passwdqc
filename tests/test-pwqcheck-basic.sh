@@ -67,7 +67,7 @@ test_basic_password "letmein" "fail" "Common weak password"
 echo -e "\nTesting Mixed Complexity:"
 test_basic_password "MyR4rew0rd" "pass" "Mixed case with symbols and numbers"
 test_basic_password "Str0ng!P@ssphrase" "pass" "Strong with multiple special chars"
-test_basic_password "C0mpl3x1ty!" "pass" "Complex but reasonable length"
+test_basic_password "C0mpl3x1ty!" "fail" "Complex-looking, but based on one word"
 
 # Test Suite 4: Edge Cases
 echo -e "\nTesting Edge Cases:"

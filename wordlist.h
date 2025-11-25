@@ -1,3 +1,3 @@
 /* Generated with wordlist.sh */
-#define WORDLIST_LENGTH_MAX 19
+#define WORDLIST_LENGTH_MAX 26
 extern const char * const _passwdqc_wordlist;
