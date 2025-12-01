@@ -330,8 +330,9 @@ static int is_based(const passwdqc_params_qc_t *params,
 							break;
 						}
 /* Do discount non-words from passphrases */
-						if (length >= params->min[2] && /* optimization */
-						    !is_word_by_length(haystack_original + (p - haystack), j))
+						if (length >= params->min[2] && params->passphrase_words && /* optimization */
+						    (length - j < (params->passphrase_words - 1) * 2 ||
+						    !is_word_by_length(haystack_original + (p - haystack), j)))
 							passphrase_bias = bias;
 					}
 				} else {
