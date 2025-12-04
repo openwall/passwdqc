@@ -279,7 +279,7 @@ static int is_based(const passwdqc_params_qc_t *params,
     const char *needle, const char *needle_original, unsigned int flags)
 {
 	char *scratch;
-	int length;
+	int length, haystack_length;
 	int i, j;
 	const char *p;
 	int worst_bias, worst_passphrase_bias;
@@ -290,15 +290,22 @@ static int is_based(const passwdqc_params_qc_t *params,
 	if (params->match_length < 0)	/* misconfigured */
 		return 1;
 
+	length = (int)strlen(needle);
+	if (length < params->match_length)
+		return 0;
+
+	haystack_length = (int)strlen(haystack);
+	if (haystack_length < params->match_length)
+		return 0;
+
 	scratch = NULL;
 	worst_bias = worst_passphrase_bias = 0;
 
-	length = (int)strlen(needle);
 	for (i = 0; i <= length - params->match_length; i++)
 	for (j = params->match_length; i + j <= length; j++) {
 		int bias = 0;
-		for (p = haystack; *p; p++)
-		if (*p == needle[i] && !strncmp(p + 1, &needle[i + 1], j - 1)) {
+		for (p = haystack; j <= haystack_length - (p - haystack); p++)
+		if (*p == needle[i] && !memcmp(p + 1, &needle[i + 1], j - 1)) {
 			int pos = (flags & F_REV) /* reversed */ ? length - (i + j) : i;
 			if ((flags & F_MODE) == F_RM) { /* remove & credit */
 				if (!scratch) {
