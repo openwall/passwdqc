@@ -276,7 +276,7 @@ static int is_word_by_length(const char *s, int n)
  */
 static int is_based(const passwdqc_params_qc_t *params,
     const char *haystack, const char *haystack_original,
-    const char *needle, const char *needle_original, unsigned int flags)
+    char *needle, const char *needle_original, unsigned int flags)
 {
 	char *scratch;
 	int length, haystack_length;
@@ -304,9 +304,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 	for (i = 0; i <= length - params->match_length; i++)
 	for (j = params->match_length; j <= haystack_length && i + j <= length; j++) {
 		int bias = 0;
-		for (p = haystack; (p = memchr(p, needle[i], haystack_length - (p - haystack))) &&
-		    j <= haystack_length - (p - haystack); p++)
-		if (needle[i + 1] == p[1] && (j <= 2 || !memcmp(p + 2, &needle[i + 2], j - 2))) {
+		char save = needle[i + j];
+		for (p = haystack; needle[i + j] = 0, p = strstr(p, &needle[i]), needle[i + j] = save, p; p++) {
 			int pos = (flags & F_REV) /* reversed */ ? length - (i + j) : i;
 			if ((flags & F_MODE) == F_RM) { /* remove & credit */
 				if (!scratch) {
@@ -449,7 +448,7 @@ const char * const seq[] = {
  * matching) and deny list (for exact matching).
  */
 static const char *is_word_based(const passwdqc_params_qc_t *params,
-    const char *unified, const char *reversed, const char *original)
+    char *unified, char *reversed, const char *original)
 {
 	const char *reason = REASON_ERROR;
 #if WORDLIST_LENGTH_MAX > WORDSET_4K_LENGTH_MAX
