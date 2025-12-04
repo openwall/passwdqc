@@ -298,6 +298,17 @@ static int is_based(const passwdqc_params_qc_t *params,
 	if (haystack_length < params->match_length)
 		return 0;
 
+	if ((flags & F_MODE) != F_RM) { /* discount */
+		worst_bias = (int)params->match_length - 1 - haystack_length;
+		for (i = 0; i < 5; i++) {
+			if (length >= params->min[i] &&
+			    length + worst_bias < params->min[i]) /* matters */
+				break;
+		}
+		if (i == 5) /* wouldn't matter for any class */
+			return 0;
+	}
+
 	scratch = NULL;
 	worst_bias = worst_passphrase_bias = 0;
 
