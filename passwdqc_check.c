@@ -314,8 +314,9 @@ static int is_based(const passwdqc_params_qc_t *params,
 					clean(scratch);
 					return 1;
 				}
+				break;
 			} else { /* discount */
-				int passphrase_bias = 0;
+				int passphrase_bias = 0, invariant = 1;
 				/* discount j - (match_length - 1) chars */
 				bias = (int)params->match_length - 1 - j;
 				if ((flags & F_MODE) == F_WORD) { /* words */
@@ -331,6 +332,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 						    (length - j < (params->passphrase_words - 1) * 2 ||
 						    !is_word_by_length(haystack_original + (p - haystack), j)))
 							passphrase_bias = bias;
+						invariant = passphrase_bias;
 					}
 				} else {
 					passphrase_bias = bias;
@@ -344,6 +346,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 					if (passphrase_bias < worst_passphrase_bias)
 						worst_passphrase_bias = passphrase_bias;
 				}
+				if (invariant) /* optimization */
+					break;
 			}
 		}
 /* Zero bias implies that there were no matches for this length.  If so,
