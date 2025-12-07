@@ -291,7 +291,10 @@ static int is_based(const passwdqc_params_qc_t *params,
 		return 1;
 
 	potential_match_end_p = NULL;
-	{
+	if ((flags & F_MODE) == F_RM) { /* haystack may be sensitive */
+		potential_match_length = haystack_length = (int)strlen(haystack);
+		potential_match_start = 0;
+	} else { /* assume haystack isn't security-sensitive, map it */
 		unsigned char haystack_map[0x100] = {0};
 		for (p = haystack, haystack_length = 0; *p; p++)
 			haystack_map[(unsigned char)*p] = ++haystack_length;
