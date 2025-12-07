@@ -291,23 +291,27 @@ static int is_based(const passwdqc_params_qc_t *params,
 		return 1;
 
 	{
-		char haystack_map[0x100] = {0};
-		for (p = haystack, haystack_length = 0; *p; p++, haystack_length++)
-			haystack_map[(unsigned char)*p] = 1;
+		unsigned char haystack_map[0x100] = {0};
+		for (p = haystack, haystack_length = 0; *p; p++)
+			haystack_map[(unsigned char)*p] = ++haystack_length;
 
-		potential_match_length = 0;
-		for (p = needle, i = 0; *p; p++) {
-			if (haystack_map[(unsigned char)*p]) {
-				if (++i >= haystack_length)
-					break;
-			} else {
-				if (i > potential_match_length)
-					potential_match_length = i;
-				i = 0;
+		if (haystack_length > 0xff) { /* map element overflow */
+			potential_match_length = haystack_length;
+		} else {
+			potential_match_length = 0;
+			for (p = needle, i = 0; *p; p++) {
+				if (haystack_map[(unsigned char)*p] > i) {
+					if (++i >= haystack_length)
+						break;
+				} else {
+					if (i > potential_match_length)
+						potential_match_length = i;
+					i = haystack_map[(unsigned char)*p];
+				}
 			}
+			if (i > potential_match_length)
+				potential_match_length = i;
 		}
-		if (i > potential_match_length)
-			potential_match_length = i;
 	}
 	if (potential_match_length < params->match_length)
 		return 0;
