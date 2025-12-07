@@ -114,16 +114,8 @@ static int is_simple(const passwdqc_params_qc_t *params,
 			others++;
 
 /* A word starts when a letter follows a non-letter or when a non-ASCII
- * character follows a space character.  We treat all non-ASCII characters
- * as non-spaces, which is not entirely correct (there's the non-breaking
- * space character at 0xa0, 0x9a, or 0xff), but it should not hurt. */
-		if (isascii(p)) {
-			if (isascii(c)) {
-				if (isalpha(c) && !isalpha(p))
-					words++;
-			} else if (isspace(p))
-				words++;
-		}
+ * character follows an ASCII non-letter */
+		words += isascii(p) && !isalpha(p) && (!isascii(c) || isalpha(c));
 		p = c;
 
 /* Count this character just once: when we're not going to see it anymore */
