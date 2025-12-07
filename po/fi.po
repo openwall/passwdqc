@@ -287,8 +287,8 @@ msgid "based on a dictionary word and not a passphrase"
 msgstr "perustuu sanakirjasanaan eikä ole salalause"
 
 #: passwdqc_check.c:45
-msgid "based on a common sequence of characters and not a passphrase"
-msgstr "perustuu yleiseen merkkisarjaan eikä ole salalause"
+msgid "based on a common sequence of characters"
+msgstr "perustuu yleiseen merkkisarjaan"
 
 #: passwdqc_check.c:48
 msgid "based on a word list entry"
