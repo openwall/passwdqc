@@ -493,7 +493,7 @@ retry:
 
 	check_reason = NULL; /* unused */
 	if (status == PAM_SUCCESS &&
-	    (!randompass || !strstr(trypass, randompass)) &&
+	    (!randompass || strcmp(trypass, randompass)) &&
 	    (randomonly ||
 	     (check_reason = passwdqc_check(&params.qc, trypass, oldpass, pw)))) {
 		if (randomonly)
