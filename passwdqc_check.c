@@ -305,7 +305,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 	for (j = params->match_length; j <= haystack_length && i + j <= length; j++) {
 		int bias = 0;
 		char save = needle[i + j];
-		for (p = haystack; needle[i + j] = 0, p = strstr(p, &needle[i]), needle[i + j] = save, p; p++) {
+		needle[i + j] = 0;
+		for (p = haystack; (p = strstr(p, &needle[i])); p++) {
 			int pos = (flags & F_REV) /* reversed */ ? length - (i + j) : i;
 			if ((flags & F_MODE) == F_RM) { /* remove & credit */
 				if (!scratch) {
@@ -357,6 +358,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 					break;
 			}
 		}
+		needle[i + j] = save;
 /* Zero bias implies that there were no matches for this length.  If so,
  * there's no reason to try the next substring length (it would result in
  * no matches as well).  We break out of the substring length loop and
