@@ -282,7 +282,6 @@ static int is_based(const passwdqc_params_qc_t *params,
 	int length, haystack_length, potential_match_length, potential_match_start, potential_match_end;
 	int i, j;
 	const char *p, *potential_match_end_p;
-	int worst_bias, worst_passphrase_bias;
 
 	if (!params->match_length)	/* disabled */
 		return 0;
@@ -327,7 +326,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 	length = (int)strlen(needle);
 
 	if ((flags & F_MODE) != F_RM) { /* discount */
-		worst_bias = (int)params->match_length - 1 - potential_match_length;
+		int worst_bias = (int)params->match_length - 1 - potential_match_length;
 		for (i = 0; i < 5; i++) {
 			if (length >= params->min[i] &&
 			    length + worst_bias < params->min[i]) /* matters */
@@ -338,7 +337,6 @@ static int is_based(const passwdqc_params_qc_t *params,
 	}
 
 	scratch = NULL;
-	worst_bias = worst_passphrase_bias = 0;
 
 	if (potential_match_end_p)
 		potential_match_end = potential_match_end_p - needle + 1 - params->match_length;
@@ -390,14 +388,8 @@ static int is_based(const passwdqc_params_qc_t *params,
 					passphrase_bias = bias;
 				}
 				/* bias <= -1 */
-				if (bias < worst_bias || passphrase_bias < worst_passphrase_bias) {
-					if (is_simple(params, needle_original, bias, passphrase_bias))
-						return 1;
-					if (bias < worst_bias)
-						worst_bias = bias;
-					if (passphrase_bias < worst_passphrase_bias)
-						worst_passphrase_bias = passphrase_bias;
-				}
+				if (is_simple(params, needle_original, bias, passphrase_bias))
+					return 1;
 				if (invariant) /* optimization */
 					break;
 			}
