@@ -279,7 +279,7 @@ static int is_based(const passwdqc_params_qc_t *params,
     char *needle, const char *needle_original, unsigned int flags)
 {
 	char *scratch;
-	int length, haystack_length, potential_match_length;
+	int length, haystack_length, potential_match_length, potential_match_start;
 	int i, j;
 	const char *p;
 	int worst_bias, worst_passphrase_bias;
@@ -297,10 +297,14 @@ static int is_based(const passwdqc_params_qc_t *params,
 
 		if (haystack_length > 0xff) { /* map element overflow */
 			potential_match_length = haystack_length;
+			potential_match_start = 0;
 		} else {
 			potential_match_length = 0;
+			potential_match_start = -1;
 			for (p = needle, i = 0; *p; p++) {
 				if (haystack_map[(unsigned char)*p] > i) {
+					if (potential_match_start < 0)
+						potential_match_start = i;
 					if (++i >= haystack_length)
 						break;
 				} else {
@@ -332,7 +336,7 @@ static int is_based(const passwdqc_params_qc_t *params,
 	scratch = NULL;
 	worst_bias = worst_passphrase_bias = 0;
 
-	for (i = 0; i <= length - params->match_length; i++)
+	for (i = potential_match_start; i <= length - params->match_length; i++)
 	for (j = params->match_length; j <= potential_match_length && i + j <= length; j++) {
 		int bias = 0;
 		char save = needle[i + j];
