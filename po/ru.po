@@ -279,9 +279,8 @@ msgid "based on a dictionary word and not a passphrase"
 msgstr "основан на слове из словаря и не является парольной фразой"
 
 #: passwdqc_check.c:45
-msgid "based on a common sequence of characters and not a passphrase"
-msgstr ""
-"основан на простой последовательности символов и не является парольной фразой"
+msgid "based on a common sequence of characters"
+msgstr "основан на простой последовательности символов"
 
 #: passwdqc_check.c:48
 msgid "based on a word list entry"

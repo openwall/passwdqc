@@ -43,7 +43,7 @@
 	_("based on a dictionary word and not a passphrase")
 
 #define REASON_SEQ \
-	_("based on a common sequence of characters and not a passphrase")
+	_("based on a common sequence of characters")
 
 #define REASON_WORDLIST \
 	_("based on a word list entry")
