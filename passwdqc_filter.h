@@ -30,6 +30,16 @@ extern int passwdqc_filter_open(passwdqc_filter_t *flt, const char *filename);
 extern int passwdqc_filter_lookup(const passwdqc_filter_t *flt, const char *plaintext);
 extern int passwdqc_filter_close(passwdqc_filter_t *flt);
 
+#ifdef __GNUC__
+#define force_inline	__attribute__ ((always_inline)) inline
+#define likely(x)	__builtin_expect(!!(x), 1)
+#define unlikely(x)	__builtin_expect(!!(x), 0)
+#else
+#define force_inline	inline
+#define likely(x)	(x)
+#define unlikely(x)	(x)
+#endif
+
 #ifdef PASSWDQC_FILTER_INTERNALS
 /* Lower-level inlines for shared use by pwqfilter.c and passwdqc_filter.c */
 
@@ -83,16 +93,6 @@ typedef union {
 	uint32_t u32[4];
 	uint64_t u64[2];
 } passwdqc_filter_hash_t;
-
-#ifdef __GNUC__
-#define force_inline	__attribute__ ((always_inline)) inline
-#define likely(x)	__builtin_expect(!!(x), 1)
-#define unlikely(x)	__builtin_expect(!!(x), 0)
-#else
-#define force_inline	inline
-#define likely(x)	(x)
-#define unlikely(x)	(x)
-#endif
 
 static force_inline passwdqc_filter_i_t passwdqc_filter_wrap(uint32_t what, passwdqc_filter_i_t m)
 {

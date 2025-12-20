@@ -1,4 +1,4 @@
-.\" Copyright (c) 2000-2003,2005,2008,2019,2020 Solar Designer
+.\" Copyright (c) 2000-2003,2005,2008,2019,2020,2025 Solar Designer
 .\" All rights reserved.
 .\" Copyright (c) 2001 Networks Associates Technology, Inc.
 .\" All rights reserved.
@@ -34,7 +34,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd March 10, 2021
+.Dd November 23, 2025
 .Dt PASSWDQC.CONF 5
 .Os "Openwall Project"
 .Sh NAME
@@ -170,18 +170,21 @@ discounted would be weak.
 .It Cm wordlist Ns = Ns Ar FILE
 Deny passwords that are based on lines of the tiny external text
 .Ar FILE ,
-which can reasonably be e.g. a list of a few thousand common passwords.
-Common dictionary words may also reasonably be included, especially in a
-local language other than English, or longer yet common English words.
-(passwdqc includes a list of a few thousand common English words of
-lengths from 3 to 6 built in.  Any word list possibly specified with
-this option is used in addition to the built-in word list.)
+which can reasonably include common passwords, dictionary words in a
+local language other than English, and longer English words.
+.Pp
+passwdqc includes built-in lists of a few thousand common English words
+mostly of lengths from 3 to 6, a handful of common character sequences
+such as keyboard walks, and many common passwords of length 7 and above.
+Any word list possibly specified with this option is used in addition to
+the lists of English words and character sequences, but replaces the
+list of common passwords.
 .Pp
 Substring matching and discounting will be used if the
 .Cm match
 setting
-above is non-zero.  Please note that this is very inefficient, and isn't
-to be used with large wordlists.
+above is non-zero.  Please note that this isn't to be used with large
+wordlists for performance reasons.
 .It Cm denylist Ns = Ns Ar FILE
 Deny passwords or passphrases directly appearing in the tiny external text
 .Ar FILE .
