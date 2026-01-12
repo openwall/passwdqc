@@ -51,6 +51,7 @@
 #define REASON_DENYLIST \
 	_("is in deny list")
 
+/* Not simply "is in" nor "appears in" because of potential false positives */
 #define REASON_FILTER \
 	_("appears to be in a database")
 
