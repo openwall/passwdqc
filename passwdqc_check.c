@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2000-2002,2010,2013,2016,2020,2025 by Solar Designer.  See LICENSE.
+ * Copyright (c) 2000-2002,2010,2013,2016,2020,2025,2026 by Solar Designer.
+ * See LICENSE.
  */
 
 #ifdef _MSC_VER
@@ -44,6 +45,9 @@
 
 #define REASON_SEQ \
 	_("based on a common sequence of characters")
+
+#define REASON_COMMON \
+	_("based on a common password")
 
 #define REASON_WORDLIST \
 	_("based on a word list entry")
@@ -549,8 +553,10 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 				continue;
 			unify(word_unified, word);
 			if (is_based(params, word_unified, word, unified, original, F_WORD) ||
-			    is_based(params, word_unified, word, reversed, original, F_WORD|F_REV))
-				goto out_wordlist;
+			    is_based(params, word_unified, word, reversed, original, F_WORD|F_REV)) {
+				reason = REASON_COMMON;
+				goto out;
+			}
 		} while ((reuse = *p++));
 	}
 
