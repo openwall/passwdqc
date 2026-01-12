@@ -290,6 +290,10 @@ msgstr "perustuu sanakirjasanaan eikä ole salalause"
 msgid "based on a common sequence of characters"
 msgstr "perustuu yleiseen merkkisarjaan"
 
+#: passwdqc_check.c:50
+msgid "based on a common password"
+msgstr "perustuu yleiseen salasanaan"
+
 #: passwdqc_check.c:48
 msgid "based on a word list entry"
 msgstr "perustuu sanaluettelomerkintään"

@@ -282,6 +282,10 @@ msgstr "основан на слове из словаря и не являет�
 msgid "based on a common sequence of characters"
 msgstr "основан на простой последовательности символов"
 
+#: passwdqc_check.c:50
+msgid "based on a common password"
+msgstr "основан на распространенном пароле"
+
 #: passwdqc_check.c:48
 msgid "based on a word list entry"
 msgstr "основан на слове из списка"
