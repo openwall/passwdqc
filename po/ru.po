@@ -20,23 +20,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n%10==1 && n%100!=11 ? 0 : 1;\n"
 
-#: pam_passwdqc.c:68
+#: pam_passwdqc.c:62
 msgid "Enter current password: "
 msgstr "Введите старый пароль: "
 
-#: pam_passwdqc.c:70
+#: pam_passwdqc.c:64
 msgid "Enter new password: "
 msgstr "Введите новый пароль: "
 
-#: pam_passwdqc.c:72
+#: pam_passwdqc.c:66
 msgid "Re-type new password: "
 msgstr "Повторите новый пароль: "
 
-#: pam_passwdqc.c:75
+#: pam_passwdqc.c:69
 msgid "System configuration error.  Please contact your administrator."
 msgstr "Ошибка настройки системы.  Свяжитесь с вашим администратором."
 
-#: pam_passwdqc.c:79
+#: pam_passwdqc.c:73
 msgid ""
 "\n"
 "You can now choose the new password.\n"
@@ -44,7 +44,7 @@ msgstr ""
 "\n"
 "Вы можете выбрать новый пароль.\n"
 
-#: pam_passwdqc.c:81
+#: pam_passwdqc.c:75
 msgid ""
 "\n"
 "You can now choose the new password or passphrase.\n"
@@ -52,7 +52,7 @@ msgstr ""
 "\n"
 "Вы можете выбрать новый пароль или парольную фразу.\n"
 
-#: pam_passwdqc.c:85
+#: pam_passwdqc.c:79
 #, c-format
 msgid ""
 "A good password should be a mix of upper and lower case letters, digits, "
@@ -70,7 +70,7 @@ msgstr[1] ""
 "В хорошем пароле приветствуется наличие заглавных и строчных букв, цифр\n"
 "и прочих символов.  Пароль должен содержать не менее %d символов.\n"
 
-#: pam_passwdqc.c:94
+#: pam_passwdqc.c:88
 #, c-format
 msgid ""
 "A valid password should be a mix of upper and lower case letters, digits, "
@@ -101,7 +101,7 @@ msgstr[1] ""
 "При подсчете классов не учитываются заглавная буква в начале и цифра в "
 "конце.\n"
 
-#: pam_passwdqc.c:109
+#: pam_passwdqc.c:103
 #, c-format
 msgid ""
 "A valid password should be a mix of upper and lower case letters, digits, "
@@ -130,7 +130,7 @@ msgstr[1] ""
 "При подсчете классов не учитываются заглавная буква в начале и цифра в "
 "конце.\n"
 
-#: pam_passwdqc.c:124
+#: pam_passwdqc.c:118
 #, c-format
 msgid ""
 "A valid password should be a mix of upper and lower case letters, digits, "
@@ -165,7 +165,7 @@ msgstr[1] ""
 "При подсчете классов не учитываются заглавная буква в начале и цифра в "
 "конце.\n"
 
-#: pam_passwdqc.c:141
+#: pam_passwdqc.c:135
 #, c-format
 msgid ""
 "A passphrase should be of at least %d word, %d to %d characters long, and\n"
@@ -180,7 +180,7 @@ msgstr[1] ""
 "Парольная фраза должна состоять как минимум из %d слов, и содержать\n"
 "символы в количестве от %d до %d, среди которых достаточно различных.\n"
 
-#: pam_passwdqc.c:149
+#: pam_passwdqc.c:143
 #, c-format
 msgid ""
 "Alternatively, if no one else can see your terminal now, you can pick this "
@@ -190,7 +190,7 @@ msgstr ""
 "В качестве альтернативы, если ваш терминал никто сейчас не видит, можно\n"
 "набрать предлагаемый пароль: \"%s\".\n"
 
-#: pam_passwdqc.c:152
+#: pam_passwdqc.c:146
 #, c-format
 msgid ""
 "This system is configured to permit randomly generated passwords only.\n"
@@ -202,7 +202,7 @@ msgstr ""
 "сейчас не видит, можно набрать предлагаемый пароль: \"%s\".\n"
 "В противном случае попробуйте повторить попытку позднее.\n"
 
-#: pam_passwdqc.c:156
+#: pam_passwdqc.c:150
 msgid ""
 "This system is configured to use randomly generated passwords only,\n"
 "but the attempt to generate a password has failed.  This could happen\n"
@@ -215,70 +215,70 @@ msgstr ""
 "вы запросили слишком длинный пароль, либо было отказано в доступе\n"
 "к пулу случайных чисел ядра."
 
-#: pam_passwdqc.c:161
+#: pam_passwdqc.c:155
 msgid "This password may be too long for some services.  Choose another."
 msgstr ""
 "Этот пароль может оказаться слишком длинным для некоторых служб.  Выберите "
 "другой."
 
-#: pam_passwdqc.c:163
+#: pam_passwdqc.c:157
 msgid "Warning: your longer password will be truncated to 8 characters."
 msgstr "Внимание: ваш пароль будет усечён до 8 символов."
 
-#: pam_passwdqc.c:165
+#: pam_passwdqc.c:159
 #, c-format
 msgid "Weak password: %s."
 msgstr "Слабый пароль: %s."
 
-#: pam_passwdqc.c:167
+#: pam_passwdqc.c:161
 msgid "Sorry, you've mistyped the password that was generated for you."
 msgstr "Извините, вы ошиблись при вводе созданного для вас пароля."
 
-#: pam_passwdqc.c:169
+#: pam_passwdqc.c:163
 msgid "Sorry, passwords do not match."
 msgstr "Пароли не совпадают."
 
-#: pam_passwdqc.c:171
+#: pam_passwdqc.c:165
 msgid "Try again."
 msgstr "Попробуйте ещё раз."
 
-#: passwdqc_check.c:21
+#: passwdqc_check.c:23
 msgid "check failed"
 msgstr "проверка не удалась"
 
-#: passwdqc_check.c:24
+#: passwdqc_check.c:26
 msgid "is the same as the old one"
 msgstr "совпадает со старым"
 
-#: passwdqc_check.c:26
+#: passwdqc_check.c:28
 msgid "is based on the old one"
 msgstr "основан на старом"
 
-#: passwdqc_check.c:29
+#: passwdqc_check.c:31
 msgid "too short"
 msgstr "слишком короткий"
 
-#: passwdqc_check.c:31
+#: passwdqc_check.c:33
 msgid "too long"
 msgstr "слишком длинный"
 
-#: passwdqc_check.c:34
+#: passwdqc_check.c:36
 msgid "not enough different characters or classes for this length"
 msgstr "недостаточно символов или классов для заданной длины"
 
-#: passwdqc_check.c:36
+#: passwdqc_check.c:38
 msgid "not enough different characters or classes"
 msgstr "недостаточно символов или классов"
 
-#: passwdqc_check.c:39
+#: passwdqc_check.c:41
 msgid "based on personal login information"
 msgstr "основан на персональных данных"
 
-#: passwdqc_check.c:42
+#: passwdqc_check.c:44
 msgid "based on a dictionary word and not a passphrase"
 msgstr "основан на слове из словаря и не является парольной фразой"
 
-#: passwdqc_check.c:45
+#: passwdqc_check.c:47
 msgid "based on a common sequence of characters"
 msgstr "основан на простой последовательности символов"
 
@@ -286,14 +286,15 @@ msgstr "основан на простой последовательности 
 msgid "based on a common password"
 msgstr "основан на распространенном пароле"
 
-#: passwdqc_check.c:48
+#: passwdqc_check.c:53
 msgid "based on a word list entry"
 msgstr "основан на слове из списка"
 
-#: passwdqc_check.c:51
+#: passwdqc_check.c:56
 msgid "is in deny list"
 msgstr "в списке запрещённых"
 
-#: passwdqc_check.c:54
+#. Not simply "is in" nor "appears in" because of potential false positives
+#: passwdqc_check.c:60
 msgid "appears to be in a database"
 msgstr "обнаружен в базе данных"

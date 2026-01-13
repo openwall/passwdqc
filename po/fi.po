@@ -250,43 +250,43 @@ msgstr "Anteeksi, salasanat eivät täsmää."
 msgid "Try again."
 msgstr "Yritä uudestaan."
 
-#: passwdqc_check.c:21
+#: passwdqc_check.c:23
 msgid "check failed"
 msgstr "tarkistus epäonnistui"
 
-#: passwdqc_check.c:24
+#: passwdqc_check.c:26
 msgid "is the same as the old one"
 msgstr "on sama kuin vanha salasana"
 
-#: passwdqc_check.c:26
+#: passwdqc_check.c:28
 msgid "is based on the old one"
 msgstr "perustuu vanhaan salasanaan"
 
-#: passwdqc_check.c:29
+#: passwdqc_check.c:31
 msgid "too short"
 msgstr "liian lyhyt"
 
-#: passwdqc_check.c:31
+#: passwdqc_check.c:33
 msgid "too long"
 msgstr "liian pitkä"
 
-#: passwdqc_check.c:34
+#: passwdqc_check.c:36
 msgid "not enough different characters or classes for this length"
 msgstr "ei tarpeeksi eri merkkejä tai merkkiluokkia tälle pituudelle"
 
-#: passwdqc_check.c:36
+#: passwdqc_check.c:38
 msgid "not enough different characters or classes"
 msgstr "ei tarpeeksi eri merkkejä tai merkkiluokkia"
 
-#: passwdqc_check.c:39
+#: passwdqc_check.c:41
 msgid "based on personal login information"
 msgstr "perustuu henkilökohtaisiin kirjautumistietoihin"
 
-#: passwdqc_check.c:42
+#: passwdqc_check.c:44
 msgid "based on a dictionary word and not a passphrase"
 msgstr "perustuu sanakirjasanaan eikä ole salalause"
 
-#: passwdqc_check.c:45
+#: passwdqc_check.c:47
 msgid "based on a common sequence of characters"
 msgstr "perustuu yleiseen merkkisarjaan"
 
@@ -294,14 +294,15 @@ msgstr "perustuu yleiseen merkkisarjaan"
 msgid "based on a common password"
 msgstr "perustuu yleiseen salasanaan"
 
-#: passwdqc_check.c:48
+#: passwdqc_check.c:53
 msgid "based on a word list entry"
 msgstr "perustuu sanaluettelomerkintään"
 
-#: passwdqc_check.c:51
+#: passwdqc_check.c:56
 msgid "is in deny list"
 msgstr "on kieltolistassa"
 
-#: passwdqc_check.c:54
+#. Not simply "is in" nor "appears in" because of potential false positives
+#: passwdqc_check.c:60
 msgid "appears to be in a database"
 msgstr "näyttää olevan tietokannassa"
