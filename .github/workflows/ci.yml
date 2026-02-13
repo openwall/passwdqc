@@ -11,7 +11,7 @@ jobs:
       run: git diff-index --check --cached 4b825dc642cb6eb9a060e54bf8d69288fbee4904
 
   gcc14-x86_64:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       CC: gcc-14
       TARGET: x86_64
@@ -95,7 +95,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang18-x86_64:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       CC: clang-18
       TARGET: x86_64
@@ -109,7 +109,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang17-x86_64:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       CC: clang-17
       TARGET: x86_64
@@ -123,7 +123,7 @@ jobs:
       run: ci/run-build-and-tests.sh
 
   clang16-x86_64:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       CC: clang-16
       TARGET: x86_64
