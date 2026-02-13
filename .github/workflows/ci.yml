@@ -83,7 +83,7 @@ jobs:
   gcc9-x86_64:
     runs-on: ubuntu-latest
     env:
-      CC: gcc
+      CC: gcc-9
       TARGET: x86_64
     steps:
     - uses: actions/checkout@v6
