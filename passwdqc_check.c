@@ -273,7 +273,7 @@ static int is_word_by_length(const char *s, int n)
  */
 static int is_based(const passwdqc_params_qc_t *params,
     const char *haystack, const char *haystack_original,
-    char *needle, const char *needle_original, unsigned int flags)
+    const char *needle, const char *needle_original, unsigned int flags)
 {
 	char *scratch;
 	int length, haystack_length, potential_match_length, potential_match_start, potential_match_end;
@@ -482,7 +482,7 @@ const char * const seq[] = {
  * matching) and deny list (for exact matching).
  */
 static const char *is_word_based(const passwdqc_params_qc_t *params,
-    char *unified, char *reversed, const char *original)
+    const char *unified, const char *reversed, const char *original)
 {
 	const char *reason = REASON_ERROR;
 #if WORDLIST_LENGTH_MAX > WORDSET_4K_LENGTH_MAX
