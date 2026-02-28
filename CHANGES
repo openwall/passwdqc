@@ -1,3 +1,53 @@
+	Significant changes between 2.0.3 and 2.1.0.
+
+Add built-in generated common passwords list and a script to (re)generate it.
+Specifically, we effectively include top 100k of HIBPv8 overlap with RockYou,
+optimized to ~50k entries and compressed to under 200 KB as now embedded in
+program binary.  With this and our default policy, we no longer accept anything
+from current JtR jumbo default password.lst (1.8 million entries, where we'd
+previously accept 0.1%), and we accept only under 0.03% from first 10 million
+that the same JtR generates by default (previously 0.3%) - all while having
+minimal impact on acceptance of stronger passwords (tested on those uncracked
+in CMIYC 2010).  Add new rejection reason "based on a common password".
+
+Optimize the fuzzy matching against wordlist entries such that it's fast enough
+even with the larger default wordlist (or with external wordlists, which may be
+larger yet).
+
+Slightly expand the previously existing built-in English word list and common
+character sequences list.  Importantly, these are used even when the above
+newly added common passwords list is overridden with the wordlist= option to
+use an external wordlist, so that basic checks of this sort continue to work
+regardless of the external wordlist's quality.
+
+Revise matching of wordlist entries against qualifying multi-word passphrases.
+It is expected and allowed for such a passphrase to consist of words, so words
+were not and still are not discounted, but if a wordlist entry matches a longer
+than one word part of a passphrase, that part is now nevertheless discounted.
+
+Revise matching of leetspeak to maintain intuitive behavior despite of the
+change above (challenging because digits in leetspeak words look like word
+separators), as well as to better reflect what's actually common and exclude
+what is not.
+
+Revise non-ASCII passphrase word counting logic: no longer require non-ASCII
+words to be separated specifically by spaces, but allow any ASCII non-letters
+as separators.
+
+Simplify the default password policy by no longer allowing length 7.
+
+Add Finnish translation of rejection reasons and pam_passwdqc messages.
+
+In Makefile, pass certain default hardening flags to compiler and linker when
+building for Linux, and let the package add more of them and/or override them.
+
+Add tests, run them on "make check", run that from RPM spec %check.
+
+Replace the bundled RPM spec with Fedora's, update it for this release.
+
+Fix macOS and Solaris builds.
+
+
 	Significant changes between 2.0.2 and 2.0.3.
 
 Added Cygwin support.

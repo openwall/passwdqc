@@ -33,8 +33,8 @@ Since passwdqc installs a new shared library, you may need to run the
 ldconfig(8) program to update the dynamic linker cache.
 
 Alternatively, on a modern Red Hat'ish Linux system, you can build RPM
-packages by running "rpmbuild -tb passwdqc-2.0.3.tar.gz" (as non-root),
-then install the binary subpackages with "rpm -Uvh passwdqc*-2.0.3*.rpm"
+packages by running "rpmbuild -tb passwdqc-2.1.0.tar.gz" (as non-root),
+then install the binary subpackages with "rpm -Uvh passwdqc*-2.1.0*.rpm"
 (as root).  This works due to the RPM spec file included in the tarball.
 
 Please refer to README and PLATFORMS for information on configuring your

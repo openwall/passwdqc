@@ -6,7 +6,7 @@
 #
 
 PACKAGE = passwdqc
-VERSION = 2.0.3
+VERSION = 2.1.0
 TITLE = pam_passwdqc
 SHARED_LIB = libpasswdqc.so.1
 DEVEL_LIB = libpasswdqc.so
