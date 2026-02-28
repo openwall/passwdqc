@@ -1,7 +1,7 @@
 Summary: A password/passphrase strength checking and policy enforcement toolset
 Name: passwdqc
-Version: 2.0.3
-Release: 9%{?dist}
+Version: 2.1.0
+Release: 1%{?dist}
 # Two manual pages (pam_passwdqc.8 and passwdqc.conf.5) are under the
 # 3-clause BSD-style license as specified within the files themselves.
 # The rest of the files in this package fall under the terms of
@@ -117,6 +117,9 @@ make install install_locales \
 
 %ldconfig_scriptlets -n lib%name
 
+%check
+make check
+
 %files
 
 %files -n lib%name -f passwdqc.lang
@@ -140,6 +143,10 @@ make install install_locales \
 %_mandir/man1/*.1*
 
 %changelog
+* Mon Mar 02 2026 Solar Designer <solar@openwall.com> 2.1.0-1
+- Update to 2.1.0
+- Run "make check" from %%check
+
 * Fri Jan 16 2026 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.3-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_44_Mass_Rebuild
 
