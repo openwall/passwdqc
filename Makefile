@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000-2003,2005,2009,2010,2020 by Solar Designer
+# Copyright (c) 2000-2003,2005,2009,2010,2020,2026 by Solar Designer
 # Copyright (c) 2008,2009,2017 by Dmitry V. Levin
 # Copyright (c) 2017 by Oleg Solovyov
 # See LICENSE
@@ -125,11 +125,25 @@ OBJS_FILTER = pwqfilter.o md4.o
 
 default: all
 
+# -pie is a linker option, but let's have it in CFLAGS to ensure -fPIE and -pie
+# are ever overridden or not together.  Include CFLAGS into LDFLAGS because:
+# 1. "For predictable results, you must also specify the same set of options
+#    used for compilation (-fpie, -fPIE, or model suboptions) when you specify
+#    this linker option." (as gcc man page says about "-pie")
+# 2. In case the package only overrides CFLAGS, we want the distro's hardening
+#    or other flags to also propagate to the linker.
+# Pass the hardening flags first so that the package CFLAGS may override them.
+CFLAGS_HARDENING_LINUX = -fPIE -pie -Wno-unused-command-line-argument -fstack-protector-strong -D_FORTIFY_SOURCE=2
+LDFLAGS_HARDENING_LINUX = -Wl,-z,defs -Wl,-z,relro -Wl,-z,now
+
 all locales pam utils install install_lib install_locales install_pam install_utils uninstall remove remove_lib remove_locales remove_pam remove_utils:
 	case "`uname -s`" in \
 	Linux)	$(MAKE) CPPFLAGS_lib="$(CPPFLAGS_lib) -DHAVE_SHADOW" \
-			LDFLAGS_lib="$(LDFLAGS_lib_LINUX)" \
-			LDFLAGS_pam="$(LDFLAGS_pam_LINUX)" \
+			CFLAGS_bin="$(CFLAGS_HARDENING_LINUX) $(CFLAGS_bin)" \
+			CFLAGS_lib="$(CFLAGS_HARDENING_LINUX) $(CFLAGS_lib)" \
+			LDFLAGS="$(LDFLAGS_HARDENING_LINUX) $(CFLAGS_HARDENING_LINUX) $(CFLAGS_bin) $(LDFLAGS)" \
+			LDFLAGS_lib="$(LDFLAGS_HARDENING_LINUX) $(CFLAGS_HARDENING_LINUX) $(CFLAGS_lib) $(LDFLAGS_lib_LINUX)" \
+			LDFLAGS_pam="$(LDFLAGS_HARDENING_LINUX) $(CFLAGS_HARDENING_LINUX) $(CFLAGS_lib) $(LDFLAGS_pam_LINUX)" \
 			LDLIBS_pam="$(LDLIBS_pam_LINUX)" \
 			$@_wrapped;; \
 	SunOS)	$(MAKE) -e CPPFLAGS_lib="$(CPPFLAGS_lib) -DHAVE_SHADOW" \
