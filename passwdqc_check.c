@@ -543,7 +543,7 @@ static const char *is_word_based(const passwdqc_params_qc_t *params,
 		char *q = word;
 		unsigned int reuse = 1;
 		do {
-			if (--reuse > q - word) /* shouldn't happen */
+			if (--reuse > (unsigned int)(q - word)) /* shouldn't happen */
 				reuse = 0;
 			q = word + reuse;
 			while ((unsigned char)*p >= WORDLIST_LENGTH_MAX && q < word + WORDLIST_LENGTH_MAX)

@@ -7,10 +7,10 @@
 # Eero Häkkinen <Eero+passwdqc@Häkkinen.fi>, 2023, 2025
 msgid ""
 msgstr ""
-"Project-Id-Version: passwdqc 2.0.3\n"
+"Project-Id-Version: passwdqc 2.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-10 18:24+0200\n"
-"PO-Revision-Date: 2025-11-10 18:24+0200\n"
+"PO-Revision-Date: 2026-02-28 09:06+0100\n"
 "Last-Translator: Eero Häkkinen <Eero+passwdqc@Häkkinen.fi>\n"
 "Language-Team: Finnish <>\n"
 "Language: fi_FI\n"
