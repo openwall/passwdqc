@@ -25,6 +25,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - { cc: gcc-15, runs-on: ubuntu-latest }
           - { cc: gcc-14, runs-on: ubuntu-latest }
           - { cc: gcc-13, runs-on: ubuntu-latest }
           - { cc: gcc-12, runs-on: ubuntu-latest }
