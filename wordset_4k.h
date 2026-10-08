@@ -8,7 +8,7 @@
 
 #define WORDSET_4K_LENGTH_MAX		6
 
-#if defined(__GNUC__) && (__GNUC__ >= 15)
+#if (defined(__GNUC__) && (__GNUC__ >= 15)) || (defined(__clang_major__) && (__clang_major__ >= 21))
 #define _passwdqc_nonstring __attribute__((nonstring))
 #else
 #define _passwdqc_nonstring
