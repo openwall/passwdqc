@@ -30,14 +30,14 @@ jobs:
           - { cc: gcc-13, runs-on: ubuntu-latest }
           - { cc: gcc-12, runs-on: ubuntu-latest }
           - { cc: gcc-11, runs-on: ubuntu-latest }
-          - { cc: gcc-10, runs-on: ubuntu-latest }
-          - { cc: gcc-9, runs-on: ubuntu-latest }
+          - { cc: gcc-10, runs-on: ubuntu-24.04 }
+          - { cc: gcc-9, runs-on: ubuntu-24.04 }
           - { cc: clang-19, runs-on: ubuntu-latest }
           - { cc: clang-18, runs-on: ubuntu-latest }
           - { cc: clang-17, runs-on: ubuntu-latest }
-          - { cc: clang-16, runs-on: ubuntu-latest }
-          - { cc: clang-15, runs-on: ubuntu-latest }
-          - { cc: clang-14, runs-on: ubuntu-latest }
+          - { cc: clang-16, runs-on: ubuntu-24.04 }
+          - { cc: clang-15, runs-on: ubuntu-24.04 }
+          - { cc: clang-14, runs-on: ubuntu-24.04 }
           - { cc: clang-13, runs-on: ubuntu-22.04 }
           - { cc: clang-12, runs-on: ubuntu-22.04 }
           - { cc: clang-11, runs-on: ubuntu-22.04 }
