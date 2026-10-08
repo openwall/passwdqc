@@ -33,6 +33,9 @@ jobs:
           - { cc: gcc-11, runs-on: ubuntu-latest }
           - { cc: gcc-10, runs-on: ubuntu-24.04 }
           - { cc: gcc-9, runs-on: ubuntu-24.04 }
+          - { cc: clang-22, runs-on: ubuntu-26.04 }
+          - { cc: clang-21, runs-on: ubuntu-26.04 }
+          - { cc: clang-20, runs-on: ubuntu-latest }
           - { cc: clang-19, runs-on: ubuntu-latest }
           - { cc: clang-18, runs-on: ubuntu-latest }
           - { cc: clang-17, runs-on: ubuntu-latest }
