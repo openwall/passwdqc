@@ -602,6 +602,10 @@ __attribute__ ((aligned (64)))
 	const unsigned char *dend = dst->uc + sizeof(dst->uc);
 	const unsigned char *sp = (const unsigned char *)src;
 
+	/* PwnedPasswordsDownloader outputs UTF-8 BOMs before some lines */
+	if (sp[0] == 0xef && sp[1] == 0xbb && sp[2] == 0xbf)
+		sp += 3;
+
 	do {
 		unsigned int c, hi, lo;
 		c = *sp++ - '0';
